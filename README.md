@@ -97,7 +97,7 @@ Patch: [`sdroxide-kiwi-c-dwell.patch`](patches/sdroxide-kiwi-c-dwell.patch) · a
 
 ## FT8 / FT4
 
-### The world map in a window of its own, who is talking to whom, station info — not yet filed upstream
+### The world map in a window of its own, who is talking to whom, station info — [#786](https://github.com/dividebysandwich/sdroxide/issues/786)
 
 - **MAP ▼** over the map (in the QSO header on a compact layout, which has no map in the column): open the map in a floating window as big as it is dragged; cities, who is talking to whom, callsigns at the dots.
 - **Who is talking to whom:** a violet dotted great circle between both ends of every exchange heard in the last ten minutes where both have sent a locator.
