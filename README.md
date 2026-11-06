@@ -110,7 +110,7 @@ The screenshot shows an earlier state of the window; the chip row is one MAP ▼
 
 Patch: [`sdroxide-ft8-map-window.patch`](patches/sdroxide-ft8-map-window.patch) · applies to `main`.
 
-### CALL CQ, STOP QSO and STOP TX inside the window — fix for main
+### CALL CQ, STOP QSO and STOP TX inside the window — fix for main, PR [#788](https://github.com/dividebysandwich/sdroxide/pull/788)
 
 The action row at the bottom of the QSO area ended below the window on main: 10 points on the desktop layout, 6 on the tablet layout. The row is laid out bottom-up and was placed by `interact_size.y`, shorter than its chips; it now starts at the chip height.
 
