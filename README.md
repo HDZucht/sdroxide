@@ -110,6 +110,16 @@ The screenshot shows an earlier state of the window; the chip row is one MAP ▼
 
 Patch: [`sdroxide-ft8-map-window.patch`](patches/sdroxide-ft8-map-window.patch) · applies to `main`.
 
+### CALL CQ, STOP QSO and STOP TX inside the window — fix for main
+
+The action row at the bottom of the QSO area ended below the window on main: 10 points on the desktop layout, 6 on the tablet layout. The row is laid out bottom-up and was placed by `interact_size.y`, shorter than its chips; it now starts at the chip height.
+
+| Before (main) | After |
+|---|---|
+| ![before](img/ft8-action-row-before.png) | ![after](img/ft8-action-row-after.png) |
+
+Patch: [`sdroxide-ft8-action-row-edge.patch`](patches/sdroxide-ft8-action-row-edge.patch) · applies to `main`.
+
 ---
 
 Every patch is GPL-3, as SDR Oxide is. The source of truth for these patches is kept outside this repository and copied here; the dates and hashes above say which state is shown.
