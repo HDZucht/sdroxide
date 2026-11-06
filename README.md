@@ -4,6 +4,8 @@ This branch of the fork shows, with screenshots, the changes proposed to [SDR Ox
 
 Each patch applies to upstream `main` at `555d771e` (v1.6.11) on its own, unless its line below names a patch it builds on. All of them apply together as well, with the #776 version of #777. Measured with `git apply` on a fresh checkout, 2026-11-06.
 
+For a coding agent (or anyone applying several patches): [`AGENTS.md`](AGENTS.md) lists the base commit, which patch needs which, how to resolve conflicts, the macOS build settings and the checks.
+
 To try one:
 
 ```sh
