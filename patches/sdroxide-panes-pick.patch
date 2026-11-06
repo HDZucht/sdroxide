@@ -1,0 +1,1089 @@
+diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+index eefd18c2..c6aa2394 100644
+--- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+@@ -4279,14 +4279,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = VERBINDUNG
+ multi-mute-radio-s-audio = Audio dieses Funkgeräts stummschalten
+-multi-close-radio-s-split-view = Die geteilte Ansicht dieses Funkgeräts schließen
+-multi-open-radio-split-view-own = Dieses Funkgerät in einer eigenen geteilten Ansicht öffnen
+-multi-already-open-another-split-view = Schon in einer anderen geteilten Ansicht geöffnet
+ multi-show-radio-here = Dieses Funkgerät hier zeigen
+ multi-add-radio-computer-settings-radio = Ein Funkgerät auf diesem Computer hinzufügen (zum Hinzufügen an einer Station: Einstellungen → Funkgerät)
+ multi-add-radio = Ein Funkgerät hinzufügen
++multi-take-radio-off-row = Dieses Funkgerät aus dieser Reihe nehmen. Es läuft weiter; abgeschaltet wird es mit den Ringen.
++multi-open-pane = Eine weitere Spalte mit einem Funkgerät öffnen, das gerade nicht zu sehen ist
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Ein Funkgerät in diese Reihe holen. Die Ringe markieren Funkgeräte mit offener Verbindung.
++multi-new-radio = Neues Funkgerät…
+ multi-asked-station-another-radio = Die Station nach einem weiteren Funkgerät gefragt…
+ multi-client-cannot-open-connection = Dieser Client kann keine Verbindung öffnen.
+ 
+diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+index 30436a7e..23fde9f9 100644
+--- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+@@ -4291,14 +4291,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = LINK
+ multi-mute-radio-s-audio = Mute this radio's audio
+-multi-close-radio-s-split-view = Close this radio's split view
+-multi-open-radio-split-view-own = Open this radio in a split view of its own
+-multi-already-open-another-split-view = Already open in another split view
+ multi-show-radio-here = Show this radio here
+ multi-add-radio-computer-settings-radio = Add a radio on this computer (Settings → Radio to add one at a station)
+ multi-add-radio = Add a radio
++multi-take-radio-off-row = Take this radio off this row. It keeps running; the rings switch it off.
++multi-open-pane = Open another pane with a radio that is not on screen
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Put a radio on this row. The rings mark radios whose link is open.
++multi-new-radio = New radio…
+ multi-asked-station-another-radio = Asked the station for another radio…
+ multi-client-cannot-open-connection = This client cannot open a connection.
+ 
+diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+index 86e4a0a0..7e41bdc7 100644
+--- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+@@ -4271,14 +4271,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = ENLACE
+ multi-mute-radio-s-audio = Silenciar el audio de esta radio
+-multi-close-radio-s-split-view = Cerrar la vista dividida de esta radio
+-multi-open-radio-split-view-own = Abrir esta radio en una vista dividida propia
+-multi-already-open-another-split-view = Ya está abierta en otra vista dividida
+ multi-show-radio-here = Mostrar esta radio aquí
+ multi-add-radio-computer-settings-radio = Añadir una radio en este ordenador (Ajustes → Radio para añadir una en una estación)
+ multi-add-radio = Añadir una radio
++multi-take-radio-off-row = Quitar esta radio de esta fila. Sigue funcionando; los anillos la apagan.
++multi-open-pane = Abrir otro panel con una radio que no está en pantalla
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Poner una radio en esta fila. Los anillos marcan las radios con el enlace abierto.
++multi-new-radio = Nueva radio…
+ multi-asked-station-another-radio = Se ha pedido otra radio a la estación…
+ multi-client-cannot-open-connection = Este cliente no puede abrir una conexión.
+ 
+diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+index 932082b3..3044260e 100644
+--- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+@@ -4289,14 +4289,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = LIAISON
+ multi-mute-radio-s-audio = Couper l'audio de cette radio
+-multi-close-radio-s-split-view = Fermer la vue scindée de cette radio
+-multi-open-radio-split-view-own = Ouvrir cette radio dans une vue scindée à part
+-multi-already-open-another-split-view = Déjà ouverte dans une autre vue scindée
+ multi-show-radio-here = Afficher cette radio ici
+ multi-add-radio-computer-settings-radio = Ajouter une radio sur cet ordinateur (Réglages → Radio pour en ajouter une sur une station)
+ multi-add-radio = Ajouter une radio
++multi-take-radio-off-row = Retirer cette radio de cette rangée. Elle continue de fonctionner ; les anneaux la coupent.
++multi-open-pane = Ouvrir un autre volet avec une radio qui n'est pas à l'écran
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Mettre une radio dans cette rangée. Les anneaux marquent les radios dont la liaison est ouverte.
++multi-new-radio = Nouvelle radio…
+ multi-asked-station-another-radio = Demande à la station une autre radio…
+ multi-client-cannot-open-connection = Ce client ne peut pas ouvrir de connexion.
+ 
+diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+index 3c5e5ae7..7ed35643 100644
+--- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+@@ -4292,14 +4292,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = COLLEGAMENTO
+ multi-mute-radio-s-audio = Silenzia l'audio di questa radio
+-multi-close-radio-s-split-view = Chiudi la vista divisa di questa radio
+-multi-open-radio-split-view-own = Apri questa radio in una vista divisa propria
+-multi-already-open-another-split-view = Già aperta in un'altra vista divisa
+ multi-show-radio-here = Mostra questa radio qui
+ multi-add-radio-computer-settings-radio = Aggiungi una radio su questo computer (per aggiungerne una a una stazione, usa Impostazioni → Radio)
+ multi-add-radio = Aggiungi una radio
++multi-take-radio-off-row = Togli questa radio da questa riga. Continua a funzionare; gli anelli la spengono.
++multi-open-pane = Apri un altro riquadro con una radio che non è sullo schermo
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Metti una radio in questa riga. Gli anelli indicano le radio con il collegamento aperto.
++multi-new-radio = Nuova radio…
+ multi-asked-station-another-radio = Chiesta alla stazione un'altra radio…
+ multi-client-cannot-open-connection = Questo client non può aprire una connessione.
+ 
+diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+index adb34b29..2a10804b 100644
+--- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+@@ -4262,14 +4262,15 @@ smeter-ps = PS --
+ ## マルチ（src/multi.rs）
+ 
+ multi-tx = ● TX
+-multi-link = リンク
+ multi-mute-radio-s-audio = この無線機の音声をミュート
+-multi-close-radio-s-split-view = この無線機の分割表示を閉じます
+-multi-open-radio-split-view-own = この無線機を、独自の分割表示で開きます
+-multi-already-open-another-split-view = 別の分割表示ですでに開いています
+ multi-show-radio-here = この無線機をここに表示
+ multi-add-radio-computer-settings-radio = このコンピューターに無線機を追加します（ステーションに追加するには 設定 → 無線機）
+ multi-add-radio = 無線機を追加
++multi-take-radio-off-row = この無線機をこの列から外します。動作は続きます。切るにはリングを使います。
++multi-open-pane = 画面に出ていない無線機で別のペインを開く
++multi-pick-radio = 無線機 ▼
++multi-pick-radio-tip = この列に無線機を加えます。リングはリンクが開いている無線機を示します。
++multi-new-radio = 新しい無線機…
+ multi-asked-station-another-radio = ステーションに別の無線機を依頼しました…
+ multi-client-cannot-open-connection = このクライアントは接続を開けません。
+ 
+diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+index 8491e281..9697b1ee 100644
+--- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+@@ -4282,14 +4282,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = VERBINDING
+ multi-mute-radio-s-audio = De audio van deze radio dempen
+-multi-close-radio-s-split-view = De gesplitste weergave van deze radio sluiten
+-multi-open-radio-split-view-own = Deze radio openen in een eigen gesplitste weergave
+-multi-already-open-another-split-view = Al geopend in een andere gesplitste weergave
+ multi-show-radio-here = Deze radio hier tonen
+ multi-add-radio-computer-settings-radio = Een radio op deze computer toevoegen (Instellingen → Radio om er één bij een station toe te voegen)
+ multi-add-radio = Een radio toevoegen
++multi-take-radio-off-row = Deze radio uit deze rij halen. Hij blijft draaien; de ringen schakelen hem uit.
++multi-open-pane = Een volgend paneel openen met een radio die niet in beeld is
++multi-pick-radio = Radio ▼
++multi-pick-radio-tip = Een radio in deze rij zetten. De ringen markeren radio's waarvan de verbinding open is.
++multi-new-radio = Nieuwe radio…
+ multi-asked-station-another-radio = Het station om nog een radio gevraagd…
+ multi-client-cannot-open-connection = Deze client kan geen verbinding openen.
+ 
+diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+index ab8c5eb5..499c1781 100644
+--- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+@@ -4289,14 +4289,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = ENLACE
+ multi-mute-radio-s-audio = Silenciar o áudio deste rádio
+-multi-close-radio-s-split-view = Fechar a visão dividida deste rádio
+-multi-open-radio-split-view-own = Abrir este rádio em uma visão dividida própria
+-multi-already-open-another-split-view = Já aberto em outra visão dividida
+ multi-show-radio-here = Mostrar este rádio aqui
+ multi-add-radio-computer-settings-radio = Adicionar um rádio neste computador (Configurações → Rádio para adicionar um em uma estação)
+ multi-add-radio = Adicionar um rádio
++multi-take-radio-off-row = Tirar este rádio desta fileira. Ele continua funcionando; os anéis o desligam.
++multi-open-pane = Abrir outro painel com um rádio que não está na tela
++multi-pick-radio = Rádio ▼
++multi-pick-radio-tip = Colocar um rádio nesta fileira. Os anéis marcam os rádios com o link aberto.
++multi-new-radio = Novo rádio…
+ multi-asked-station-another-radio = Pedi à estação outro rádio…
+ multi-client-cannot-open-connection = Este cliente não consegue abrir uma conexão.
+ 
+diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+index b3e2b794..ae065682 100644
+--- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+@@ -4296,14 +4296,15 @@ smeter-ps = PS --
+ ## Несколько радио (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = СВЯЗЬ
+ multi-mute-radio-s-audio = Отключить звук этого радио
+-multi-close-radio-s-split-view = Закрыть разделённый вид этого радио
+-multi-open-radio-split-view-own = Открыть это радио в собственном разделённом виде
+-multi-already-open-another-split-view = Уже открыто в другом разделённом виде
+ multi-show-radio-here = Показать это радио здесь
+ multi-add-radio-computer-settings-radio = Добавить радио на этом компьютере (чтобы добавить его на станции, используйте Настройки → Радио)
+ multi-add-radio = Добавить радио
++multi-take-radio-off-row = Убрать это радио из этого ряда. Оно продолжает работать; кольца его выключают.
++multi-open-pane = Открыть ещё одну панель с радио, которого нет на экране
++multi-pick-radio = Радио ▼
++multi-pick-radio-tip = Поставить радио в этот ряд. Кольца отмечают радио с открытой связью.
++multi-new-radio = Новое радио…
+ multi-asked-station-another-radio = Запрошено у станции другое радио…
+ multi-client-cannot-open-connection = Этот клиент не может открыть соединение.
+ 
+diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+index 03d6f054..c6836f49 100644
+--- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+@@ -4287,14 +4287,15 @@ smeter-ps = PS --
+ ## multi (src/multi.rs)
+ 
+ multi-tx = ● TX
+-multi-link = BAĞLANTI
+ multi-mute-radio-s-audio = Bu radyonun sesini sustur
+-multi-close-radio-s-split-view = Bu radyonun bölünmüş görünümünü kapat
+-multi-open-radio-split-view-own = Bu radyoyu kendi bölünmüş görünümünde açın
+-multi-already-open-another-split-view = Zaten başka bir bölünmüş görünümde açık
+ multi-show-radio-here = Bu radyoyu burada göster
+ multi-add-radio-computer-settings-radio = Bu bilgisayarda bir radyo ekleyin (bir istasyonda eklemek için Ayarlar → Radyo)
+ multi-add-radio = Bir radyo ekle
++multi-take-radio-off-row = Bu telsizi bu sıradan çıkar. Çalışmaya devam eder; halkalar onu kapatır.
++multi-open-pane = Ekranda olmayan bir telsizle başka bir bölme aç
++multi-pick-radio = Radyo ▼
++multi-pick-radio-tip = Bu sıraya bir telsiz koy. Halkalar bağlantısı açık telsizleri gösterir.
++multi-new-radio = Yeni telsiz…
+ multi-asked-station-another-radio = İstasyondan başka bir radyo istendi…
+ multi-client-cannot-open-connection = Bu istemci bir bağlantı açamaz.
+ 
+diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+index 9ceb3f38..24b8aad6 100644
+--- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+@@ -4259,14 +4259,15 @@ smeter-ps = PS --
+ ## 多电台（src/multi.rs）
+ 
+ multi-tx = ● 发射
+-multi-link = 链路
+ multi-mute-radio-s-audio = 静音此电台的音频
+-multi-close-radio-s-split-view = 关闭此电台的分屏视图
+-multi-open-radio-split-view-own = 在其自己的分屏视图中打开此电台
+-multi-already-open-another-split-view = 已在另一个分屏视图中打开
+ multi-show-radio-here = 在此处显示此电台
+ multi-add-radio-computer-settings-radio = 在本计算机上添加电台（若要在电台站点上添加，请使用“设置 → 电台”）
+ multi-add-radio = 添加电台
++multi-take-radio-off-row = 把这台电台移出这一行。它继续运行；用圆环关闭它。
++multi-open-pane = 用一台未在屏幕上的电台打开另一个窗格
++multi-pick-radio = 电台 ▼
++multi-pick-radio-tip = 把一台电台放进这一行。圆环标出连接已打开的电台。
++multi-new-radio = 新电台…
+ multi-asked-station-another-radio = 已向电台站点请求另一台电台……
+ multi-client-cannot-open-connection = 此客户端无法打开连接。
+ 
+diff --git a/crates/sdroxide-ui/src/app/mod.rs b/crates/sdroxide-ui/src/app/mod.rs
+index 16f1cb43..bbd636e0 100644
+--- a/crates/sdroxide-ui/src/app/mod.rs
++++ b/crates/sdroxide-ui/src/app/mod.rs
+@@ -1958,9 +1958,19 @@ impl SdroxideApp {
+     /// Read from the shell's roster either way, so a radio of this machine's
+     /// own and one at a station are answered the same: the shell is what knows
+     /// which of the two this tab is, and it has already asked the station.
++    ///
++    /// Also `None` while the shell draws a row of tabs, which carry the rings
++    /// themselves: the switch then has one place, on the radio's tab. The
++    /// test is the shell's own for drawing the row (`MultiApp::strip_wanted`):
++    /// more than one radio that is not lent out. A one-radio session has no
++    /// row, and keeps the switch here.
++    // Why: HDZ 2026-11-04: "im Wildtyp sind die Ringe eigentlich gar nicht da
++    //      im Hauptpanel, so würde ich unseren Patch auch machen, die Ringe nur
++    //      oben in den Tabs".
+     pub(crate) fn own_link_state(&self) -> Option<bool> {
+         let chip = self.radio_roster.iter().find(|c| c.id == self.radio_id)?;
+-        (chip.switchable && chip.attached_to.is_none()).then_some(chip.enabled)
++        let tabs_shown = self.radio_roster.iter().filter(|c| c.attached_to.is_none()).count() > 1;
++        (chip.switchable && chip.attached_to.is_none() && !tabs_shown).then_some(chip.enabled)
+     }
+ 
+     /// The other radios of the station this tab is connected to, and the
+diff --git a/crates/sdroxide-ui/src/chrome.rs b/crates/sdroxide-ui/src/chrome.rs
+index 0056766b..2f375909 100644
+--- a/crates/sdroxide-ui/src/chrome.rs
++++ b/crates/sdroxide-ui/src/chrome.rs
+@@ -1529,6 +1529,34 @@ pub fn chip_link(ui: &mut Ui, selected: bool, size: egui::Vec2) -> Response {
+     resp
+ }
+ 
++/// A chip carrying a small box split into columns — "another pane" — instead
++/// of a label, at an exact size. Painted rather than typed for the reason
++/// [`chip_link`] gives, and inked the same way.
++///
++/// The pane row's way to open a column beside the one it sits on.
++// Why: HDZ 2026-11-04: the "+" that opened a pane read as "add a radio",
++//      which "+" means everywhere else in the program ("das Symbol ist nur
++//      unglücklich gewählt"); his idea: "ein kleines Symbol, drei senkrechte
++//      Linien in Kästchen".
++// Invariant: three columns — the frame's two sides and two dividers inside.
++pub fn chip_columns(ui: &mut Ui, size: egui::Vec2) -> Response {
++    let resp = chip_impl(ui, false, RichText::new(""), None, Sense::click(), Some(size));
++    if ui.is_rect_visible(resp.rect) {
++        let ink = ui.style().interact_selectable(&resp, false).fg_stroke.color;
++        let stroke = Stroke::new((size.y * 0.07).clamp(1.2, 2.0), ink);
++        let h = resp.rect.height() * 0.48;
++        let w = h * 1.3;
++        let frame = egui::Rect::from_center_size(resp.rect.center(), vec2(w, h));
++        let p = ui.painter();
++        p.rect_stroke(frame, 1.0, stroke, egui::StrokeKind::Middle);
++        for k in [1.0, 2.0] {
++            let x = frame.left() + w * k / 3.0;
++            p.line_segment([Pos2::new(x, frame.top()), Pos2::new(x, frame.bottom())], stroke);
++        }
++    }
++    resp
++}
++
+ /// A chip carrying an anticlockwise arrow — "put it back" — instead of a label,
+ /// at an exact size. Painted rather than typed for the reason [`chip_link`]
+ /// gives, and inked the same way.
+diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
+index 2aeeb3af..6b840fce 100644
+--- a/crates/sdroxide-ui/src/multi.rs
++++ b/crates/sdroxide-ui/src/multi.rs
+@@ -119,9 +119,20 @@ enum StripAction {
+         pane: usize,
+         id: u32,
+     },
+-    /// The ⊞ toggle: give this radio a pane of its own, or close the one it
+-    /// has.
+-    ToggleSplit(u32),
++    /// "Pick radio ▼": put this radio on this pane's row and show it here,
++    /// taking it off the row it was on.
++    Pick {
++        pane: usize,
++        id: u32,
++    },
++    /// The "−" on a tab: take this radio off this pane's row. It keeps
++    /// running; off is the rings.
++    Unpick {
++        pane: usize,
++        id: u32,
++    },
++    /// The "+" at the end of a row: open another pane.
++    AddPane,
+     Mute {
+         id: u32,
+         muted: bool,
+@@ -131,6 +142,7 @@ enum StripAction {
+         id: u32,
+         on: bool,
+     },
++    /// "New radio…" at the foot of the pick menu: the strip's former "+".
+     Add,
+ }
+ 
+@@ -143,6 +155,33 @@ pub struct MultiApp {
+     /// would be two views fighting over one engine's spectrum stream — never
+     /// empty, and always holding the focused tab ([`Self::sanitize_panes`]).
+     panes: Vec<u32>,
++    /// The radios picked onto each pane's row of tabs, by tab id, one row per
++    /// entry of [`Self::panes`] (`rows[k]` belongs to `panes[k]`). Drawn in
++    /// the order of [`Self::tabs`], so the operator's arrangement (#224)
++    /// holds within every row.
++    ///
++    /// A radio is on at most one row, and the one a pane shows is always on
++    /// that pane's row. A radio on no row is not gone: it keeps running, as
++    /// every radio behind the one on screen does, and "Pick radio ▼" brings it
++    /// back. On is the rings, never where a radio is shown.
++    // Why: HDZ 2026-11-04, Panel Exchange (#771) retracted: one radio per
++    //      strip hid the multi-radio model ("die angeschalteten Geräte dudeln
++    //      irgendwo rum, auch wenn sie nicht sichtbar sind") and left the link
++    //      switch in two shapes. "Pick Radio, dann kann an einem Panel oben eine
++    //      Reihe Radios gewählt werden … jedes Radio braucht dann einen Minus-
++    //      Knopf … und das Plus am Ende macht wie bisher ein zweites Panel auf";
++    //      on "−": "dann bleiben wir beim WT-Verhalten" (it keeps running).
++    // Invariant: `rows.len() == panes.len()`; `panes[k]` is in `rows[k]`; no
++    //      id on two rows ([`Self::sanitize_panes`]).
++    rows: Vec<Vec<u32>>,
++    /// Each pane's row of tabs as tall as it drew itself last frame, before
++    /// any padding: what the split view evens the rows out to, so that the
++    /// panes below them start on one line. Measured a frame late, which is
++    /// what keeps a row that wraps from moving under the pointer.
++    // Why: HDZ 2026-11-04 (two panes, five tabs wrapping to two lines on the
++    //      left, one tab on the right): "könnte man wenigstens die roten
++    //      Rahmen ausrichten aneinander".
++    strip_heights: Vec<f32>,
+     factory: Option<RadioFactory>,
+     /// How a station somewhere else is dialled — Settings → Remote. Present
+     /// in every native session, including one that is itself a remote client:
+@@ -246,10 +285,15 @@ impl MultiApp {
+             t.app.set_focused_flag(i == 0);
+         }
+         let panes = vec![tabs[0].id];
++        // Every radio on the one pane's row: a session opens looking exactly
++        // as the single strip always did.
++        let rows = vec![tabs.iter().map(|t| t.id).collect()];
+         MultiApp {
+             tabs,
+             focused: 0,
+             panes,
++            rows,
++            strip_heights: Vec::new(),
+             factory,
+             remote,
+             wgpu: cc.wgpu_render_state.clone(),
+@@ -434,14 +478,53 @@ impl MultiApp {
+     /// least one pane, and the focused tab is on screen.
+     fn sanitize_panes(&mut self, ctx: &egui::Context) {
+         self.focused = self.focused.min(self.tabs.len() - 1);
++        // The rows go with their panes: first drop ids that no longer exist
++        // and any id already on an earlier row, then let a pane whose radio has
++        // gone show the next one left on its row, and only then drop a pane
++        // with nothing left to show — together with its row.
++        self.rows.resize_with(self.panes.len(), Vec::new);
+         let mut seen: Vec<u32> = Vec::new();
+-        self.panes.retain(|&id| {
+-            let keep = !seen.contains(&id) && self.tabs.iter().any(|t| t.id == id);
+-            seen.push(id);
+-            keep
+-        });
++        for row in &mut self.rows {
++            row.retain(|&id| {
++                let keep = !seen.contains(&id) && self.tabs.iter().any(|t| t.id == id);
++                if keep {
++                    seen.push(id);
++                }
++                keep
++            });
++        }
++        let mut shown: Vec<u32> = Vec::new();
++        let mut keep: Vec<bool> = Vec::with_capacity(self.panes.len());
++        for k in 0..self.panes.len() {
++            let id = self.panes[k];
++            let alive = self.tabs.iter().any(|t| t.id == id) && !shown.contains(&id);
++            let next = if alive {
++                Some(id)
++            } else {
++                self.rows[k].iter().copied().find(|r| !shown.contains(r) && !self.panes.contains(r))
++            };
++            match next {
++                Some(id) => {
++                    self.panes[k] = id;
++                    shown.push(id);
++                    // What a pane shows is on its row, and on no other.
++                    for row in &mut self.rows {
++                        row.retain(|&r| r != id);
++                    }
++                    self.rows[k].push(id);
++                    keep.push(true);
++                }
++                None => keep.push(false),
++            }
++        }
++        let mut at = keep.iter();
++        self.panes.retain(|_| *at.next().unwrap_or(&false));
++        let mut at = keep.iter();
++        self.rows.retain(|_| *at.next().unwrap_or(&false));
+         if self.panes.is_empty() {
+-            self.panes.push(self.tabs[self.focused].id);
++            let id = self.tabs[self.focused].id;
++            self.panes.push(id);
++            self.rows.push(vec![id]);
+         }
+         if !self.panes.contains(&self.tabs[self.focused].id) {
+             let first = self.panes[0];
+@@ -465,30 +548,101 @@ impl MultiApp {
+         let Some(i) = self.tabs.iter().position(|t| t.id == id) else { return };
+         if !self.panes.contains(&id) && pane < self.panes.len() {
+             self.panes[pane] = id;
++            self.put_on_row(pane, id);
+         }
+         self.focus_tab(i, ctx);
+     }
+ 
+-    /// The ⊞ toggle: open a pane for radio `id`, or close the one it has.
+-    fn toggle_split(&mut self, id: u32, ctx: &egui::Context) {
+-        if let Some(k) = self.panes.iter().position(|&p| p == id) {
+-            // The last pane is not a split; it stays.
+-            if self.panes.len() > 1 {
+-                self.panes.remove(k);
+-                // The keyboard must stay on a visible radio: hand it to the
+-                // pane that slid into the closed one's place.
+-                if !self.panes.contains(&self.tabs[self.focused].id) {
+-                    let next = self.panes[k.min(self.panes.len() - 1)];
+-                    if let Some(i) = self.tabs.iter().position(|t| t.id == next) {
+-                        self.focus_tab(i, ctx);
+-                    }
++    /// Put radio `id` on pane `pane`'s row, and on no other.
++    fn put_on_row(&mut self, pane: usize, id: u32) {
++        for row in &mut self.rows {
++            row.retain(|&r| r != id);
++        }
++        if let Some(row) = self.rows.get_mut(pane) {
++            row.push(id);
++        }
++    }
++
++    /// "Pick radio ▼": radio `id` onto pane `pane`'s row, shown there and
++    /// handed the keyboard. A radio another pane is showing leaves that pane,
++    /// which shows the next radio on its row, or closes when its row is empty.
++    fn pick(&mut self, pane: usize, id: u32, ctx: &egui::Context) {
++        if pane >= self.panes.len() || !self.tabs.iter().any(|t| t.id == id) {
++            return;
++        }
++        if let Some(k) = self.panes.iter().position(|&p| p == id)
++            && k != pane
++        {
++            self.panes[k] = u32::MAX;
++        }
++        self.put_on_row(pane, id);
++        self.panes[pane] = id;
++        // `u32::MAX` is no tab: the next line finds the pane it was put on
++        // the next radio on its row, or closes it.
++        self.sanitize_panes(ctx);
++        if let Some(i) = self.tabs.iter().position(|t| t.id == id) {
++            self.focus_tab(i, ctx);
++        }
++    }
++
++    /// The "−" on a tab: radio `id` off pane `pane`'s row. It keeps running —
++    /// the same as the wildtype, where a radio behind the one on screen goes
++    /// on receiving — and "Pick radio ▼" brings it back. Where it was the one
++    /// shown, the pane shows the next radio on its row, or closes; the last
++    /// tab of the last pane offers no "−".
++    fn unpick(&mut self, pane: usize, id: u32, ctx: &egui::Context) {
++        let Some(row) = self.rows.get_mut(pane) else { return };
++        row.retain(|&r| r != id);
++        if self.panes[pane] == id {
++            match self.rows[pane].first().copied() {
++                Some(next) => self.panes[pane] = next,
++                None if self.panes.len() > 1 => {
++                    self.panes.remove(pane);
++                    self.rows.remove(pane);
+                 }
++                // Refused by the strip, which draws no "−" there; put back.
++                None => self.rows[pane].push(id),
+             }
+-        } else if self.tabs.iter().any(|t| t.id == id) {
+-            self.panes.push(id);
++        }
++        self.sanitize_panes(ctx);
++    }
++
++    /// The columns chip at the end of a row: another pane, showing the first
++    /// radio that is on no row. Nothing when every radio is placed (the strip
++    /// does not draw the chip then).
++    fn add_pane(&mut self, ctx: &egui::Context) {
++        let Some(id) = self.next_unshown() else { return };
++        self.panes.push(id);
++        self.rows.push(Vec::new());
++        self.put_on_row(self.panes.len() - 1, id);
++        if let Some(i) = self.tabs.iter().position(|t| t.id == id) {
++            self.focus_tab(i, ctx);
+         }
+     }
+ 
++    /// The first radio, in strip order, that is on no row: one the operator
++    /// took off a row with "−". Never one lent out as a panadapter, which is
++    /// reached through Settings → Radio.
++    fn next_unshown(&self) -> Option<u32> {
++        self.loose().first().copied()
++    }
++
++    /// The radios on no row, in strip order: what "Pick radio ▼" and the
++    /// columns chip have to offer. While it is empty every radio is placed,
++    /// and neither is drawn.
++    // Why: HDZ 2026-11-04: "wenn alle Radios platziert sind, dann wird Popdown
++    //      und Spalten-Eumel ausgeblendet, nur wenn ich irgendwo ein Radio vom
++    //      Panel löse, kann ich eine neue Spalte oder einen neuen Selektor
++    //      machen".
++    fn loose(&self) -> Vec<u32> {
++        self.tabs
++            .iter()
++            .filter(|t| t.attached_to.is_none())
++            .filter(|t| !self.rows.iter().any(|r| r.contains(&t.id)))
++            .map(|t| t.id)
++            .collect()
++    }
++
+     /// Act on the radio-management requests the visible tabs' settings
+     /// dialogs queued this frame.
+     fn handle_requests(&mut self, reqs: Vec<RadioTabRequest>, ctx: &egui::Context) {
+@@ -563,7 +717,9 @@ impl MultiApp {
+         for act in actions {
+             match act {
+                 StripAction::Show { pane, id } => self.show_in_pane(pane, id, ctx),
+-                StripAction::ToggleSplit(id) => self.toggle_split(id, ctx),
++                StripAction::Pick { pane, id } => self.pick(pane, id, ctx),
++                StripAction::Unpick { pane, id } => self.unpick(pane, id, ctx),
++                StripAction::AddPane => self.add_pane(ctx),
+                 StripAction::Mute { id, muted } => {
+                     // To the engine, not latched here: the chip and the MUTE
+                     // button both read the engine's answer back, so they
+@@ -631,49 +787,50 @@ impl MultiApp {
+         }
+     }
+ 
+-    /// One strip: every radio's controls in a box of their own, then the "+"
+-    /// chip. `pane` is the split column the strip sits on (0 in the single
+-    /// view), so a name click knows which pane it re-assigns. Closing a radio
+-    /// is deliberately absent — that lives in Settings → Radio, behind a
+-    /// dialog, not one stray click away on the main window.
++    /// One pane's row: the radios picked onto it, each a tab with its own
++    /// controls (the rings, mute, "−"), then "Pick radio ▼" and the "+" that
++    /// opens another pane. `pane` is the column the row sits on (0 in the
++    /// single view). Closing a radio is deliberately absent — that lives in
++    /// Settings → Radio, behind a dialog, not one stray click away on the main
++    /// window; "−" only takes a radio off this row.
++    // Why: HDZ 2026-11-04 (see [`MultiApp::rows`]); the link switch on a tab
++    //      wears the rings the frequency box's switch wears, so one switch
++    //      has one shape wherever it stands ("zwei verschiedene Knöpfe machen
++    //      das gleiche … einmal das Ringe-Symbol und einmal der andere Knopf").
++    // Invariant: a tab is drawn for exactly the radios on `rows[pane]`, in
++    //      the order of `tabs`.
+     fn strip_row(&self, ui: &mut egui::Ui, pane: usize, actions: &mut Vec<StripAction>) {
++        let row: &[u32] = self.rows.get(pane).map_or(&[], Vec::as_slice);
++        let last_tab_standing = self.panes.len() == 1 && row.len() == 1;
+         crate::chrome::tab_bar(ui, |ui, bar| {
+             for (i, tab) in self.tabs.iter().enumerate() {
+-                // A radio lent out as somebody's panadapter receiver is not one
+-                // of the radios on this station's strip — unless it is the one
+-                // being looked at, which is how it is reached from Settings →
+-                // Radio and how the operator gets back off it.
+-                if tab.attached_to.is_some() && !self.panes.contains(&tab.id) {
++                if !row.contains(&tab.id) {
+                     continue;
+                 }
+                 let id = tab.id;
+                 let here = self.panes.get(pane) == Some(&id);
+-                let elsewhere = !here && self.panes.contains(&id);
+-                let split_on = self.panes.len() > 1 && self.panes.contains(&id);
+                 // In a split the accent marks the pane holding the keyboard.
+-                let accent = if here && split_on && i == self.focused {
++                let accent = if here && self.panes.len() > 1 && i == self.focused {
+                     crate::theme::PINK()
+                 } else {
+                     crate::theme::CYAN()
+                 };
+-                // A real tab, not a chip: this strip decides which radio the
++                // A real tab, not a chip: this row decides which radio the
+                 // page below belongs to, which is the one thing a row of
+-                // buttons cannot say. The mute and split toggles ride inside
+-                // their own tab the way a close box rides in a browser's.
++                // buttons cannot say. Its own controls ride inside it the way
++                // a close box rides in a browser's.
+                 let body = bar.tab_body_accent(ui, here, accent, |ui| {
+                     let mut label = RichText::new(Self::display_name(tab)).size(12.5);
+                     if here {
+                         label = label.strong().color(crate::theme::TEXT_STRONG());
+-                    } else if elsewhere {
+-                        label = label.weak();
+                     }
+-                    // A radio nobody has switched on is a radio the strip is
++                    // A radio nobody has switched on is a radio the row is
+                     // only carrying so that it can be switched on: it says its
+                     // name and no more.
+                     if !tab.enabled {
+                         label = label.weak();
+                     }
+-                    ui.label(label);
++                    Self::tab_name(ui, label, egui::Sense::hover());
+                     // On the air: the one thing worth seeing from any tab.
+                     if tab.app.tab_tx_on() {
+                         ui.label(
+@@ -682,23 +839,13 @@ impl MultiApp {
+                     } else if tab.app.tab_error() && tab.enabled {
+                         ui.label(RichText::new("⚠").size(11.0).color(crate::theme::ALERT()));
+                     }
+-                    // The switch. A radio at the far end of a connection has
+-                    // one too — the request goes to the station, which is where
+-                    // such a radio has always been opened and closed.
+-                    //
+-                    // Lit while the link is open, like every other chip in the
+-                    // program: a chip wears the accent when what it names is in
+-                    // force. Lighting it for OFF read as the opposite (issue
+-                    // #253), and reading "ON" at all read as the *radio's* own
+-                    // switch however the hover text argued — so it names the
+-                    // link now, and on/off is left to PWR, which really does
+-                    // throw the set's own switch.
++                    // The switch, as the rings: lit while the link is open
++                    // (issue #253), and the same request the frequency box's
++                    // rings send, so the two can never disagree.
+                     if Self::switchable(tab) && tab.attached_to.is_none() {
+-                        let power = crate::chrome::chip(
+-                            ui,
+-                            tab.enabled,
+-                            RichText::new(tr!("multi-link")).size(11.0),
+-                        );
++                        let h = crate::chrome::chip_height(ui, Some(11.0));
++                        let power =
++                            crate::chrome::chip_link(ui, tab.enabled, egui::vec2(1.8 * h, h));
+                         let tip = if tab.enabled {
+                             crate::chrome::LINK_CLOSE_TIP
+                         } else {
+@@ -710,9 +857,7 @@ impl MultiApp {
+                     }
+                     // No mute on a radio that is off: there is nothing coming
+                     // out of it to silence. Whether it *was* muted is kept, and
+-                    // the button comes back with it when the radio does. The
+-                    // split toggle stays either way — a pane showing a radio
+-                    // that has just been switched off still has to be closable.
++                    // the button comes back with it when the radio does.
+                     if tab.enabled {
+                         let muted = tab.app.tab_muted();
+                         let mute = crate::chrome::chip(
+@@ -724,48 +869,122 @@ impl MultiApp {
+                             actions.push(StripAction::Mute { id, muted: !muted });
+                         }
+                     }
+-                    let split = crate::chrome::chip(ui, split_on, RichText::new("⊞").size(11.0));
+-                    let tip = if split_on {
+-                        tr!("multi-close-radio-s-split-view")
+-                    } else {
+-                        tr!("multi-open-radio-split-view-own")
+-                    };
+-                    if split.on_hover_text(tip).clicked() {
+-                        actions.push(StripAction::ToggleSplit(id));
++                    // Off this row. Not offered on the last tab of the last
++                    // pane: a window shows a radio, always.
++                    if !last_tab_standing {
++                        let minus = crate::chrome::chip(ui, false, RichText::new("−").size(11.0));
++                        if minus.on_hover_text(tr!("multi-take-radio-off-row")).clicked() {
++                            actions.push(StripAction::Unpick { pane, id });
++                        }
+                     }
+                 });
+                 // The tab itself switches the pane — anywhere on it that is not
+                 // one of its own buttons, which keep their clicks.
+-                let body = if elsewhere {
+-                    body.response.on_hover_text(tr!("multi-already-open-another-split-view"))
+-                } else if here {
++                let body = if here {
+                     body.response
+                 } else {
+                     body.response.on_hover_text(tr!("multi-show-radio-here"))
+                 };
+-                if body.clicked() && !here && !elsewhere {
++                if body.clicked() && !here {
+                     actions.push(StripAction::Show { pane, id });
+                 }
+             }
++            bar.end_tabs(ui);
++            // Only while a radio is loose — on no row — is there anything to
++            // pick or to open a pane for; with every radio placed the row ends
++            // at its last tab. A new radio is then added in Settings → Radio.
++            if self.loose().is_empty() {
++                return;
++            }
++            self.pick_menu(ui, pane, actions);
++            // Another pane, with the first loose radio. Drawn as columns, not
++            // "+": "+" adds a radio everywhere else.
++            let h = crate::chrome::chip_height(ui, Some(13.0));
++            if crate::chrome::chip_columns(ui, egui::vec2(1.6 * h, h))
++                .on_hover_text(tr!("multi-open-pane"))
++                .clicked()
++            {
++                actions.push(StripAction::AddPane);
++            }
++        });
++    }
++
++    /// A tab's name, centred in the height of the chips beside it.
++    ///
++    /// In: the name as it is to be drawn, and what it should sense. Out: the
++    /// name's response. The name gets a box as tall as a chip and sits in its
++    /// middle, so it stands at the same height in every tab.
++    // Why: HDZ 2026-11-04 (strip in two rows): "der Name des Funkgeräts ist
++    //      oft mittenzentriert in der Höhe, aber nicht immer konsistent". The
++    //      first tab of each row had its name at the top: egui centres an item
++    //      in the height the row has reached so far, and for a row's first
++    //      item that is still the line height, before the taller rings chip
++    //      beside it has been laid out.
++    fn tab_name(ui: &mut egui::Ui, name: RichText, sense: egui::Sense) -> egui::Response {
++        let h = crate::chrome::chip_height(ui, Some(11.0));
++        let galley = egui::WidgetText::from(name.clone()).into_galley(
++            ui,
++            Some(egui::TextWrapMode::Extend),
++            f32::INFINITY,
++            egui::TextStyle::Button,
++        );
++        let size = egui::vec2(galley.size().x, h.max(galley.size().y));
++        ui.allocate_ui_with_layout(size, egui::Layout::left_to_right(egui::Align::Center), |ui| {
++            ui.add(egui::Label::new(name).sense(sense))
++        })
++        .inner
++    }
++
++    /// "Pick radio ▼": the radios on no row, each marked with the rings while
++    /// its link is open and dimmed while it is off — the same marks the tabs
++    /// wear. Drawn only while there is one ([`MultiApp::loose`]). Picking puts
++    /// it on this row and shows it here. At the foot, "New radio…", which is
++    /// what the single strip's "+" used to do.
++    fn pick_menu(&self, ui: &mut egui::Ui, pane: usize, actions: &mut Vec<StripAction>) {
++        let btn = crate::chrome::chip(ui, false, RichText::new(tr!("multi-pick-radio")).size(12.0))
++            .on_hover_text(tr!("multi-pick-radio-tip"));
++        crate::chrome::menu_popup(ui, &btn, |ui| {
++            let loose = self.loose();
++            for tab in self.tabs.iter().filter(|t| loose.contains(&t.id)) {
++                let mut label = RichText::new(Self::display_name(tab));
++                if !tab.enabled {
++                    label = label.weak();
++                }
++                let picked = ui
++                    .horizontal(|ui| {
++                        // The rings, painted: the symbol is not in the text
++                        // font (see [`crate::chrome::chip_link`]).
++                        let (rect, _) =
++                            ui.allocate_exact_size(egui::vec2(18.0, 12.0), egui::Sense::hover());
++                        if tab.enabled && ui.is_rect_visible(rect) {
++                            let r = rect.height() * 0.32;
++                            let c = rect.center();
++                            let stroke = egui::Stroke::new(1.4, crate::theme::CYAN());
++                            for dx in [-0.55, 0.55] {
++                                ui.painter().circle_stroke(
++                                    egui::pos2(c.x + dx * r, c.y),
++                                    r,
++                                    stroke,
++                                );
++                            }
++                        }
++                        ui.add(egui::Button::new(label).frame(false)).clicked()
++                    })
++                    .inner;
++                if picked {
++                    actions.push(StripAction::Pick { pane, id: tab.id });
++                    ui.close();
++                }
++            }
+             if self.factory.is_some() {
+-                bar.end_tabs(ui);
+-                // Always this machine's own roster. A strip is drawn on every
+-                // pane and a menu here would be in the way; where a radio could
+-                // also go on a station at the far end of a connection, that
+-                // choice is one screen away in Settings → Radio, where the two
+-                // rosters are already side by side. The tooltip says so as soon
+-                // as there is a second roster to confuse it with.
++                ui.separator();
+                 let tip = match self.tabs.iter().any(|t| t.remote) {
+-                    true => {
+-                        tr!("multi-add-radio-computer-settings-radio")
+-                    }
++                    true => tr!("multi-add-radio-computer-settings-radio"),
+                     false => tr!("multi-add-radio"),
+                 };
+-                if crate::chrome::chip(ui, false, RichText::new("+").size(13.0))
+-                    .on_hover_text(tip)
+-                    .clicked()
+-                {
++                if ui.button(tr!("multi-new-radio")).on_hover_text(tip).clicked() {
+                     actions.push(StripAction::Add);
++                    ui.close();
+                 }
+             }
+         });
+@@ -1077,6 +1296,10 @@ impl MultiApp {
+             attached_to: None,
+             enabled: r.enabled,
+         });
++        // On the row of the pane the operator is working in, so the radio they
++        // asked for — or the next of a station's arriving — is one click away.
++        let pane = self.active_pane();
++        self.put_on_row(pane, r.id);
+         for tab in &mut self.tabs {
+             tab.app.set_shared_log(true);
+         }
+@@ -1307,6 +1530,12 @@ impl eframe::App for MultiApp {
+             let n = pane_tabs.len() as f32;
+             let gap = 6.0;
+             let col_w = ((avail.width() - gap * (n - 1.0)) / n).max(50.0);
++            // Every row as tall as the tallest: the shorter ones get the
++            // difference as room above their tabs, so the tabs still sit on
++            // the page they switch.
++            let tallest =
++                self.strip_heights.iter().take(pane_tabs.len()).fold(0.0_f32, |a, &b| a.max(b));
++            let mut heights: Vec<f32> = Vec::with_capacity(pane_tabs.len());
+             for (k, &ti) in pane_tabs.iter().enumerate() {
+                 let left = avail.left() + k as f32 * (col_w + gap);
+                 let col = egui::Rect::from_min_max(
+@@ -1322,13 +1551,17 @@ impl eframe::App for MultiApp {
+                 );
+                 pane_ui.shrink_clip_rect(col);
+                 // This pane's strip — switches what the pane shows.
+-                egui::Frame::new()
++                let pad =
++                    (tallest - self.strip_heights.get(k).copied().unwrap_or(tallest)).max(0.0);
++                let drawn = egui::Frame::new()
+                     .fill(crate::theme::BG_DEEP())
+                     .inner_margin(egui::Margin { left: 8, right: 8, top: 3, bottom: 0 })
+                     .show(&mut pane_ui, |ui| {
+                         ui.set_min_width(ui.available_width());
++                        ui.add_space(pad);
+                         self.strip_row(ui, k, &mut actions);
+                     });
++                heights.push(drawn.response.rect.height() - pad);
+                 self.tabs[ti].app.set_radio_roster(roster.clone());
+                 eframe::App::ui(&mut self.tabs[ti].app, &mut pane_ui, frame);
+                 reqs.append(&mut self.tabs[ti].app.take_radio_tab_requests());
+@@ -1340,6 +1573,11 @@ impl eframe::App for MultiApp {
+                     );
+                 }
+             }
++            if heights != self.strip_heights {
++                // A row wrapped or unwrapped: even the rows out next frame.
++                ctx.request_repaint();
++                self.strip_heights = heights;
++            }
+             ui.allocate_rect(avail, egui::Sense::hover());
+             // A press on a pane's background hands it the keyboard. Floating
+             // windows live on layers above the background, so working in a
+diff --git a/docs/USER_MANUAL.md b/docs/USER_MANUAL.md
+index 89da7479..3a45329a 100644
+--- a/docs/USER_MANUAL.md
++++ b/docs/USER_MANUAL.md
+@@ -351,11 +351,13 @@ See the [appendix](#16-appendix) for what each mode is.
+ The **VFO** module has:
+ 
+ - **A / B** select buttons in the Frequency module (the active VFO is highlighted).
+-- Above them, the **⛓ link button**: the same **LINK** switch the radio's tab on
+-  the strip carries (see [§2.17](#217-running-more-than-one-radio)), lit while
+-  sdroxide's link to the radio is open. It is on the main window so that a
+-  *single*-radio session — which has no tab strip — can still put its radio down
+-  and pick it back up. On the compact layouts, where the frequency box has no
++- Above them, in a *single*-radio session, the **⛓ link button**: the same
++  link switch a radio's tab carries as its rings once there is more than one
++  radio (see [§2.17](#217-running-more-than-one-radio)), lit while sdroxide's
++  link to the radio is open. It is here because a single-radio session has no
++  tab strip, and so nowhere else to put its radio down and pick it back up;
++  with tabs on screen the rings on the tab are the switch, and this one is not
++  drawn. On the compact layouts, where the frequency box has no
+   room to stack it, it is the first thing in the **VFO** menu instead, labelled
+   in words. It is not the radio's power switch: that is **PWR**
+   ([§2.7](#27-receiver-controls)).
+@@ -858,7 +860,7 @@ socket, no receive aerial and no remote power never sees it.
+   on the radio's own front panel pressed without changing band — it catches up
+   at the next band change.
+ - **PWR** — **ON** and **OFF** switch the radio itself, over the control link.
+-  This is the one true on/off in sdroxide; the **LINK** switch in the tab strip
++  This is the one true on/off in sdroxide; the link switch (the rings) in the tab strip
+   is sdroxide's own end of the connection and leaves the radio running
+   ([2.17](#217-running-more-than-one-radio)). Two buttons rather than a switch,
+   because a radio that is off answers nothing and there is no position to read
+@@ -2396,9 +2398,9 @@ plugging a dongle in here and plugging one in at the remote site — one radio
+ appears in this machine's roster, the other in that station's, where its engine
+ runs and where its settings are saved. A radio added on a station comes back as
+ a tab of its own within a second or so, with the Radio page already open on it,
+-exactly as a local one does. The **+** on the main window's tab strip always
+-means this computer; the choice lives in Settings → Radio, which is where the
+-two rosters are side by side.
++exactly as a local one does. **New radio…** at the foot of the main window's
++**Radio ▼** menu always means this computer; the choice lives in Settings →
++Radio, which is where the two rosters are side by side.
+ 
+ The **+** only acts on the press when the radio is going on the computer you
+ are sitting at. Where it would go on a station instead — which is always the
+@@ -2467,16 +2469,26 @@ scanning. Besides its name, each tab carries:
+ - **🔊 / 🔇** — mute this radio's speaker audio. Muting is *only* the speaker:
+   decoding, skimming, recording and everything else continue, so a muted
+   background radio still fills its FT8 list and still spots.
+-- **⊞** — open this radio in a split view of its own, or close the one it
+-  has (see below).
+-- **LINK** — open or close sdroxide's link to this radio (see below). The chip
+-  is lit while the link is open, like every other chip in the program.
++- **The rings** — open or close sdroxide's link to this radio (see below). The
++  chip is lit while the link is open, like every other chip in the program.
++- **−** — take this radio off this row of tabs. It keeps running, as every
++  radio behind the one on screen does; **Radio ▼** brings it back. Taking the
++  last tab off a pane closes the pane; the last tab of the last pane has no
++  **−**.
++
++After the tabs, and only while a radio is on no row — one taken off with
++**−** — come **Radio ▼**, which lists those radios (with the rings while
++their link is open, greyed while it is closed) and puts the one picked on
++this row, and the **columns** chip, which opens another pane beside the
++others with the first of them (see *Split view* below). With every radio on a
++row the strip ends at its last tab; a new radio is then added in **Settings →
++Radio**.
+ 
+ Closing a radio is deliberately *not* on the strip — that lives in
+ **Settings → Radio**, behind a dialog rather than one stray click away.
+ 
+ **Putting a radio down.** A station does not always have every radio it is set
+-up for plugged in. Each tab carries a **LINK** switch — lit while sdroxide's
++up for plugged in. Each tab carries a link switch, the rings — lit while sdroxide's
+ link to that radio is open, dark when it is not — and pressing it changes that.
+ With the link closed, the radio's interface is closed with it: no device
+ claimed, no CAT port held, no network rig dialled, and no reconnecting in the
+@@ -2485,7 +2497,7 @@ stays too, with its name greyed, and its whole Settings → Radio page is still
+ there to be read and edited. Press the switch again and the radio opens where
+ it left off.
+ 
+-It says **LINK** rather than on and off because it is *sdroxide's* switch rather
++It is a link rather than on and off because it is *sdroxide's* switch rather
+ than the radio's, and the difference matters on a station with more than one rig
+ on it. On/off in sdroxide means one thing and one control: **PWR**, which throws
+ the set's own switch over the control link
+@@ -2503,14 +2515,13 @@ is on top of the station-wide interlock below, which applies to every radio
+ that *is* switched on.
+ 
+ The same switch is in the roster at the top of **Settings → Radio**, which is
+-where the choice is easiest to see across all the radios at once — and on the
+-main window itself, as the **⛓ link button** above the A/B selector in the
+-Frequency module (at the top of the **VFO** menu on a tablet- or phone-width
+-layout), which switches whichever radio the pane it sits on is showing. All
+-three are one switch: press any of them and the others follow. There are three
+-because a single-radio station has neither a tab strip nor a roster switch —
+-the button in the Frequency module is the only one it gets — while a station
+-with several wants it on the strip, next to the radio it belongs to. It is
++where the choice is easiest to see across all the radios at once. A
++single-radio station has neither a tab strip nor a roster switch, so there it
++is on the main window itself, as the **⛓ link button** above the A/B selector
++in the Frequency module (at the top of the **VFO** menu on a tablet- or
++phone-width layout). With more than one radio the rings on each tab are the
++switch, next to the radio they belong to, and the Frequency module draws none.
++All of them are one switch: press any of them and the others follow. It is
+ remembered: a radio switched off is still switched off after a restart, and
+ sdroxide never touches its device at start-up. That is what makes it the right
+ place to leave the rig that is boxed for the summer, or the dongle somebody has
+@@ -2538,15 +2549,15 @@ no screen of its own, the browser is the only place its switch exists. A station
+ running an older sdroxide than this screen offers no switch, and none is drawn
+ rather than one that would be quietly ignored.
+ 
+-**Split view.** The **⊞** toggle gives a radio a pane of its own: toggle it
+-on a second radio and the main area splits into two equal columns, side by
+-side; a third radio makes three. Every pane carries its own copy of the
+-radio strip, so any pane can be switched to any radio that is not already on
+-screen — a radio is never shown twice, and its name is greyed out in the
+-other panes' strips while it is up. Keyboard shortcuts and MIDI go to one
+-pane at a time: the one whose open tab carries the accent outline, and clicking
+-anywhere in a pane moves them there. Close the split views (or their radios)
+-and the last pane left takes the whole window back.
++**Split view.** Every pane has a row of tabs of its own: the radios picked
++onto it. Take a radio off a row with **−**, and the **columns** chip at the end
++of the row opens a pane beside the others with it; a third makes three equal
++columns. A radio is on one row at a time, and **Radio ▼** in any pane puts a
++radio that is on no row onto that pane's row. The rows are evened out to one
++height, so the panes below them start on one line. Keyboard shortcuts and MIDI
++go to one pane at a time: the one whose open tab carries the accent outline,
++and clicking anywhere in a pane moves them there. Take the last tab off a pane
++and the pane closes; the last pane left takes the whole window back.
+ 
+ **Naming.** A tab names itself after its radio's interface — *PlutoSDR*,
+ *TCI*, *HPSDR* — so a strip full of different hardware needs no housekeeping
+@@ -14330,7 +14341,7 @@ Remote**, enter the server's **Address** and **Port**, and press **CONNECT**.
+ 
+ The station comes up as a radio tab of its own, beside whatever radios that
+ sdroxide already has open — the tab strip at the top of the window switches
+-between them, and ⊞ puts two side by side ([2.17](#217-running-more-than-one-radio)).
++between them, and a pane of its own puts two side by side ([2.17](#217-running-more-than-one-radio)).
+ Your own radio keeps running while you work the remote one. To hang up, close
+ the tab from the roster at the top of **Settings → Radio**; nothing on the
+ server is changed by that. Adding a radio *on the server*, and closing one
+@@ -14360,7 +14371,7 @@ Remote** to connect to a second station.
+ make is to one radio — the first, unless you named another — and the station
+ says what else it has; the client opens the rest beside it, one tab each. So
+ dialling a server that has an RTL-SDR and a Pluto gives you the same two tabs
+-you would have standing in front of them, ⊞ included
++you would have standing in front of them, split view included
+ ([2.17](#217-running-more-than-one-radio)). The tab you dialled keeps the name
+ you typed; the others are named as the station names them.
+ 
+diff --git a/src/null_source.rs b/src/null_source.rs
+index 41fa73a5..bef47785 100644
+--- a/src/null_source.rs
++++ b/src/null_source.rs
+@@ -50,9 +50,13 @@ impl NullSource {
+     pub fn off(center_hz: f64) -> Self {
+         NullSource {
+             center: center_hz,
++            // Where the switch is: the rings on the radio's tab while there are
++            // tabs, and above the A/B selector only in a one-radio session,
++            // which has none (`SdroxideApp::own_link_state`).
+             status: "This radio is switched off — its interface is not open. Switch it back on \
+-                     with the power button above the A/B selector (in the VFO menu on a \
+-                     compact layout), on its tab, or in Settings → Radio."
++                     with the rings on its tab, or in Settings → Radio. A session with one \
++                     radio has them above the A/B selector (in the VFO menu on a compact \
++                     layout)."
+                 .into(),
+             retry: false,
+         }

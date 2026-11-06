@@ -1,0 +1,2856 @@
+diff --git a/crates/sdroxide-proto/src/lib.rs b/crates/sdroxide-proto/src/lib.rs
+index 164fdfb1..adf0fbb6 100644
+--- a/crates/sdroxide-proto/src/lib.rs
++++ b/crates/sdroxide-proto/src/lib.rs
+@@ -1627,7 +1627,13 @@ use sdroxide_types::{
+ /// enums; [`sdroxide_types::Command`] gains the `Vara*` commands; `DigiStatus`
+ /// gains `vara` (`Option<VaraStatus>`) and `DigiConfig` the `vara_*` settings,
+ /// each on its tail, so a v189 peer reads digital status out of step.
+-pub const PROTO_VERSION: u16 = 190;
++///
++/// v191: the public-SDR map's receiver check.
++/// [`sdroxide_types::DeviceProbe`] gains `PublicSdrCheck { network, address }`
++/// and [`sdroxide_types::ProbeAnswer`] gains `PublicSdrCheck`, which carries
++/// the address back so several checks in flight each find their row. Both
++/// appended last; a v190 peer has no name for either.
++pub const PROTO_VERSION: u16 = 191;
+ const VERSION_BYTE: u8 = 0x12;
+ 
+ #[derive(Debug, thiserror::Error)]
+diff --git a/crates/sdroxide-types/src/probe.rs b/crates/sdroxide-types/src/probe.rs
+index 005b4cdc..ae73aeb2 100644
+--- a/crates/sdroxide-types/src/probe.rs
++++ b/crates/sdroxide-types/src/probe.rs
+@@ -23,7 +23,8 @@ use serde::{Deserialize, Serialize};
+ 
+ use crate::{
+     AirspyDevice, AirspyHfDevice, EladDevice, FobosDevice, HackRfDevice, HpsdrDevice,
+-    HydraSdrDevice, IcomNetConfig, LimeDevice, PlutoDevice, PublicSdrDirectory, RtlSdrDevice,
++    HydraSdrDevice, IcomNetConfig, LimeDevice, PlutoDevice, PublicSdrDirectory, PublicSdrNetwork,
++    RtlSdrDevice,
+     Rx888Device, SdrPlayDevice, SmartSdrDevice, SoapyDeviceInfo,
+ };
+ 
+@@ -130,6 +131,20 @@ pub enum DeviceProbe {
+     /// usual reason: appending is what leaves every surviving discriminant
+     /// where a peer already expects it.
+     Fobos,
++    /// Whether one receiver from the public-SDR directories answers right now:
++    /// the map's quick check of a receiver a click picked.
++    ///
++    /// `address` is the endpoint, `host:port`, and comes back in the answer, so
++    /// several checks in flight at once each find their row. Same costs as the
++    /// settings' "Test connection" for that network ([`ProbeTest::Kiwi`] reads
++    /// `/status` and takes no channel, [`ProbeTest::SpyServer`] says hello and
++    /// hangs up); an sdr-list receiver, which nothing here speaks to yet, gets
++    /// a TCP connect. Appended last, for the usual reason.
++    // Why: HDZ 2026-11-04: "wenn man jetzt einen Server anklickt, wäre ein
++    //      basic Check nach 500 ms ein Connection-Test … ein Feld für
++    //      online/silent". `Test` answers by kind only, into the one slot the
++    //      settings dialog shows, so it cannot carry six receivers at once.
++    PublicSdrCheck { network: PublicSdrNetwork, address: String },
+ }
+ 
+ /// A connection test: open, ask what is there, and hang up again.
+@@ -253,4 +268,7 @@ pub enum ProbeAnswer {
+     /// The Fobos SDRs that machine can see. After `Relays` for the same
+     /// reason [`DeviceProbe::Fobos`] is.
+     Fobos(Vec<FobosDevice>),
++    /// The answer to [`DeviceProbe::PublicSdrCheck`]: the receiver asked about,
++    /// and `Ok` with what answered or `Err` with why nothing did.
++    PublicSdrCheck { network: PublicSdrNetwork, address: String, result: Result<String, String> },
+ }
+diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+index eefd18c2..c7faca5f 100644
+--- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+@@ -4048,21 +4048,27 @@ fsq-add = Hinzufügen
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + REITER
+-publicsdr-open-receiver-new-radio-own = Diesen Empfänger als neues Funkgerät in einem eigenen Reiter öffnen
+-publicsdr-point-radio-receiver-replacing-whatever = *Dieses* Funkgerät auf den Empfänger richten und die Schnittstelle ersetzen, auf der es jetzt liegt — es wird vorher noch einmal nachgefragt, weil das die Einrichtung eines ganzen Funkgeräts ist
+ publicsdr-not-stated = nicht angegeben
+-publicsdr-replace = ERSETZEN
+-publicsdr-point-radio-you-are-receiver = Das Funkgerät, auf dem Sie sind, auf diesen Empfänger richten
+-publicsdr-tab-instead = + REITER STATTDESSEN
+-publicsdr-open-receiver-another-radio-leave = Den Empfänger als weiteres Funkgerät öffnen und dieses in Ruhe lassen
+-publicsdr-cancel = ABBRECHEN
++publicsdr-add-as-radio = ALS RADIO HINZUFÜGEN
++publicsdr-add-as-radio-tip = Diesen Empfänger als eigenes Funkgerät hinzufügen, benannt nach seinem Eintrag im Verzeichnis. Das Funkgerät, auf dem du bist, bleibt, wie es ist.
+ publicsdr-public-sdrs = ÖFFENTLICHE SDRS
+ publicsdr-available = VERFÜGBAR
+ publicsdr-hide-receivers-are-full-ones = Empfänger ausblenden, die voll sind, und die, deren Betreiber keine Kanäle für Apps außer einem Browser geöffnet hat
+ publicsdr-band = IM BAND
+ publicsdr-only-receivers-cover-current-dial = Nur Empfänger, die die aktuelle Skalenfrequenz abdecken
+ publicsdr-low-bw = NIEDR. BB
++publicsdr-map-cities = STÄDTE
++publicsdr-map-cities-tip = Städte auf dieser Karte ein oder aus.
++publicsdr-view-list = LISTE
++publicsdr-view-map = KARTE
++publicsdr-view-map-tip = Dieselben Empfänger auf einer Weltkarte. Ein Klick auf einen Punkt wählt alle Empfänger darunter.
++publicsdr-map-pick = Klick auf einen Punkt wählt die Empfänger darunter.
++publicsdr-map-names = NAMEN
++publicsdr-map-names-tip = Namen der Empfänger auf der Karte zeigen. Aus: nur die gewählten tragen ihren Namen.
++publicsdr-check-online = ONLINE
++publicsdr-check-silent = STUMM
++publicsdr-check-waiting = PRÜFE…
++publicsdr-check-no-answer = Keine Antwort innerhalb von 20 Sekunden.
+ publicsdr-take-spyserver-low-bandwidth-shape = Einen SpyServer in seiner Form mit niedriger Bandbreite nehmen: ein schmales I/Q-Fenster, das der Skala folgt, plus die eigene Bandansicht des Servers, statt Megabit an Breitband-I/Q. Ohne Wirkung auf einen KiwiSDR, der nur die eine Form hat.
+ publicsdr-refresh = ⟳ AKTUALISIEREN
+ publicsdr-fetch-both-directories-again = Beide Verzeichnisse erneut abrufen
+@@ -4072,9 +4078,6 @@ publicsdr-fetching-receiver-lists = Die Empfängerlisten werden abgerufen…
+ publicsdr-machine-radio-attached-does-not = Der Rechner, an dem dieses Funkgerät angeschlossen ist, beantwortet keine Gerätefragen, daher kann er die Listen ebenfalls nicht abrufen.
+ publicsdr-no-match = kein Treffer
+ publicsdr-nothing-matches-try-turning-filter = nichts passt — einen Filterchip wieder einschalten
+-publicsdr-radio = dieses Funkgerät
+-publicsdr-radio-s-configuration-has-not = Die Konfiguration dieses Funkgeräts ist vom Rechner, auf dem es liegt, noch nicht angekommen, daher gibt es nichts, was man auf den Empfänger richten könnte — stattdessen mit + REITER nehmen.
+-publicsdr-position-not-published-so-nothing = {" "}Seine Position wird nicht veröffentlicht, daher wird nichts gemeldet, was es hört.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4901,14 +4904,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } Empfänger · { $per_net } · abgerufen vor { $age }
+ publicsdr-showing-search-narrow = { $shown } von { $n } angezeigt — suchen, um einzugrenzen
+ publicsdr-match = { $n } Treffer
+-publicsdr-replace-taking-receiver-points-same =
+-    { $this } durch { $entry } ersetzen?
+-
+-    { $this2 } liegt auf { $iface }. Diesen Empfänger zu nehmen richtet denselben Reiter stattdessen auf { $address }, benennt ihn „{ $entry2 }“ um und hält die Skala im Bereich { $range_label }, den der Empfänger veröffentlicht — hier wird nichts gesendet.
+-
+-    Die Einstellungen von { $iface2 } bleiben, wo sie sind, und ebenso die dafür angegebenen Bereiche: Schaltet man die Schnittstelle in Einstellungen → Funkgerät zurück, kommt das Funkgerät wieder so, wie es war.
+-publicsdr-receptions-will-reported = {" "}Empfänge werden von { $value } gemeldet.
+-publicsdr-pointing-radio = Dieses Funkgerät wird auf { $entry } gerichtet…{ $site }
++publicsdr-map-status = { $shown } auf der Karte · { $unplaced } ohne Position
+ publicsdr-opening-another-radio = { $entry } wird als weiteres Funkgerät geöffnet…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5233,7 +5229,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (Netzwerk)
+ cat-family-flrig = flrig (Netzwerk)
+-publicsdr-its-interface = seine Schnittstelle
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ agc-mode-off = Aus
+diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+index 30436a7e..b1935510 100644
+--- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+@@ -4057,21 +4057,27 @@ fsq-add = Add
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + TAB
+-publicsdr-open-receiver-new-radio-own = Open this receiver as a new radio, in its own tab
+-publicsdr-point-radio-receiver-replacing-whatever = Point *this* radio at the receiver, replacing whatever interface it is on now — asked again first, because that is a whole radio's worth of setting up
+ publicsdr-not-stated = not stated
+-publicsdr-replace = REPLACE
+-publicsdr-point-radio-you-are-receiver = Point the radio you are on at this receiver
+-publicsdr-tab-instead = + TAB INSTEAD
+-publicsdr-open-receiver-another-radio-leave = Open the receiver as another radio and leave this one alone
+-publicsdr-cancel = CANCEL
++publicsdr-add-as-radio = ADD AS RADIO
++publicsdr-add-as-radio-tip = Add this receiver as a radio of its own, named after its directory entry. The radio you are on stays as it is.
+ publicsdr-public-sdrs = PUBLIC SDRS
+ publicsdr-available = AVAILABLE
+ publicsdr-hide-receivers-are-full-ones = Hide receivers that are full, and the ones whose operator has not opened any channels to apps other than a browser
+ publicsdr-band = IN BAND
+ publicsdr-only-receivers-cover-current-dial = Only receivers that cover the current dial frequency
+ publicsdr-low-bw = LOW BW
++publicsdr-map-cities = CITIES
++publicsdr-map-cities-tip = Cities on this map, on or off.
++publicsdr-view-list = LIST
++publicsdr-view-map = MAP
++publicsdr-view-map-tip = The same receivers on a world map. Click a dot to pick every receiver under it.
++publicsdr-map-pick = Click a dot to pick the receivers under it.
++publicsdr-map-names = NAMES
++publicsdr-map-names-tip = Show the receivers' names on the map. Off: only the picked ones are named.
++publicsdr-check-online = ONLINE
++publicsdr-check-silent = SILENT
++publicsdr-check-waiting = CHECKING…
++publicsdr-check-no-answer = No answer within 20 seconds.
+ publicsdr-take-spyserver-low-bandwidth-shape = Take a SpyServer in its low-bandwidth shape: a narrow I/Q window that follows the dial plus the server's own band view, instead of megabits of wideband I/Q. No effect on a KiwiSDR, which has only the one shape.
+ publicsdr-refresh = ⟳ REFRESH
+ publicsdr-fetch-both-directories-again = Fetch both directories again
+@@ -4081,9 +4087,6 @@ publicsdr-fetching-receiver-lists = Fetching the receiver lists…
+ publicsdr-machine-radio-attached-does-not = The machine this radio is attached to does not answer device questions, so it cannot fetch the lists either.
+ publicsdr-no-match = no match
+ publicsdr-nothing-matches-try-turning-filter = nothing matches — try turning a filter chip back on
+-publicsdr-radio = this radio
+-publicsdr-radio-s-configuration-has-not = This radio's configuration has not arrived from the machine it is on yet, so there is nothing to point at the receiver — take it with + TAB instead.
+-publicsdr-position-not-published-so-nothing = {" "}Its position is not published, so nothing it hears will be reported.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4916,14 +4919,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } receivers · { $per_net } · fetched { $age } ago
+ publicsdr-showing-search-narrow = showing { $shown } of { $n } — search to narrow it
+ publicsdr-match = { $n } match
+-publicsdr-replace-taking-receiver-points-same =
+-    Replace { $this } with { $entry }?
+-
+-    { $this2 } is on { $iface }. Taking this receiver points the same tab at { $address } instead, renames it “{ $entry2 }”, and holds the dial to the { $range_label } the receiver publishes — nothing here transmits.
+-
+-    The { $iface2 } settings stay where they are, and so do the ranges stated for them: switching the interface back in Settings → Radio brings the radio back as it was.
+-publicsdr-receptions-will-reported = {" "}Receptions will be reported from { $value }.
+-publicsdr-pointing-radio = Pointing this radio at { $entry }…{ $site }
++publicsdr-map-status = { $shown } on the map · { $unplaced } without a position
+ publicsdr-opening-another-radio = Opening { $entry } as another radio…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5249,7 +5245,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (network)
+ cat-family-flrig = flrig (network)
+-publicsdr-its-interface = its interface
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ agc-mode-off = Off
+diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+index 86e4a0a0..d9cd4639 100644
+--- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+@@ -4037,21 +4037,25 @@ fsq-add = Añadir
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + PESTAÑA
+-publicsdr-open-receiver-new-radio-own = Abrir este receptor como una radio nueva, en su propia pestaña
+-publicsdr-point-radio-receiver-replacing-whatever = Apunta *esta* radio al receptor, sustituyendo la interfaz que tiene ahora — se vuelve a preguntar antes, porque es el trabajo de configurar una radio entera
+ publicsdr-not-stated = no indicado
+-publicsdr-replace = SUSTITUIR
+-publicsdr-point-radio-you-are-receiver = Apunta la radio en que estás a este receptor
+-publicsdr-tab-instead = + PESTAÑA EN SU LUGAR
+-publicsdr-open-receiver-another-radio-leave = Abre el receptor como otra radio y deja esta en paz
+-publicsdr-cancel = CANCELAR
+ publicsdr-public-sdrs = SDR PÚBLICOS
+ publicsdr-available = DISPONIBLES
+ publicsdr-hide-receivers-are-full-ones = Oculta los receptores que están llenos, y aquellos cuyo operador no ha abierto ningún canal a aplicaciones que no sean un navegador
+ publicsdr-band = EN BANDA
+ publicsdr-only-receivers-cover-current-dial = Solo receptores que cubren la frecuencia actual del dial
+ publicsdr-low-bw = BW BAJO
++publicsdr-map-cities = CIUDADES
++publicsdr-map-cities-tip = Ciudades en este mapa, sí o no.
++publicsdr-view-list = LISTA
++publicsdr-view-map = MAPA
++publicsdr-view-map-tip = Los mismos receptores en un mapa mundial. Haz clic en un punto para elegir todos los receptores bajo él.
++publicsdr-map-pick = Haz clic en un punto para elegir los receptores bajo él.
++publicsdr-map-names = NOMBRES
++publicsdr-map-names-tip = Mostrar los nombres de los receptores en el mapa. Desactivado: solo se nombran los elegidos.
++publicsdr-check-online = EN LÍNEA
++publicsdr-check-silent = MUDO
++publicsdr-check-waiting = PROBANDO…
++publicsdr-check-no-answer = Sin respuesta en 20 segundos.
+ publicsdr-take-spyserver-low-bandwidth-shape = Toma un SpyServer en su forma de bajo ancho de banda: una ventana I/Q estrecha que sigue al dial más la vista de banda propia del servidor, en lugar de megabits de I/Q de banda ancha. Sin efecto en un KiwiSDR, que solo tiene una forma.
+ publicsdr-refresh = ⟳ ACTUALIZAR
+ publicsdr-fetch-both-directories-again = Obtener de nuevo ambos directorios
+@@ -4061,9 +4065,6 @@ publicsdr-fetching-receiver-lists = Obteniendo las listas de receptores…
+ publicsdr-machine-radio-attached-does-not = La máquina a la que está conectada esta radio no responde a preguntas de dispositivos, así que tampoco puede obtener las listas.
+ publicsdr-no-match = sin coincidencias
+ publicsdr-nothing-matches-try-turning-filter = nada coincide — prueba a volver a activar un chip de filtro
+-publicsdr-radio = esta radio
+-publicsdr-radio-s-configuration-has-not = La configuración de esta radio aún no ha llegado de la máquina en que está, así que no hay nada que apuntar al receptor — tómalo con + PESTAÑA en su lugar.
+-publicsdr-position-not-published-so-nothing = {" "}Su posición no está publicada, así que nada de lo que oiga se informará.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4892,14 +4893,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } receptores · { $per_net } · obtenidos hace { $age }
+ publicsdr-showing-search-narrow = mostrando { $shown } de { $n } — busca para acotar
+ publicsdr-match = { $n } coincidencia
+-publicsdr-replace-taking-receiver-points-same =
+-    ¿Sustituir { $this } por { $entry }?
+-
+-    { $this2 } está en { $iface }. Tomar este receptor apunta la misma pestaña a { $address }, la renombra «{ $entry2 }» y limita el dial a { $range_label } que publica el receptor — aquí no se transmite nada.
+-
+-    Los ajustes de { $iface2 } se quedan donde están, y también los rangos indicados para ellos: volver a cambiar la interfaz en Ajustes → Radio devuelve la radio tal como estaba.
+-publicsdr-receptions-will-reported = {" "}Las recepciones se informarán desde { $value }.
+-publicsdr-pointing-radio = Apuntando esta radio a { $entry }…{ $site }
++publicsdr-map-status = { $shown } en el mapa · { $unplaced } sin posición
+ publicsdr-opening-another-radio = Abriendo { $entry } como otra radio…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5228,7 +5222,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (red)
+ cat-family-flrig = flrig (red)
+-publicsdr-its-interface = su interfaz
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ agc-mode-off = Off
+diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+index 932082b3..0db10b46 100644
+--- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+@@ -4054,21 +4054,25 @@ fsq-add = Ajouter
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + ONGLET
+-publicsdr-open-receiver-new-radio-own = Ouvrir ce récepteur comme une nouvelle radio, dans son propre onglet
+-publicsdr-point-radio-receiver-replacing-whatever = Diriger *cette* radio vers le récepteur, en remplaçant l'interface sur laquelle elle se trouve actuellement — demandé à nouveau d'abord, car c'est une configuration complète de radio
+ publicsdr-not-stated = non indiqué
+-publicsdr-replace = REMPLACER
+-publicsdr-point-radio-you-are-receiver = Diriger la radio sur laquelle vous êtes vers ce récepteur
+-publicsdr-tab-instead = + ONGLET À LA PLACE
+-publicsdr-open-receiver-another-radio-leave = Ouvrir le récepteur comme une autre radio et laisser celle-ci tranquille
+-publicsdr-cancel = ANNULER
+ publicsdr-public-sdrs = SDR PUBLICS
+ publicsdr-available = DISPONIBLES
+ publicsdr-hide-receivers-are-full-ones = Masquer les récepteurs complets, et ceux dont l'opérateur n'a ouvert aucun canal à des applications autres qu'un navigateur
+ publicsdr-band = DANS LA BANDE
+ publicsdr-only-receivers-cover-current-dial = Seulement les récepteurs qui couvrent la fréquence actuelle du cadran
+ publicsdr-low-bw = FAIBLE DÉBIT
++publicsdr-map-cities = VILLES
++publicsdr-map-cities-tip = Villes sur cette carte, oui ou non.
++publicsdr-view-list = LISTE
++publicsdr-view-map = CARTE
++publicsdr-view-map-tip = Les mêmes récepteurs sur une carte du monde. Cliquez sur un point pour choisir tous les récepteurs dessous.
++publicsdr-map-pick = Cliquez sur un point pour choisir les récepteurs dessous.
++publicsdr-map-names = NOMS
++publicsdr-map-names-tip = Afficher les noms des récepteurs sur la carte. Désactivé : seuls les récepteurs choisis sont nommés.
++publicsdr-check-online = EN LIGNE
++publicsdr-check-silent = MUET
++publicsdr-check-waiting = TEST…
++publicsdr-check-no-answer = Aucune réponse en 20 secondes.
+ publicsdr-take-spyserver-low-bandwidth-shape = Prendre un SpyServer dans sa forme à faible débit : une fenêtre I/Q étroite qui suit le cadran, plus la vue de bande propre au serveur, au lieu de mégabits d'I/Q large bande. Sans effet sur un KiwiSDR, qui n'a que cette forme.
+ publicsdr-refresh = ⟳ ACTUALISER
+ publicsdr-fetch-both-directories-again = Récupérer à nouveau les deux annuaires
+@@ -4078,9 +4082,6 @@ publicsdr-fetching-receiver-lists = Récupération des listes de récepteurs…
+ publicsdr-machine-radio-attached-does-not = La machine à laquelle cette radio est reliée ne répond pas aux questions sur les périphériques, donc elle ne peut pas récupérer les listes non plus.
+ publicsdr-no-match = aucune correspondance
+ publicsdr-nothing-matches-try-turning-filter = rien ne correspond — essayez de réactiver une puce de filtre
+-publicsdr-radio = cette radio
+-publicsdr-radio-s-configuration-has-not = La configuration de cette radio n'est pas encore arrivée depuis la machine où elle se trouve, donc il n'y a rien à diriger vers le récepteur — prenez-le avec + ONGLET à la place.
+-publicsdr-position-not-published-so-nothing = {" "}Sa position n'est pas publiée, donc rien de ce qu'elle entend ne sera transmis.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4911,14 +4912,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } récepteurs · { $per_net } · récupéré il y a { $age }
+ publicsdr-showing-search-narrow = affichage de { $shown } sur { $n } — recherchez pour affiner
+ publicsdr-match = { $n } correspondance
+-publicsdr-replace-taking-receiver-points-same =
+-    Remplacer { $this } par { $entry } ?
+-
+-    { $this2 } est sur { $iface }. Prendre ce récepteur fait pointer le même onglet sur { $address } à la place, le renomme « { $entry2 } », et maintient le cadran sur la { $range_label } que publie le récepteur — rien ici n'émet.
+-
+-    Les réglages de { $iface2 } restent en place, ainsi que les plages qui leur sont attribuées : repasser l'interface dans Réglages → Radio rétablit la radio comme elle était.
+-publicsdr-receptions-will-reported = {" "}Les réceptions seront transmises depuis { $value }.
+-publicsdr-pointing-radio = Diriger cette radio vers { $entry }…{ $site }
++publicsdr-map-status = { $shown } sur la carte · { $unplaced } sans position
+ publicsdr-opening-another-radio = Ouverture de { $entry } comme une autre radio…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5244,7 +5238,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (réseau)
+ cat-family-flrig = flrig (réseau)
+-publicsdr-its-interface = son interface
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ agc-mode-off = Arrêt
+diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+index 3c5e5ae7..5336cf81 100644
+--- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+@@ -4058,21 +4058,25 @@ fsq-add = Aggiungi
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + SCHEDA
+-publicsdr-open-receiver-new-radio-own = Apri questo ricevitore come nuova radio, nella sua scheda
+-publicsdr-point-radio-receiver-replacing-whatever = Punta *questa* radio al ricevitore, sostituendo qualunque interfaccia usi ora — chiesto di nuovo prima, perché è la configurazione di un'intera radio
+ publicsdr-not-stated = non indicato
+-publicsdr-replace = SOSTITUISCI
+-publicsdr-point-radio-you-are-receiver = Punta la radio su cui sei a questo ricevitore
+-publicsdr-tab-instead = + SCHEDA INVECE
+-publicsdr-open-receiver-another-radio-leave = Apri il ricevitore come un'altra radio e lascia questa in pace
+-publicsdr-cancel = ANNULLA
+ publicsdr-public-sdrs = SDR PUBBLICI
+ publicsdr-available = DISPONIBILI
+ publicsdr-hide-receivers-are-full-ones = Nascondi i ricevitori che sono pieni, e quelli il cui operatore non ha aperto canali ad app diverse dal browser
+ publicsdr-band = IN BANDA
+ publicsdr-only-receivers-cover-current-dial = Solo i ricevitori che coprono la frequenza di sintonia attuale
+ publicsdr-low-bw = BASSA LARGH.
++publicsdr-map-cities = CITTÀ
++publicsdr-map-cities-tip = Città su questa mappa, sì o no.
++publicsdr-view-list = ELENCO
++publicsdr-view-map = MAPPA
++publicsdr-view-map-tip = Gli stessi ricevitori su una mappa del mondo. Clic su un punto per scegliere tutti i ricevitori sotto di esso.
++publicsdr-map-pick = Clic su un punto per scegliere i ricevitori sotto di esso.
++publicsdr-map-names = NOMI
++publicsdr-map-names-tip = Mostra i nomi dei ricevitori sulla mappa. Disattivato: solo quelli scelti hanno il nome.
++publicsdr-check-online = ONLINE
++publicsdr-check-silent = MUTO
++publicsdr-check-waiting = VERIFICO…
++publicsdr-check-no-answer = Nessuna risposta entro 20 secondi.
+ publicsdr-take-spyserver-low-bandwidth-shape = Usa uno SpyServer nella sua forma a bassa larghezza di banda: una finestra I/Q stretta che segue la sintonia più la vista di banda propria del server, invece di megabit di I/Q a banda larga. Nessun effetto su un KiwiSDR, che ha una sola forma.
+ publicsdr-refresh = ⟳ AGGIORNA
+ publicsdr-fetch-both-directories-again = Scarica di nuovo entrambe le directory
+@@ -4082,9 +4086,6 @@ publicsdr-fetching-receiver-lists = Recupero degli elenchi dei ricevitori…
+ publicsdr-machine-radio-attached-does-not = La macchina a cui è collegata questa radio non risponde alle domande sui dispositivi, quindi non può nemmeno scaricare gli elenchi.
+ publicsdr-no-match = nessuna corrispondenza
+ publicsdr-nothing-matches-try-turning-filter = nulla corrisponde — prova a riattivare un filtro
+-publicsdr-radio = questa radio
+-publicsdr-radio-s-configuration-has-not = La configurazione di questa radio non è ancora arrivata dalla macchina su cui si trova, quindi non c'è nulla a cui puntare il ricevitore — prendilo con + SCHEDA.
+-publicsdr-position-not-published-so-nothing = {" "}La sua posizione non è pubblicata, quindi nulla di ciò che sente verrà riportato.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4914,14 +4915,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } ricevitori · { $per_net } · scaricati { $age } fa
+ publicsdr-showing-search-narrow = mostrati { $shown } di { $n } — cerca per restringere
+ publicsdr-match = { $n } corrispondenza
+-publicsdr-replace-taking-receiver-points-same =
+-    Sostituire { $this } con { $entry }?
+-
+-    { $this2 } è su { $iface }. Prendere questo ricevitore fa puntare la stessa scheda a { $address }, la rinomina “{ $entry2 }”, e mantiene la sintonia sulla { $range_label } che il ricevitore pubblica — nulla qui trasmette.
+-
+-    Le impostazioni di { $iface2 } restano dove sono, come anche gli intervalli dichiarati per esse: riportare l'interfaccia indietro in Impostazioni → Radio riporta la radio com'era.
+-publicsdr-receptions-will-reported = {" "}Le ricezioni verranno riportate da { $value }.
+-publicsdr-pointing-radio = Puntamento di questa radio su { $entry }…{ $site }
++publicsdr-map-status = { $shown } sulla mappa · { $unplaced } senza posizione
+ publicsdr-opening-another-radio = Apertura di { $entry } come un'altra radio…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5247,7 +5241,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (rete)
+ cat-family-flrig = flrig (rete)
+-publicsdr-its-interface = la sua interfaccia
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ agc-mode-off = Off
+diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+index adb34b29..50b1f90c 100644
+--- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+@@ -4032,21 +4032,25 @@ fsq-add = 追加
+ 
+ ## PublicSDR（src/app/publicsdr.rs）
+ 
+-publicsdr-tab = + タブ
+-publicsdr-open-receiver-new-radio-own = この受信機を、独自のタブで新しい無線機として開きます
+-publicsdr-point-radio-receiver-replacing-whatever = *この* 無線機を、現在どのインターフェースにあっても置き換えて、この受信機に向けます。無線機一台分の設定になるため、もう一度確認します
+ publicsdr-not-stated = 記載なし
+-publicsdr-replace = 置き換え
+-publicsdr-point-radio-you-are-receiver = 今使っている無線機を、この受信機に向けます
+-publicsdr-tab-instead = + タブで代わりに
+-publicsdr-open-receiver-another-radio-leave = 受信機を別の無線機として開き、この無線機はそのままにします
+-publicsdr-cancel = キャンセル
+ publicsdr-public-sdrs = 公開 SDR
+ publicsdr-available = 利用可能
+ publicsdr-hide-receivers-are-full-ones = 満員の受信機と、運用者がブラウザ以外のアプリ向けのチャンネルを開いていない受信機を隠します
+ publicsdr-band = 対象バンド
+ publicsdr-only-receivers-cover-current-dial = 現在のダイヤル周波数をカバーする受信機だけを表示します
+ publicsdr-low-bw = 低帯域
++publicsdr-map-cities = 都市
++publicsdr-map-cities-tip = この地図に都市を表示するかどうか。
++publicsdr-view-list = リスト
++publicsdr-view-map = 地図
++publicsdr-view-map-tip = 同じ受信機を世界地図に表示します。点をクリックすると、その下のすべての受信機を選択します。
++publicsdr-map-pick = 点をクリックすると、その下の受信機を選択します。
++publicsdr-map-names = 名前
++publicsdr-map-names-tip = 地図に受信機の名前を表示します。オフ：選択した受信機だけに名前を表示します。
++publicsdr-check-online = オンライン
++publicsdr-check-silent = 応答なし
++publicsdr-check-waiting = 確認中…
++publicsdr-check-no-answer = 20 秒以内に応答がありません。
+ publicsdr-take-spyserver-low-bandwidth-shape = SpyServer を低帯域の形で受信します。ダイヤルに追従する狭い I/Q 窓と、サーバー自身のバンド表示を使い、広帯域の I/Q の数メガビットは使いません。KiwiSDR には影響しません。KiwiSDR の形はこの 1 つだけです。
+ publicsdr-refresh = ⟳ 更新
+ publicsdr-fetch-both-directories-again = 両方のディレクトリを再度取得します
+@@ -4056,9 +4060,6 @@ publicsdr-fetching-receiver-lists = 受信機の一覧を取得中…
+ publicsdr-machine-radio-attached-does-not = この無線機が接続されているマシンはデバイスへの問い合わせに応答しないため、一覧も取得できません。
+ publicsdr-no-match = 一致なし
+ publicsdr-nothing-matches-try-turning-filter = 一致するものがありません。フィルターのチップを一つ戻してみてください
+-publicsdr-radio = この無線機
+-publicsdr-radio-s-configuration-has-not = この無線機の構成が、接続しているマシンからまだ届いていないため、受信機に向けるものがありません。代わりに + タブで受け取ってください。
+-publicsdr-position-not-published-so-nothing = {" "}その位置は公開されていないため、聞いたものは何も報告されません。
+ 
+ ## HD（src/app/hd.rs）
+ 
+@@ -4860,14 +4861,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = 受信機 { $entries } 件 · { $per_net } · 取得 { $age } 前
+ publicsdr-showing-search-narrow = { $n } 件中 { $shown } 件を表示中 — 検索で絞り込めます
+ publicsdr-match = { $n } 件一致
+-publicsdr-replace-taking-receiver-points-same =
+-    { $this } を { $entry } に置き換えますか？
+-
+-    { $this2 } は { $iface } にあります。この受信機を選ぶと、同じタブが代わりに { $address } に向けられ、「{ $entry2 }」と名前が変わり、ダイヤルは受信機が公表している { $range_label } に保持されます。ここでは何も送信されません。
+-
+-    { $iface2 } の設定はそのまま残り、それに記載された範囲もそのままです。設定 → 無線機でインターフェースを戻すと、無線機は元どおりになります。
+-publicsdr-receptions-will-reported = {" "}受信は { $value } から報告されます。
+-publicsdr-pointing-radio = この無線機を { $entry } に向けています…{ $site }
++publicsdr-map-status = 地図上 { $shown } · 位置なし { $unplaced }
+ publicsdr-opening-another-radio = { $entry } を別の無線機として開いています…
+ 
+ ## QO-100：値を含むメッセージ（src/app/qo100.rs）
+@@ -5182,7 +5176,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld（ネットワーク）
+ cat-family-flrig = flrig（ネットワーク）
+-publicsdr-its-interface = そのインターフェース
+ 
+ ## sdroxide-types の値。チップ、メニュー、一覧に描かれるものです（src/i18n/labels.rs）。
+ agc-mode-off = オフ
+diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+index 8491e281..dea81144 100644
+--- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+@@ -4048,21 +4048,25 @@ fsq-add = Toevoegen
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + TABBLAD
+-publicsdr-open-receiver-new-radio-own = Deze ontvanger openen als een nieuwe radio, in een eigen tabblad
+-publicsdr-point-radio-receiver-replacing-whatever = *Deze* radio naar deze ontvanger richten, en vervangen waar hij nu op zit — er wordt eerst opnieuw naar gevraagd, omdat dat de instelling van een hele radio is
+ publicsdr-not-stated = niet opgegeven
+-publicsdr-replace = VERVANGEN
+-publicsdr-point-radio-you-are-receiver = De radio waarop je zit naar deze ontvanger richten
+-publicsdr-tab-instead = + TABBLAD IN PLAATS
+-publicsdr-open-receiver-another-radio-leave = De ontvanger openen als een andere radio, en deze ongemoeid laten
+-publicsdr-cancel = ANNULEREN
+ publicsdr-public-sdrs = PUBLIEKE SDR'S
+ publicsdr-available = BESCHIKBAAR
+ publicsdr-hide-receivers-are-full-ones = Ontvangers verbergen die vol zijn, en die waarvan de operator geen kanalen naar andere apps dan een browser heeft opengezet
+ publicsdr-band = IN BAND
+ publicsdr-only-receivers-cover-current-dial = Alleen ontvangers die de huidige dialfrequentie bestrijken
+ publicsdr-low-bw = LAGE BW
++publicsdr-map-cities = STEDEN
++publicsdr-map-cities-tip = Steden op deze kaart, aan of uit.
++publicsdr-view-list = LIJST
++publicsdr-view-map = KAART
++publicsdr-view-map-tip = Dezelfde ontvangers op een wereldkaart. Klik op een punt om alle ontvangers eronder te kiezen.
++publicsdr-map-pick = Klik op een punt om de ontvangers eronder te kiezen.
++publicsdr-map-names = NAMEN
++publicsdr-map-names-tip = Toon de namen van de ontvangers op de kaart. Uit: alleen de gekozen ontvangers krijgen een naam.
++publicsdr-check-online = ONLINE
++publicsdr-check-silent = STIL
++publicsdr-check-waiting = CONTROLE…
++publicsdr-check-no-answer = Geen antwoord binnen 20 seconden.
+ publicsdr-take-spyserver-low-bandwidth-shape = Een SpyServer in zijn vorm met lage bandbreedte nemen: een smal I/Q-venster dat de dial volgt plus de eigen bandweergave van de server, in plaats van megabits aan breedband-I/Q. Geen effect op een KiwiSDR, die maar de ene vorm heeft.
+ publicsdr-refresh = ⟳ VERNIEUWEN
+ publicsdr-fetch-both-directories-again = Beide mappen opnieuw ophalen
+@@ -4072,9 +4076,6 @@ publicsdr-fetching-receiver-lists = De ontvangerlijsten ophalen…
+ publicsdr-machine-radio-attached-does-not = De machine waarop deze radio is aangesloten, beantwoordt geen vragen over apparaten, dus kan hij de lijsten ook niet ophalen.
+ publicsdr-no-match = geen overeenkomst
+ publicsdr-nothing-matches-try-turning-filter = niets past — probeer een filter weer aan te zetten
+-publicsdr-radio = deze radio
+-publicsdr-radio-s-configuration-has-not = De configuratie van deze radio is nog niet aangekomen van de machine waarop hij staat, dus er is niets om de ontvanger op te richten — gebruik in plaats daarvan + TABBLAD.
+-publicsdr-position-not-published-so-nothing = {" "}Zijn positie wordt niet gepubliceerd, dus wat hij hoort, wordt niet gemeld.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4904,14 +4905,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } ontvangers · { $per_net } · opgehaald { $age } geleden
+ publicsdr-showing-search-narrow = { $shown } van { $n } getoond — zoek om te verfijnen
+ publicsdr-match = { $n } treffer
+-publicsdr-replace-taking-receiver-points-same =
+-    { $this } vervangen door { $entry }?
+-
+-    { $this2 } staat op { $iface }. Deze ontvanger nemen laat hetzelfde tabblad op { $address } wijzen, hernoemt het naar “{ $entry2 }”, en houdt de dial op het { $range_label } dat de ontvanger publiceert — hier wordt niets verzonden.
+-
+-    De instellingen van { $iface2 } blijven staan waar ze staan, en dat geldt ook voor de bereiken die ervoor zijn opgegeven: de interface weer terugzetten in Instellingen → Radio brengt de radio terug zoals hij was.
+-publicsdr-receptions-will-reported = {" "}Ontvangsten worden gemeld vanuit { $value }.
+-publicsdr-pointing-radio = Deze radio richten op { $entry }…{ $site }
++publicsdr-map-status = { $shown } op de kaart · { $unplaced } zonder positie
+ publicsdr-opening-another-radio = { $entry } openen als een andere radio…
+ 
+ ## qo100: messages with values (src/app/qo100.rs)
+@@ -5236,7 +5230,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (netwerk)
+ cat-family-flrig = flrig (netwerk)
+-publicsdr-its-interface = zijn interface
+ 
+ ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
+ 
+diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+index ab8c5eb5..7d593494 100644
+--- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+@@ -4055,21 +4055,25 @@ fsq-add = Adicionar
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + ABA
+-publicsdr-open-receiver-new-radio-own = Abre este receptor como um novo rádio, em aba própria
+-publicsdr-point-radio-receiver-replacing-whatever = Aponta *este* rádio para o receptor, substituindo a interface em que ele está agora — perguntado de novo antes, porque isso equivale a configurar um rádio inteiro
+ publicsdr-not-stated = não informado
+-publicsdr-replace = SUBSTITUIR
+-publicsdr-point-radio-you-are-receiver = Aponta o rádio em que você está para este receptor
+-publicsdr-tab-instead = + ABA EM VEZ DISSO
+-publicsdr-open-receiver-another-radio-leave = Abre o receptor como outro rádio e deixa este em paz
+-publicsdr-cancel = CANCELAR
+ publicsdr-public-sdrs = SDRS PÚBLICOS
+ publicsdr-available = DISPONÍVEL
+ publicsdr-hide-receivers-are-full-ones = Oculta os receptores que estão lotados, e os cujo operador não abriu canais para aplicativos além de um navegador
+ publicsdr-band = NA FAIXA
+ publicsdr-only-receivers-cover-current-dial = Somente receptores que cobrem a frequência atual do dial
+ publicsdr-low-bw = BAIXA LARG
++publicsdr-map-cities = CIDADES
++publicsdr-map-cities-tip = Cidades neste mapa, sim ou não.
++publicsdr-view-list = LISTA
++publicsdr-view-map = MAPA
++publicsdr-view-map-tip = Os mesmos receptores em um mapa-múndi. Clique em um ponto para escolher todos os receptores sob ele.
++publicsdr-map-pick = Clique em um ponto para escolher os receptores sob ele.
++publicsdr-map-names = NOMES
++publicsdr-map-names-tip = Mostrar os nomes dos receptores no mapa. Desligado: só os escolhidos são nomeados.
++publicsdr-check-online = ON-LINE
++publicsdr-check-silent = MUDO
++publicsdr-check-waiting = TESTANDO…
++publicsdr-check-no-answer = Sem resposta em 20 segundos.
+ publicsdr-take-spyserver-low-bandwidth-shape = Usa um SpyServer na sua forma de baixa largura de banda: uma janela I/Q estreita que segue o dial, mais a visão de banda do próprio servidor, em vez de megabits de I/Q de banda larga. Sem efeito em um KiwiSDR, que só tem essa forma.
+ publicsdr-refresh = ⟳ ATUALIZAR
+ publicsdr-fetch-both-directories-again = Busca os dois diretórios de novo
+@@ -4079,9 +4083,6 @@ publicsdr-fetching-receiver-lists = Buscando as listas de receptores…
+ publicsdr-machine-radio-attached-does-not = A máquina à qual este rádio está conectado não responde a perguntas sobre dispositivos, então também não consegue buscar as listas.
+ publicsdr-no-match = nenhum resultado
+ publicsdr-nothing-matches-try-turning-filter = nada corresponde — tente reativar um dos filtros
+-publicsdr-radio = este rádio
+-publicsdr-radio-s-configuration-has-not = A configuração deste rádio ainda não chegou da máquina em que ele está, então não há nada a apontar para o receptor — use + ABA para isso.
+-publicsdr-position-not-published-so-nothing = {" "}A posição dele não é publicada, então nada que ele ouvir será informado.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4912,14 +4913,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } receptores · { $per_net } · buscado há { $age }
+ publicsdr-showing-search-narrow = mostrando { $shown } de { $n } — pesquise para restringir
+ publicsdr-match = { $n } resultado
+-publicsdr-replace-taking-receiver-points-same =
+-    Substituir { $this } por { $entry }?
+-
+-    { $this2 } está em { $iface }. Escolher este receptor faz a mesma aba apontar para { $address }, a renomeia “{ $entry2 }” e mantém o dial na { $range_label } que o receptor publica — nada aqui transmite.
+-
+-    As configurações de { $iface2 } continuam onde estão, e também as faixas informadas para elas: voltar a interface em Configurações → Rádio devolve o rádio como estava.
+-publicsdr-receptions-will-reported = {" "}As recepções serão informadas a partir de { $value }.
+-publicsdr-pointing-radio = Apontando este rádio para { $entry }…{ $site }
++publicsdr-map-status = { $shown } no mapa · { $unplaced } sem posição
+ publicsdr-opening-another-radio = Abrindo { $entry } como outro rádio…
+ 
+ ## qo100: mensagens com valores (src/app/qo100.rs)
+@@ -5245,7 +5239,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (rede)
+ cat-family-flrig = flrig (rede)
+-publicsdr-its-interface = a sua interface
+ 
+ ## Valores de sdroxide-types exibidos em chips, menus e listas (src/i18n/labels.rs).
+ agc-mode-off = Desligado
+diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+index b3e2b794..e7c4a66c 100644
+--- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+@@ -4062,21 +4062,25 @@ fsq-add = Добавить
+ 
+ ## PublicSDR (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + ВКЛАДКА
+-publicsdr-open-receiver-new-radio-own = Открыть этот приёмник как новое радио, на собственной вкладке
+-publicsdr-point-radio-receiver-replacing-whatever = Направить *это* радио на приёмник, заменив интерфейс, на котором оно сейчас, — спрашивается ещё раз, потому что это настройка целого радио
+ publicsdr-not-stated = не указано
+-publicsdr-replace = ЗАМЕНИТЬ
+-publicsdr-point-radio-you-are-receiver = Направить радио, на котором вы сидите, на этот приёмник
+-publicsdr-tab-instead = + ВКЛАДКА ВМЕСТО ЭТОГО
+-publicsdr-open-receiver-another-radio-leave = Открыть приёмник как другое радио и не трогать это
+-publicsdr-cancel = ОТМЕНА
+ publicsdr-public-sdrs = ПУБЛИЧНЫЕ SDR
+ publicsdr-available = ДОСТУПНО
+ publicsdr-hide-receivers-are-full-ones = Скрыть приёмники, которые заняты, и те, чей оператор не открыл никаких каналов для приложений, кроме браузера
+ publicsdr-band = В ДИАПАЗОНЕ
+ publicsdr-only-receivers-cover-current-dial = Только приёмники, которые покрывают текущую частоту шкалы
+ publicsdr-low-bw = НИЗКАЯ ПОЛОСА
++publicsdr-map-cities = ГОРОДА
++publicsdr-map-cities-tip = Города на этой карте: показать или скрыть.
++publicsdr-view-list = СПИСОК
++publicsdr-view-map = КАРТА
++publicsdr-view-map-tip = Те же приёмники на карте мира. Щелчок по точке выбирает все приёмники под ней.
++publicsdr-map-pick = Щёлкните по точке, чтобы выбрать приёмники под ней.
++publicsdr-map-names = ИМЕНА
++publicsdr-map-names-tip = Показывать названия приёмников на карте. Выкл.: подписаны только выбранные.
++publicsdr-check-online = В СЕТИ
++publicsdr-check-silent = МОЛЧИТ
++publicsdr-check-waiting = ПРОВЕРКА…
++publicsdr-check-no-answer = Нет ответа в течение 20 секунд.
+ publicsdr-take-spyserver-low-bandwidth-shape = Брать SpyServer в его форме низкой полосы: узкое окно I/Q, которое следует за шкалой, плюс собственный вид диапазона сервера, вместо мегабит широкополосного I/Q. На KiwiSDR это ничего не меняет — у него только одна форма.
+ publicsdr-refresh = ⟳ ОБНОВИТЬ
+ publicsdr-fetch-both-directories-again = Загрузить оба каталога заново
+@@ -4086,9 +4090,6 @@ publicsdr-fetching-receiver-lists = Загрузка списков приёмн
+ publicsdr-machine-radio-attached-does-not = Машина, к которой подключено это радио, не отвечает на вопросы об устройствах, поэтому она тоже не может загрузить списки.
+ publicsdr-no-match = совпадений нет
+ publicsdr-nothing-matches-try-turning-filter = ничто не совпадает — попробуйте снова включить один из фильтров
+-publicsdr-radio = это радио
+-publicsdr-radio-s-configuration-has-not = Конфигурация этого радио ещё не пришла с машины, к которой оно подключено, поэтому направлять на приёмник нечего — возьмите его через + ВКЛАДКА.
+-publicsdr-position-not-published-so-nothing = {" "}Его позиция не опубликована, поэтому ничего из того, что оно слышит, не будет сообщено.
+ 
+ ## HD (src/app/hd.rs)
+ 
+@@ -4915,14 +4916,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = приёмников: { $entries } · { $per_net } · загружено { $age } назад
+ publicsdr-showing-search-narrow = показано { $shown } из { $n } — поиском сузьте список
+ publicsdr-match = совпадений: { $n }
+-publicsdr-replace-taking-receiver-points-same =
+-    Заменить { $this } на { $entry }?
+-
+-    { $this2 } работает на { $iface }. Взяв этот приёмник, та же вкладка направляется на { $address }, переименовывается в «{ $entry2 }» и удерживает шкалу в пределах { $range_label}, которые публикует приёмник, — ничего здесь не передаётся.
+-
+-    Настройки интерфейса { $iface2 } остаются на месте, как и диапазоны, заданные для них: возврат интерфейса в Настройки → Радио возвращает радио как было.
+-publicsdr-receptions-will-reported = {" "}Приёмы будут сообщаться из { $value }.
+-publicsdr-pointing-radio = Направляю это радио на { $entry }…{ $site }
++publicsdr-map-status = на карте: { $shown } · без координат: { $unplaced }
+ publicsdr-opening-another-radio = Открываю { $entry } как другое радио…
+ 
+ ## qo100: сообщения со значениями (src/app/qo100.rs)
+@@ -5240,7 +5234,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (сеть)
+ cat-family-flrig = flrig (сеть)
+-publicsdr-its-interface = его интерфейс
+ 
+ ## Значения из sdroxide-types, нарисованные на чипах, меню и списках (src/i18n/labels.rs).
+ agc-mode-off = Выкл.
+diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+index 03d6f054..085def24 100644
+--- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+@@ -4053,21 +4053,25 @@ fsq-add = Ekle
+ 
+ ## publicsdr (src/app/publicsdr.rs)
+ 
+-publicsdr-tab = + SEKME
+-publicsdr-open-receiver-new-radio-own = Bu alıcıyı kendi sekmesinde yeni bir radyo olarak açın
+-publicsdr-point-radio-receiver-replacing-whatever = *Bu* radyoyu, şu an hangi arabirimde olursa olsun alıcıya yöneltin — bu bir radyonun tüm kurulumu olduğu için önce yeniden sorulur
+ publicsdr-not-stated = belirtilmemiş
+-publicsdr-replace = DEĞİŞTİR
+-publicsdr-point-radio-you-are-receiver = Bulunduğunuz radyoyu bu alıcıya yöneltin
+-publicsdr-tab-instead = + SEKME YERİNE
+-publicsdr-open-receiver-another-radio-leave = Alıcıyı başka bir radyo olarak açın ve bunu olduğu gibi bırakın
+-publicsdr-cancel = İPTAL
+ publicsdr-public-sdrs = GENEL SDR'LER
+ publicsdr-available = KULLANILABİLİR
+ publicsdr-hide-receivers-are-full-ones = Dolu olan alıcıları ve operatörü tarayıcı dışındaki uygulamalara hiç kanal açmamış olanları gizleyin
+ publicsdr-band = BANTTA
+ publicsdr-only-receivers-cover-current-dial = Yalnızca geçerli skala frekansını kapsayan alıcılar
+ publicsdr-low-bw = DÜŞÜK BW
++publicsdr-map-cities = ŞEHİRLER
++publicsdr-map-cities-tip = Bu haritada şehirler, açık veya kapalı.
++publicsdr-view-list = LİSTE
++publicsdr-view-map = HARİTA
++publicsdr-view-map-tip = Aynı alıcılar bir dünya haritasında. Bir noktaya tıklamak altındaki tüm alıcıları seçer.
++publicsdr-map-pick = Altındaki alıcıları seçmek için bir noktaya tıklayın.
++publicsdr-map-names = ADLAR
++publicsdr-map-names-tip = Alıcıların adlarını haritada göster. Kapalı: yalnızca seçilenlerin adı yazılır.
++publicsdr-check-online = ÇEVRİMİÇİ
++publicsdr-check-silent = SESSİZ
++publicsdr-check-waiting = DENENİYOR…
++publicsdr-check-no-answer = 20 saniye içinde yanıt yok.
+ publicsdr-take-spyserver-low-bandwidth-shape = Bir SpyServer'ı düşük bant genişliği biçiminde alın: skalayı izleyen dar bir I/Q penceresi artı sunucunun kendi bant görünümü; megabit genişbant I/Q yerine. Yalnızca bir biçimi olan bir KiwiSDR'ı etkilemez.
+ publicsdr-refresh = ⟳ YENİLE
+ publicsdr-fetch-both-directories-again = İki dizini yeniden alın
+@@ -4077,9 +4081,6 @@ publicsdr-fetching-receiver-lists = Alıcı listeleri alınıyor…
+ publicsdr-machine-radio-attached-does-not = Bu radyonun bağlı olduğu makine aygıt sorularını yanıtlamıyor, bu yüzden listeleri de alamaz.
+ publicsdr-no-match = eşleşme yok
+ publicsdr-nothing-matches-try-turning-filter = Hiçbir şey eşleşmiyor — bir filtre çipini yeniden açmayı deneyin
+-publicsdr-radio = bu radyo
+-publicsdr-radio-s-configuration-has-not = Bu radyonun yapılandırması, bulunduğu makineden henüz gelmedi; bu yüzden alıcıya yöneltilecek bir şey yok — bunun yerine + SEKME ile alın.
+-publicsdr-position-not-published-so-nothing = {" "}Konumu yayımlanmıyor, bu yüzden duyduğu hiçbir şey bildirilmeyecek.
+ 
+ ## hd (src/app/hd.rs)
+ 
+@@ -4903,14 +4904,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } alıcı · { $per_net } · { $age } önce alındı
+ publicsdr-showing-search-narrow = { $n } içinden { $shown } gösteriliyor — daraltmak için arayın
+ publicsdr-match = { $n } eşleşme
+-publicsdr-replace-taking-receiver-points-same =
+-    { $this } yerine { $entry } koyulsun mu?
+-
+-    { $this2 }, { $iface } üzerinde. Bu alıcıyı almak, aynı sekmeyi bunun yerine { $address } adresine yöneltir, onu “{ $entry2 }” olarak yeniden adlandırır ve skalayı alıcının yayımladığı { $range_label } aralığında tutar — burada hiçbir şey yayın yapmaz.
+-
+-    { $iface2 } ayarları olduğu yerde kalır; onlar için belirtilen aralıklar da öyle: arayüzü Ayarlar → Radyo'da geri değiştirmek, radyoyu eski haline döndürür.
+-publicsdr-receptions-will-reported = {" "}Alımlar { $value } konumundan bildirilecek.
+-publicsdr-pointing-radio = Bu radyo { $entry } alıcısına yöneltiliyor…{ $site }
++publicsdr-map-status = haritada { $shown } · konumsuz { $unplaced }
+ publicsdr-opening-another-radio = { $entry } başka bir radyo olarak açılıyor…
+ 
+ ## qo100: değerli iletiler (src/app/qo100.rs)
+@@ -5236,7 +5230,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld (ağ)
+ cat-family-flrig = flrig (ağ)
+-publicsdr-its-interface = arayüzü
+ 
+ ## sdroxide-types değerleri, çiplerde, menülerde ve listelerde gösterilenler (src/i18n/labels.rs).
+ agc-mode-off = Kapalı
+diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+index 9ceb3f38..ba7353d4 100644
+--- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+@@ -4026,21 +4026,25 @@ fsq-add = 添加
+ 
+ ## 公共 SDR（src/app/publicsdr.rs）
+ 
+-publicsdr-tab = + 选项卡
+-publicsdr-open-receiver-new-radio-own = 将此接收机作为新电台打开，并位于其自己的选项卡中
+-publicsdr-point-radio-receiver-replacing-whatever = 将*此*电台指向该接收机，替换其当前所在的任何接口——会再次询问，因为那相当于整台电台的设置
+ publicsdr-not-stated = 未说明
+-publicsdr-replace = 替换
+-publicsdr-point-radio-you-are-receiver = 将你所在的电台指向此接收机
+-publicsdr-tab-instead = + 改为选项卡
+-publicsdr-open-receiver-another-radio-leave = 将接收机作为另一台电台打开，并保持此电台不变
+-publicsdr-cancel = 取消
+ publicsdr-public-sdrs = 公共 SDR
+ publicsdr-available = 可用
+ publicsdr-hide-receivers-are-full-ones = 隐藏已满的接收机，以及其操作员未向浏览器以外的应用开放任何通道的接收机
+ publicsdr-band = 在频段内
+ publicsdr-only-receivers-cover-current-dial = 仅显示覆盖当前表盘频率的接收机
+ publicsdr-low-bw = 低带宽
++publicsdr-map-cities = 城市
++publicsdr-map-cities-tip = 在此地图上显示或隐藏城市。
++publicsdr-view-list = 列表
++publicsdr-view-map = 地图
++publicsdr-view-map-tip = 在世界地图上显示同样的接收机。点击一个点即可选择其下的所有接收机。
++publicsdr-map-pick = 点击一个点以选择其下的接收机。
++publicsdr-map-names = 名称
++publicsdr-map-names-tip = 在地图上显示接收机名称。关闭：只显示所选接收机的名称。
++publicsdr-check-online = 在线
++publicsdr-check-silent = 无响应
++publicsdr-check-waiting = 检查中…
++publicsdr-check-no-answer = 20 秒内无响应。
+ publicsdr-take-spyserver-low-bandwidth-shape = 以低带宽形式接入 SpyServer：一个跟随表盘的窄幅 I/Q 窗口，加上服务器自己的频段视图，而不是数兆比特的宽带 I/Q。对 KiwiSDR 无影响，因为它只有这一种形式。
+ publicsdr-refresh = ⟳ 刷新
+ publicsdr-fetch-both-directories-again = 重新获取两个目录
+@@ -4050,9 +4054,6 @@ publicsdr-fetching-receiver-lists = 正在获取接收机列表……
+ publicsdr-machine-radio-attached-does-not = 此电台所连接的机器不应答设备查询，因此它也无法获取列表。
+ publicsdr-no-match = 无匹配
+ publicsdr-nothing-matches-try-turning-filter = 没有任何内容匹配——请尝试重新打开某个过滤标签
+-publicsdr-radio = 此电台
+-publicsdr-radio-s-configuration-has-not = 此电台的配置尚未从它所在的机器送达，因此没有可指向接收机的目标——请改用“+ 选项卡”添加。
+-publicsdr-position-not-published-so-nothing = {" "}其位置未公布，因此它所听到的任何内容都不会被报告。
+ 
+ ## HD Radio（src/app/hd.rs）
+ 
+@@ -4857,14 +4858,7 @@ publicsdr-antenna =
+ publicsdr-receivers-fetched-ago = { $entries } 台接收机 · { $per_net } · 获取于 { $age } 前
+ publicsdr-showing-search-narrow = 显示 { $n } 个中的 { $shown } 个——搜索以缩小范围
+ publicsdr-match = { $n } 个匹配
+-publicsdr-replace-taking-receiver-points-same =
+-    用 { $entry } 替换 { $this }？
+-
+-    { $this2 } 位于 { $iface }。选择此接收机会使同一选项卡改为指向 { $address }，将其重命名为“{ $entry2 }”，并将表盘限定在接收机所公布的 { $range_label } 之内——此处不会发射任何内容。
+-
+-    { $iface2 } 的设置保持不变，为其所设定的范围也一样：在“设置 → 电台”中将接口切换回来，即可使电台恢复原状。
+-publicsdr-receptions-will-reported = {" "}接收结果将以 { $value } 为位置报告。
+-publicsdr-pointing-radio = 正在将此电台指向 { $entry }……{ $site }
++publicsdr-map-status = 地图上 { $shown } 个 · 无位置 { $unplaced } 个
+ publicsdr-opening-another-radio = 正在将 { $entry } 作为另一台电台打开……
+ 
+ ## QO-100：带数值的消息（src/app/qo100.rs）
+@@ -5178,7 +5172,6 @@ cat-family-rs-hfiq = RS-HFIQ
+ cat-family-tr-usdx = (tr)uSDX
+ cat-family-rigctld = Hamlib rigctld（网络）
+ cat-family-flrig = flrig（网络）
+-publicsdr-its-interface = 其接口
+ 
+ ## sdroxide-types 中的取值，显示在标签、菜单和列表上（src/i18n/labels.rs）。
+ agc-mode-off = 关
+diff --git a/crates/sdroxide-ui/src/app/mod.rs b/crates/sdroxide-ui/src/app/mod.rs
+index 16f1cb43..42469010 100644
+--- a/crates/sdroxide-ui/src/app/mod.rs
++++ b/crates/sdroxide-ui/src/app/mod.rs
+@@ -392,15 +392,11 @@ pub struct SdroxideApp {
+     /// Take a SpyServer in its VFO+FFT shape rather than wideband. No effect on
+     /// a KiwiSDR, which has only one shape.
+     public_sdr_low_bw: bool,
+-    /// The receiver whose **USE** is waiting to be confirmed.
+-    ///
+-    /// USE replaces the radio the operator is on, and a radio is a station's
+-    /// worth of setting up — issue #254 is somebody losing an IC-9700 to a
+-    /// SpyServer on one click, with the tab still carrying the Icom's name
+-    /// afterwards. So the row's button arms this instead of acting, and the
+-    /// window puts the choice, and the way out of it, in front of the list.
+-    /// `None` is the ordinary state.
+-    public_sdr_confirm: Option<Box<sdroxide_types::PublicSdrEntry>>,
++    /// The window shows the map rather than the list.
++    // Why: HDZ 2026-11-04: "eine Karte für die SDR-Stationen dran machen".
++    public_sdr_map: bool,
++    /// The map's view and the receivers a click on it picked.
++    public_sdr_map_state: crate::publicsdr_map::PublicSdrMapState,
+     /// FlexRadios found by the last SmartSDR "Discover" listen.
+     smartsdr_devices: Vec<sdroxide_types::SmartSdrDevice>,
+     /// Result of the last SmartSDR "Test connection".
+@@ -1270,9 +1266,15 @@ pub(crate) enum RadioTabRequest {
+     /// pointed at the receiver that was picked, rather than arriving blank with
+     /// its settings page open for an address to be typed into. `None` is the
+     /// plain "+" chip, which does exactly that.
++    ///
++    /// `name` is the name the new radio is given; `None` leaves it to be named
++    /// after its interface, as before. "Public SDRs" gives the receiver's
++    /// directory name (HDZ 2026-11-04). Only for a radio on this machine: a
++    /// radio added at a station is named there.
+     Add {
+         station: String,
+         preset: Option<Box<sdroxide_types::RadioConfig>>,
++        name: Option<String>,
+     },
+     /// Open somebody else's station as a tab of its own: dial this WebSocket
+     /// URL and, if it answers, show it under `name`. Queued by the **Remote**
+@@ -1496,7 +1498,8 @@ impl SdroxideApp {
+             public_sdr_free_only: true,
+             public_sdr_in_band: false,
+             public_sdr_low_bw: false,
+-            public_sdr_confirm: None,
++            public_sdr_map: false,
++            public_sdr_map_state: Default::default(),
+             smartsdr_devices: Vec::new(),
+             smartsdr_test_result: None,
+             pluto_devices: Vec::new(),
+diff --git a/crates/sdroxide-ui/src/app/publicsdr.rs b/crates/sdroxide-ui/src/app/publicsdr.rs
+index b3c8e2f5..d7ae7417 100644
+--- a/crates/sdroxide-ui/src/app/publicsdr.rs
++++ b/crates/sdroxide-ui/src/app/publicsdr.rs
+@@ -1,5 +1,5 @@
+ //! The "PUBLIC SDRS" window: browse the receivers other people have published
+-//! and open one as a radio.
++//! and add one as a radio of its own, named after its directory entry.
+ //!
+ //! Built on the same bones as [`crate::app::spots`], because it is the same
+ //! problem — a long list from the internet, filter chips, a fuzzy search, and a
+@@ -25,7 +25,7 @@
+ //! is somebody else's for the moment. Being told which is far better than a
+ //! connection that fails for no visible reason.
+ 
+-use crate::i18n::{Tr, tr};
++use crate::i18n::tr;
+ use eframe::egui::{self, RichText};
+ use sdroxide_types::{Command, PublicSdrEntry, PublicSdrNetwork};
+ 
+@@ -41,7 +41,7 @@ use crate::app::{RadioTabRequest, SdroxideApp};
+ const MAX_ROWS: usize = 300;
+ 
+ /// One receiver row: network badge, name, what it covers, how busy it is,
+-/// where it is, and the two ways to take it.
++/// where it is, and the one way to take it: ADD AS RADIO.
+ ///
+ /// Columns are allocated rather than laid out by content, the way
+ /// [`crate::app::spots`]'s rows are: a directory is a table, and a name that
+@@ -49,14 +49,10 @@ const MAX_ROWS: usize = 300;
+ /// takes whatever is left over so a wide window shows more of the place name
+ /// rather than more empty space.
+ ///
+-/// Returns what the operator pressed, if anything.
+-fn entry_row(
+-    ui: &mut egui::Ui,
+-    e: &PublicSdrEntry,
+-    distance_km: Option<f64>,
+-) -> Option<PickAction> {
++/// Returns whether ADD AS RADIO was pressed on this row.
++fn entry_row(ui: &mut egui::Ui, e: &PublicSdrEntry, distance_km: Option<f64>) -> bool {
+     let blocked = e.blocked_reason();
+-    let mut action = None;
++    let mut add = false;
+     let dim = crate::theme::gray(if blocked.is_some() { 100 } else { 170 });
+     let net_col = match e.network {
+         PublicSdrNetwork::KiwiSdr => crate::theme::CYAN(),
+@@ -183,19 +179,23 @@ fn entry_row(
+                             );
+                         }
+                         None => {
+-                            if crate::chrome::chip(ui, false, tr!("publicsdr-tab"))
+-                                .on_hover_text(tr!("publicsdr-open-receiver-new-radio-own"))
++                            // One way to take a receiver: as a radio of its own,
++                            // named after its directory entry. The "USE" route
++                            // (this radio rebuilt as the receiver) is gone.
++                            // Why: HDZ 2026-11-04: "use und use new panel ist
++                            //      Quatsch, hier müsste rein 'add as radio', und
++                            //      gut ist". USE replaced a configured radio and
++                            //      needed a three-way confirmation for it (issue
++                            //      #254: an IC-9700 lost to one click); "+ TAB"
++                            //      did what this does, named after the
++                            //      interface. With the original tab strip the
++                            //      new radio is a new tab; with Panel Exchange
++                            //      it is one more under "Change radio".
++                            if crate::chrome::chip(ui, false, tr!("publicsdr-add-as-radio"))
++                                .on_hover_text(tr!("publicsdr-add-as-radio-tip"))
+                                 .clicked()
+                             {
+-                                action = Some(PickAction::NewRadio);
+-                            }
+-                            if crate::chrome::chip(ui, false, "USE")
+-                                .on_hover_text(tr!(
+-                                    "publicsdr-point-radio-receiver-replacing-whatever"
+-                                ))
+-                                .clicked()
+-                            {
+-                                action = Some(PickAction::ThisRadio);
++                                add = true;
+                             }
+                         }
+                     },
+@@ -217,58 +217,42 @@ fn entry_row(
+             }
+         ));
+     ui.add_space(1.0);
+-    action
+-}
+-
+-/// What a row's buttons asked for.
+-#[derive(Clone, Copy, PartialEq)]
+-enum PickAction {
+-    NewRadio,
+-    ThisRadio,
+-}
+-
+-/// What the operator answered the **USE** confirmation with.
+-#[derive(Debug, Clone, Copy, PartialEq)]
+-enum Confirm {
+-    /// Go ahead: this radio becomes the receiver.
+-    Replace,
+-    /// The way out that keeps both — the receiver arrives in a tab of its own
+-    /// and the radio the operator is on is left alone.
+-    NewTab,
+-    Cancel,
++    add
+ }
+ 
+-/// The question **USE** asks before it replaces a configured radio, and the
+-/// three answers to it.
+-///
+-/// Drawn across the top of the list rather than in a window of its own: the
+-/// row that raised it is still on screen behind, and a second window over a
+-/// list of eleven hundred rows would have to be dismissed before the operator
+-/// could look at what they were about to lose.
+-fn confirm_panel(ui: &mut egui::Ui, blurb: &str) -> Option<Confirm> {
+-    let mut answer = None;
+-    crate::chrome::red_panel(ui, |ui| {
+-        ui.label(RichText::new(blurb).color(crate::theme::TEXT_STRONG()).size(12.0));
+-        ui.add_space(4.0);
+-        ui.horizontal(|ui| {
+-            if crate::chrome::chip(ui, false, tr!("publicsdr-replace"))
+-                .on_hover_text(tr!("publicsdr-point-radio-you-are-receiver"))
+-                .clicked()
+-            {
+-                answer = Some(Confirm::Replace);
+-            }
+-            if crate::chrome::chip(ui, false, tr!("publicsdr-tab-instead"))
+-                .on_hover_text(tr!("publicsdr-open-receiver-another-radio-leave"))
+-                .clicked()
+-            {
+-                answer = Some(Confirm::NewTab);
+-            }
+-            if crate::chrome::chip(ui, false, tr!("publicsdr-cancel")).clicked() {
+-                answer = Some(Confirm::Cancel);
+-            }
+-        });
+-    });
+-    answer
++/// The connection field in front of a picked receiver's row on the map view:
++/// ONLINE, SILENT, or CHECKING… until the answer is in; what answered (or why
++/// nothing did) on hover.
++// Why: HDZ 2026-11-04: "du trägst ja unten Infos ein, da könnte ein Feld für
++//      online/silent stehen".
++fn check_cell(ui: &mut egui::Ui, check: Option<&crate::publicsdr_map::Check>) {
++    use crate::publicsdr_map::Check;
++    /// Width of the field, in points: the longest word ("ÇEVRİMİÇİ", "PRÜFE…")
++    /// at 11 pt with a little air.
++    const W: f32 = 74.0;
++    // Not checked yet and on its way read the same: PRÜFE… without a tooltip.
++    let (text, colour, tip) = match check {
++        Some(Check::Answered { result: Ok(m), .. }) => {
++            (tr!("publicsdr-check-online"), crate::theme::GREEN(), Some(m.clone()))
++        }
++        Some(Check::Answered { result: Err(m), .. }) => {
++            (tr!("publicsdr-check-silent"), crate::theme::ALERT(), Some(m.clone()))
++        }
++        _ => (tr!("publicsdr-check-waiting"), crate::theme::gray(140), None),
++    };
++    // A fixed rect rather than a label, so the rows' columns line up whatever
++    // the word; 20 pt high like `entry_row`'s cells.
++    let (rect, resp) = ui.allocate_exact_size(egui::vec2(W, 20.0), egui::Sense::hover());
++    ui.painter().text(
++        rect.left_center() + egui::vec2(4.0, 0.0),
++        egui::Align2::LEFT_CENTER,
++        text,
++        egui::FontId::proportional(11.0),
++        colour,
++    );
++    if let Some(t) = tip {
++        resp.on_hover_text(t);
++    }
+ }
+ 
+ /// Rank what the chips let through against what is in the search box.
+@@ -362,11 +346,9 @@ impl SdroxideApp {
+         let directory = self.public_sdrs.clone();
+         let mut open = self.show_public_sdrs;
+         let mut refresh = false;
+-        let mut picked: Option<(PublicSdrEntry, PickAction)> = None;
+-        // Worked out before the window borrows `self`: it reads the roster and
+-        // the radio's own configuration, neither of which the list does.
+-        let blurb = self.public_sdr_confirm.as_deref().map(|e| self.replace_blurb(e));
+-        let mut answer: Option<Confirm> = None;
++        // The receiver whose ADD AS RADIO was pressed this frame, acted on
++        // after the window has given `self` back.
++        let mut picked: Option<PublicSdrEntry> = None;
+ 
+         let resp = egui::Window::new(tr!("publicsdr-public-sdrs"))
+             .id(crate::layout::salted_id(ctx, "PUBLIC SDRS"))
+@@ -377,11 +359,23 @@ impl SdroxideApp {
+             .default_height(crate::layout::window_h(ctx, 520.0))
+             .show(ctx, |ui| {
+                 crate::chrome::window_body_bg(ui);
+-                if let Some(blurb) = &blurb {
+-                    answer = confirm_panel(ui, blurb);
+-                    ui.add_space(6.0);
+-                }
+                 ui.horizontal(|ui| {
++                    // LIST | MAP: two views of the same filtered receivers. The
++                    // chips right of them apply to both.
++                    // Why: HDZ 2026-11-04: "eine Karte für die SDR-Stationen
++                    //      dran machen".
++                    if crate::chrome::chip(ui, !self.public_sdr_map, tr!("publicsdr-view-list"))
++                        .clicked()
++                    {
++                        self.public_sdr_map = false;
++                    }
++                    if crate::chrome::chip(ui, self.public_sdr_map, tr!("publicsdr-view-map"))
++                        .on_hover_text(tr!("publicsdr-view-map-tip"))
++                        .clicked()
++                    {
++                        self.public_sdr_map = true;
++                    }
++                    ui.separator();
+                     for (i, net) in PublicSdrNetwork::ALL.iter().enumerate() {
+                         if crate::chrome::chip(ui, self.public_sdr_nets_shown[i], net.label())
+                             .clicked()
+@@ -481,6 +475,12 @@ impl SdroxideApp {
+                 ui.separator();
+ 
+                 let rows = self.public_sdr_rows(&dir.entries, dial_hz);
++                if self.public_sdr_map {
++                    if let Some(e) = self.public_sdr_map_view(ui, &dir.entries, &rows, my_pos) {
++                        picked = Some(e);
++                    }
++                    return;
++                }
+                 if !self.public_sdr_search.trim().is_empty() || rows.len() > MAX_ROWS {
+                     let shown = rows.len().min(MAX_ROWS);
+                     let (text, colour) = match rows.len() {
+@@ -503,8 +503,8 @@ impl SdroxideApp {
+                             )),
+                             _ => None,
+                         };
+-                        if let Some(a) = entry_row(ui, e, km) {
+-                            picked = Some(((*e).clone(), a));
++                        if entry_row(ui, e, km) {
++                            picked = Some((*e).clone());
+                         }
+                     }
+                     if rows.is_empty() {
+@@ -520,231 +520,303 @@ impl SdroxideApp {
+             crate::chrome::paint_window_border(ctx, &r.response);
+         }
+         self.show_public_sdrs = open;
++        // Closed: the pick goes with the window, so the next opening does not
++        // show the last session's receivers with their last answers.
++        if !open {
++            self.public_sdr_map_state.picked.clear();
++        }
+ 
+         if refresh {
+             self.public_sdrs = None;
+             self.ask_device(ctx, sdroxide_types::DeviceProbe::PublicSdrs { refresh: true });
+         }
+-        // The question, then the answer to it. Closing the window is a "no":
+-        // an armed confirmation that outlived the list it was raised from
+-        // would fire on whatever radio the operator had moved to by then.
+-        if !open {
+-            self.public_sdr_confirm = None;
++        if let Some(entry) = picked {
++            self.take_public_sdr(&entry);
+         }
+-        if let Some(choice) = answer {
+-            // Taken only once an answer is in — a `take` in the pattern would
+-            // run on every frame the window is drawn and disarm the question
+-            // before it could be read.
+-            if let Some(entry) = self.public_sdr_confirm.take() {
+-                match choice {
+-                    Confirm::Replace => self.take_public_sdr(&entry, PickAction::ThisRadio),
+-                    Confirm::NewTab => self.take_public_sdr(&entry, PickAction::NewRadio),
+-                    Confirm::Cancel => {}
+-                }
++    }
++
++    /// The MAP view: every receiver `rows` holds as a dot, and below the map
++    /// the receivers the last click picked, as list rows with ADD AS RADIO.
++    ///
++    /// In: the whole directory (picked receivers are looked up there, so a
++    /// pick survives a filter change), the filtered rows, home. Out: the
++    /// receiver whose ADD AS RADIO was pressed this frame.
++    /// Effect: the map fills the window less the rows below it; a status line
++    /// says how many filtered receivers have no position and so no dot.
++    /// Fails: none.
++    // Why: HDZ 2026-11-04: "eine Karte für die SDR-Stationen dran machen". The
++    //      rows below are the list's own (`entry_row`), so taking a receiver is
++    //      the same button in both views.
++    fn public_sdr_map_view(
++        &mut self,
++        ui: &mut egui::Ui,
++        all: &[PublicSdrEntry],
++        rows: &[(&PublicSdrEntry, i32)],
++        my_pos: Option<(f64, f64)>,
++    ) -> Option<PublicSdrEntry> {
++        use crate::publicsdr_map::{MAX_PICKED, key, show};
++        // Everything below stays inside the width the window has now. Outside
++        // a scroll area, a row that measures itself by what is free would
++        // otherwise widen the window a little every frame, until it filled
++        // the screen.
++        // Why: HDZ 2026-11-04: "dann rutscht der Kartenzoom, so dass die ganze
++        //      Bildschirmbreite langsam vollgemacht wird".
++        ui.set_max_width(ui.available_width());
++        // What the chips and the search let through, without the ranking the
++        // list needs: a map has no order.
++        let visible: Vec<&PublicSdrEntry> = rows.iter().map(|(e, _)| *e).collect();
++        // Said rather than hidden: a receiver with no position has no dot,
++        // and the operator should know the map is not the whole list.
++        let unplaced = visible.iter().filter(|e| e.lat.is_none() || e.lon.is_none()).count();
++        // The pick, looked up in the whole directory rather than in `rows`, so
++        // the rows stay while a chip or the search hides their dots.
++        let picked: Vec<&PublicSdrEntry> = self
++            .public_sdr_map_state
++            .picked
++            .iter()
++            .filter_map(|k| all.iter().find(|e| key(e) == *k))
++            .take(MAX_PICKED)
++            .collect();
++
++        // One status line, then the map, then one row per picked receiver
++        // (or a line saying how to pick). The window grows to hold the rows,
++        // so they need no share of the map's height.
++        ui.horizontal(|ui| {
++            // Names on the map, on or off. Here rather than in the chip row
++            // above, which LIST shares: a chip that appears and vanishes there
++            // would shift the filters under the pointer.
++            // Why: HDZ 2026-11-04: "gönn der Karte einen Toggle-Knopf 'Labels',
++            //      ich will nicht immer Labels sehen".
++            let st = &mut self.public_sdr_map_state;
++            if crate::chrome::chip(ui, !st.names_off, tr!("publicsdr-map-names"))
++                .on_hover_text(tr!("publicsdr-map-names-tip"))
++                .clicked()
++            {
++                st.names_off = !st.names_off;
+             }
++            if crate::chrome::chip(ui, !st.cities_off, tr!("publicsdr-map-cities"))
++                .on_hover_text(tr!("publicsdr-map-cities-tip"))
++                .clicked()
++            {
++                st.cities_off = !st.cities_off;
++            }
++            ui.label(
++                RichText::new(tr!(
++                    "publicsdr-map-status",
++                    shown = visible.len() - unplaced,
++                    unplaced = unplaced
++                ))
++                .size(10.0)
++                .color(crate::theme::gray(150)),
++            );
++        });
++        // The map is half as high as it is wide, as the world is, and at most
++        // half the screen high. Its height is never taken from what is left in
++        // the window: the rows below then came out a few points taller than
++        // their share, the window grew by that every frame, and the map refit
++        // its view at each step until the window filled the screen.
++        // Why: HDZ 2026-11-05: "die karte rutscht in die breite … es wäre
++        //      besser wenn die karte höhenbegrenzt bliebe".
++        // Invariant: `h` depends on the window's width and the screen alone,
++        //            never on `available_height`, or the loop comes back.
++        // Its return value (pick changed) is not needed: the rows below are
++        // drawn from the pick every frame.
++        let screen_h = ui.ctx().content_rect().height();
++        let h = (ui.available_width() * 0.5)
++            .min(screen_h * 0.5)
++            .max(crate::publicsdr_map::MIN_HEIGHT);
++        show(ui, &mut self.public_sdr_map_state, &visible, my_pos, h);
++
++        ui.add_space(4.0);
++        // Nothing picked: say how to pick, and there is nothing to check.
++        if picked.is_empty() {
++            ui.label(
++                RichText::new(tr!("publicsdr-map-pick")).size(11.0).color(crate::theme::gray(130)),
++            );
++            return None;
+         }
+-        if let Some((entry, action)) = picked {
+-            // A fresh press supersedes a question still on screen, whichever
+-            // row it came from.
+-            self.public_sdr_confirm = None;
+-            match action {
+-                // Nothing to lose only when there is no radio there to lose:
+-                // an interface never chosen. Anything else — an address typed,
+-                // a rig dialled, sound cards picked — is asked about first.
+-                PickAction::ThisRadio if self.radio_is_configured() => {
+-                    self.public_sdr_confirm = Some(Box::new(entry));
+-                }
+-                _ => self.take_public_sdr(&entry, action),
++        // The picked receivers' connection checks: send the ones that fell
++        // due, and keep frames coming until every answer is in.
++        let now = crate::time::now_unix_f64();
++        let due = self.public_sdr_map_state.due_checks(now, &tr!("publicsdr-check-no-answer"));
++        // Asked of the machine with the radio on it, like every probe: it is
++        // the end that would hold the connection. The answer comes back
++        // through `apply_probe_answer` → `public_sdr_check_answered`.
++        for (k, address) in due {
++            if let Some(e) = all.iter().find(|e| key(e) == k) {
++                // `ask_device` wants the context while `ui` is borrowed.
++                let ctx = ui.ctx().clone();
++                self.ask_device(
++                    &ctx,
++                    sdroxide_types::DeviceProbe::PublicSdrCheck { network: e.network, address },
++                );
+             }
+         }
+-    }
++        // Ten frames a second while a check is due or on its way: enough for
++        // the 500 ms delay to be kept and an answer to show at once.
++        if self.public_sdr_map_state.checks_pending() {
++            ui.ctx().request_repaint_after(std::time::Duration::from_millis(100));
++        }
+ 
+-    /// Whether this radio has an interface at all, which is what decides
+-    /// whether **USE** has anything to destroy.
+-    ///
+-    /// Reads the configuration if it has not been read yet: `radio_cfg` is
+-    /// otherwise filled in only by opening the settings dialog, and whether
+-    /// USE asks first must not depend on whether anybody has.
+-    fn radio_is_configured(&mut self) -> bool {
+-        if self.radio_cfg.is_none() {
+-            self.radio_cfg = self.ctrl.radio_config();
++        // One row per picked receiver: its connection field, then the list's
++        // own row with ADD AS RADIO. The first ADD pressed is the answer.
++        let mut take = None;
++        for e in picked {
++            // Distance only where both ends have a position, as in the list.
++            let km = match (my_pos, e.lat, e.lon) {
++                (Some(me), Some(lat), Some(lon)) => {
++                    Some(sdroxide_types::distance_km(me, (f64::from(lat), f64::from(lon))))
++                }
++                _ => None,
++            };
++            let check = self.public_sdr_map_state.checks.get(&key(e));
++            ui.horizontal(|ui| {
++                ui.spacing_mut().item_spacing.x = 4.0;
++                check_cell(ui, check);
++                // In a column of its own: `entry_row` ends with a gap meant to
++                // go below the row, and in this horizontal row it went to the
++                // right instead, widening the window by 5 pt every frame.
++                // Why: HDZ 2026-11-05: "beim anklicken eines symbols rutschte es
++                //      auf volle breite so pö a pö".
++                ui.vertical(|ui| {
++                    if entry_row(ui, e, km) {
++                        take = Some(e.clone());
++                    }
++                });
++            });
+         }
+-        self.radio_cfg.as_ref().is_some_and(|c| c.backend != sdroxide_types::Backend::None)
++        take
+     }
+ 
+-    /// What the confirmation says: which radio is about to become which
+-    /// receiver, what that costs, and what it does not.
++    /// File the answer to a map receiver check under its row.
+     ///
+-    /// Written out in full rather than left as "are you sure?", because the
+-    /// two things an operator gets wrong here are both invisible otherwise —
+-    /// that the tab goes on carrying its old name, and that the receiver's
+-    /// published coverage becomes the dial's limit. Both were the report.
+-    fn replace_blurb(&self, entry: &PublicSdrEntry) -> String {
+-        let chip = self.radio_roster.iter().find(|c| c.id == self.radio_id);
+-        let this = match chip {
+-            Some(c) if !c.name.is_empty() => c.name.clone(),
+-            Some(c) => c.default_name.clone(),
+-            None => tr!("publicsdr-radio").to_string(),
+-        };
+-        let iface = self
+-            .radio_cfg
+-            .as_ref()
+-            .map_or_else(|| tr!("publicsdr-its-interface"), |c| c.backend.tr());
+-        tr!(
+-            "publicsdr-replace-taking-receiver-points-same",
+-            this = this,
+-            entry = entry.name,
+-            this2 = this,
+-            iface = iface,
+-            address = entry.address,
+-            entry2 = entry.name,
+-            range_label = entry.range_label(),
+-            iface2 = iface
+-        )
++    /// In: what `ProbeAnswer::PublicSdrCheck` carries. Effect: the waiting
++    /// check on that network and endpoint becomes ONLINE or SILENT
++    /// ([`crate::publicsdr_map::PublicSdrMapState::answered`]); an answer
++    /// nobody waits for is dropped. Fails: none.
++    // Why: a method here rather than a reach into the field from the settings
++    //      module, where answers arrive, so the map state stays private to
++    //      this window.
++    pub(in crate::app) fn public_sdr_check_answered(
++        &mut self,
++        network: PublicSdrNetwork,
++        address: &str,
++        result: &Result<String, String>,
++    ) {
++        self.public_sdr_map_state.answered(network, address, result, crate::time::now_unix_f64());
+     }
+ 
+-    /// Act on a picked receiver.
++    /// Add a picked receiver as a radio of its own, named after its entry.
+     ///
+-    /// Both routes go through [`PublicSdrEntry::radio_config`], so the same
+-    /// receiver is configured identically however it was taken — otherwise
+-    /// "open it in a tab" and "use it here" would drift into two subtly
+-    /// different radios.
+-    fn take_public_sdr(&mut self, entry: &PublicSdrEntry, action: PickAction) {
+-        match action {
+-            PickAction::ThisRadio => {
+-                // Built on this radio's own configuration, so pointing it at a
+-                // receiver keeps its converter offset, its audio devices and
+-                // everything else the operator had set — and refused outright
+-                // where there is none to build on, because the alternative is
+-                // a *default* radio written over theirs. `radio_cfg` is filled
+-                // in by opening the settings dialog, which nobody need ever
+-                // have done.
+-                if self.radio_cfg.is_none() {
+-                    self.radio_cfg = self.ctrl.radio_config();
+-                }
+-                let Some(base) = self.radio_cfg.clone() else {
+-                    self.show_notice(tr!("publicsdr-radio-s-configuration-has-not"));
+-                    return;
+-                };
+-                let cfg = entry.radio_config(&base, self.public_sdr_low_bw);
+-                // The settings dialog edits its own copy of `radio_cfg` and
+-                // writes it back whenever the two differ, so that copy has to
+-                // move too — otherwise a dialog left open would push the radio
+-                // that was here a moment ago straight back over this one. The
+-                // typed range boxes go with it, for the same reason they are
+-                // reseeded when the interface picker is used.
+-                self.radio_cfg = Some(cfg.clone());
+-                self.range_edit = None;
+-                // ...and the same for where the antenna is, which the entry has
+-                // just written: a dialog still showing "at the station" would
+-                // put every reception report back in the operator's own square
+-                // (issue #284).
+-                self.rx_site_edit = None;
+-                self.ctrl.set_radio_config(cfg);
+-                self.ctrl.reopen_source();
+-                // A tab named after the transceiver that used to be in it,
+-                // now running somebody else's receiver on the other side of
+-                // the world, is the half of issue #254 that no amount of
+-                // correct range checking would have made sense of: the dial
+-                // refused 144.8 MHz as out of range while the tab, its mode
+-                // tag and its packet monitor all still said IC-9700. The
+-                // confirmation says the rename is coming.
+-                self.radio_tab_requests
+-                    .push(RadioTabRequest::Rename { id: self.radio_id, name: entry.name.clone() });
+-                // Where reports now go out from is worth one clause: it has
+-                // changed under the operator, and silently getting it wrong is
+-                // what issue #284 was.
+-                let site = match entry.locator().as_str() {
+-                    "" => tr!("publicsdr-position-not-published-so-nothing").to_string(),
+-                    g => tr!("publicsdr-receptions-will-reported", value = g),
+-                };
+-                self.show_notice(tr!("publicsdr-pointing-radio", entry = entry.name, site = site));
+-                self.show_public_sdrs = false;
+-            }
+-            PickAction::NewRadio => {
+-                // A brand-new radio has none of this radio's settings, and
+-                // should not inherit them: it is a different receiver.
+-                let fresh = entry
+-                    .radio_config(&sdroxide_types::RadioConfig::default(), self.public_sdr_low_bw);
+-                self.radio_tab_requests.push(RadioTabRequest::Add {
+-                    station: self.station_key(),
+-                    preset: Some(Box::new(fresh)),
+-                });
+-                self.show_notice(tr!("publicsdr-opening-another-radio", entry = entry.name));
+-            }
+-        }
++    /// In: the directory entry. Effect: a [`RadioTabRequest::Add`] with the
++    /// receiver's whole configuration and its catalogue name, acted on by the
++    /// shell after the frame; a notice says it is on its way. The radio the
++    /// operator is on is left exactly as it was.
++    /// Fails: none here; a factory that cannot make the radio reports through
++    /// the shell's own notice.
++    // Why: HDZ 2026-11-04: "dabei wäre statt Kiwisdr … der Sendername aus dem
++    //      Katalog zu übernehmen". Without a name the radio was called after
++    //      its interface, so every public receiver read "Kiwisdr".
++    fn take_public_sdr(&mut self, entry: &PublicSdrEntry) {
++        // A brand-new radio has none of this radio's settings, and should not
++        // inherit them: it is a different receiver.
++        let fresh =
++            entry.radio_config(&sdroxide_types::RadioConfig::default(), self.public_sdr_low_bw);
++        self.radio_tab_requests.push(RadioTabRequest::Add {
++            station: self.station_key(),
++            preset: Some(Box::new(fresh)),
++            name: Some(radio_name(entry)),
++        });
++        self.show_notice(tr!("publicsdr-opening-another-radio", entry = entry.name));
++        // Done here: the receiver is a radio of its own now, and this window
++        // belongs to the radio it was opened from. Left open it would stay on
++        // that radio, with the receiver still picked.
++        // Why: HDZ 2026-11-04: "da die Karte von einem Radio aus geöffnet wird,
++        //      bleibt die Karte da dran kleben, obwohl wir ein neues Radio
++        //      anlegen … du solltest diese Map richtig schließen"; "da bleiben
++        //      die Radios stale".
++        self.show_public_sdrs = false;
++        self.public_sdr_map_state.picked.clear();
+     }
+ }
+ 
+-#[cfg(test)]
+-mod tests {
+-    use super::*;
++/// The name a radio taken from the directory is given.
++///
++/// In: the directory entry. Out: [`catalogue_name`] of its published name; for
++/// a placeholder name ("anonymous", "unknown", empty — see [`is_placeholder`])
++/// the place where it is given, else the device and the host, as in
++/// `"AirspyOne 47.144.9.193"`.
++// Why: HDZ 2026-11-04: "die SpyServer sind alle anonymous, dann sollte wenigstens
++//      die IP als Name rein". Measured on the cached directory: 113 of 212
++//      SpyServers are "anonymous", 3 of those give a place. The device goes with
++//      the host so that a hundred of them can be told apart in "Change radio".
++//      The port is left off: it is 5555 almost everywhere.
++fn radio_name(entry: &PublicSdrEntry) -> String {
++    if !is_placeholder(&entry.name) {
++        return catalogue_name(&entry.name);
++    }
++    if !entry.location.trim().is_empty() {
++        return catalogue_name(&entry.location);
++    }
++    // Host without the port; a bracketed IPv6 literal keeps its brackets off.
++    let host = match entry.address.rsplit_once(':') {
++        Some((h, p)) if p.chars().all(|c| c.is_ascii_digit()) => h,
++        _ => entry.address.as_str(),
++    };
++    let host = host.trim_start_matches('[').trim_end_matches(']');
++    let device = entry.device.trim();
++    if device.is_empty() { host.to_string() } else { format!("{device} {host}") }
++}
+ 
+-    /// The question the panel is drawn with in these tests. Its text does not
+-    /// matter to what is being pinned, only that there is some.
+-    const BLURB: &str = "Replace Radio 1 with Twente?";
++/// Whether a published name says nothing about the receiver: empty, or one of
++/// the words directories put there when the operator gave none (any case).
++fn is_placeholder(name: &str) -> bool {
++    let n = name.trim().to_ascii_lowercase();
++    n.is_empty() || matches!(n.as_str(), "anonymous" | "unknown" | "n/a" | "none")
++}
+ 
+-    /// Draw the same chips [`confirm_panel`] draws, in the same frame and the
+-    /// same order, and report where the one named ended up.
+-    ///
+-    /// The panel returns the answer rather than the responses, so a press has
+-    /// to be aimed by redrawing its layout. Keeping this beside it is the
+-    /// point: a chip renamed in one and not the other stops the test dead
+-    /// instead of quietly pressing nothing.
+-    fn chip_pos(ui: &mut egui::Ui, label: &str) -> egui::Pos2 {
+-        let mut at = egui::Pos2::ZERO;
+-        crate::chrome::red_panel(ui, |ui| {
+-            ui.label(RichText::new(BLURB).size(12.0));
+-            ui.add_space(4.0);
+-            ui.horizontal(|ui| {
+-                for l in ["REPLACE", "+ TAB INSTEAD", "CANCEL"] {
+-                    let r = crate::chrome::chip(ui, false, l);
+-                    if l == label {
+-                        at = r.rect.center();
+-                    }
+-                }
+-            });
+-        });
+-        at
++/// The published name made fit for the strip: the entry's own name,
++/// with the decoration directory names carry at their ends removed and the
++/// length kept to what the strip shows whole.
++///
++/// In: the directory name, as published (`"######ZL2J 0-30 MHz SDR"`).
++/// Out: `"ZL2J 0-30 MHz SDR"`; at most [`NAME_MAX`] characters, cut at a word
++/// where there is one. An entry that is nothing but decoration keeps its name
++/// as published, so the radio is never nameless.
++// Why: operators pad their listing to sort first or to stand out ("######",
++//      "- ", "| "); the strip is where the name is read, and padding there is
++//      noise. Inner punctuation stays: "0 - 30 MHz | Svartklubbudden" is what
++//      the operator called it.
++fn catalogue_name(published: &str) -> String {
++    let trimmed = published.trim_matches(|c: char| !c.is_alphanumeric());
++    if trimmed.is_empty() {
++        return published.trim().to_string();
+     }
+-
+-    /// Press one of the confirmation's chips and report what the panel
+-    /// answered. Two passes, the way `crate::app`'s own chip test does it: the
+-    /// first tells egui where everything is, the second aims at it.
+-    fn press(label: &str) -> Option<Confirm> {
+-        let ctx = egui::Context::default();
+-        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(600.0, 300.0));
+-        let mut at = egui::Pos2::ZERO;
+-        ctx.run_ui(egui::RawInput { screen_rect: Some(screen), ..Default::default() }, |ui| {
+-            at = chip_pos(ui, label);
+-        })
+-        .drop_without_applying_deltas();
+-        assert_ne!(at, egui::Pos2::ZERO, "{label} is not one of the panel's chips");
+-
+-        let button = |pressed| egui::Event::PointerButton {
+-            pos: at,
+-            button: egui::PointerButton::Primary,
+-            pressed,
+-            modifiers: Default::default(),
+-        };
+-        let mut answer = None;
+-        for events in [vec![egui::Event::PointerMoved(at), button(true)], vec![button(false)]] {
+-            let input = egui::RawInput { screen_rect: Some(screen), events, ..Default::default() };
+-            ctx.run_ui(input, |ui| answer = answer.or(confirm_panel(ui, BLURB)))
+-                .drop_without_applying_deltas();
++    if trimmed.chars().count() <= NAME_MAX {
++        return trimmed.to_string();
++    }
++    let cut: String = trimmed.chars().take(NAME_MAX).collect();
++    // The cut already ends a word: keep it whole.
++    if trimmed.chars().nth(NAME_MAX).is_some_and(|c| c == ' ') {
++        return cut.trim_end_matches(|c: char| !c.is_alphanumeric()).to_string();
++    }
++    // Back to the last word boundary, unless that would leave too little.
++    // `rfind(' ')` is a byte index on an ASCII space, so the slice is safe.
++    match cut.rfind(' ') {
++        Some(i) if i >= NAME_MAX / 2 => {
++            cut[..i].trim_end_matches(|c: char| !c.is_alphanumeric()).to_string()
+         }
+-        answer
++        _ => cut,
+     }
++}
+ 
+-    /// Each of the three answers has to come back as itself. A confirmation
+-    /// whose CANCEL replaced the radio anyway would be worse than none at all
+-    /// — issue #254 is somebody losing a configured IC-9700 to one click.
+-    #[test]
+-    fn every_answer_to_the_use_confirmation_comes_back_as_itself() {
+-        assert_eq!(press("REPLACE"), Some(Confirm::Replace));
+-        assert_eq!(press("+ TAB INSTEAD"), Some(Confirm::NewTab));
+-        assert_eq!(press("CANCEL"), Some(Confirm::Cancel));
+-    }
++/// Longest name [`catalogue_name`] gives a radio, in characters: about what the
++/// strip shows at 16 pt beside its buttons in half a laptop screen.
++const NAME_MAX: usize = 32;
++
++#[cfg(test)]
++mod tests {
++    use super::*;
+ 
+     /// A receiver with just enough filled in for the search box to chew on.
+     fn entry(name: &str, location: &str) -> PublicSdrEntry {
+@@ -821,17 +893,40 @@ mod tests {
+         assert_eq!(rows[0].0.name, "R7KJG SDR");
+     }
+ 
+-    /// ...and a panel nobody has pressed answers nothing, or the question
+-    /// would answer itself on the frame it was raised.
++    /// Proves: a directory name loses the padding at its ends and keeps what
++    /// the operator wrote inside it ([`catalogue_name`]).
+     #[test]
+-    fn an_unpressed_confirmation_answers_nothing() {
+-        let ctx = egui::Context::default();
+-        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(600.0, 300.0));
+-        let mut answer = Some(Confirm::Replace);
+-        ctx.run_ui(egui::RawInput { screen_rect: Some(screen), ..Default::default() }, |ui| {
+-            answer = confirm_panel(ui, BLURB);
+-        })
+-        .drop_without_applying_deltas();
+-        assert_eq!(answer, None);
++    fn a_catalogue_name_loses_its_padding_and_keeps_its_words() {
++        assert_eq!(catalogue_name("######ZL2J 0-30 MHz SDR"), "ZL2J 0-30 MHz SDR");
++        assert_eq!(catalogue_name("- 0-30MHz HF SDR PLONSK-"), "0-30MHz HF SDR PLONSK");
++        assert_eq!(catalogue_name("0 - 30 MHz | Svartklubbudden"), "0 - 30 MHz | Svartklubbudden");
++        // Nothing but decoration: kept as published rather than emptied.
++        assert_eq!(catalogue_name(" ### "), "###");
++    }
++
++    /// Proves: a SpyServer listed as "anonymous" is named after its place where
++    /// it gives one, else after its device and host ([`radio_name`]).
++    #[test]
++    fn an_anonymous_receiver_is_named_after_its_place_or_its_host() {
++        let mut e = entry("anonymous", "");
++        e.device = "AirspyOne".into();
++        e.address = "47.144.9.193:5555".into();
++        assert_eq!(radio_name(&e), "AirspyOne 47.144.9.193");
++        e.address = "[2001:db8::1]:5555".into();
++        assert_eq!(radio_name(&e), "AirspyOne 2001:db8::1");
++        e.location = "Ventura, California".into();
++        assert_eq!(radio_name(&e), "Ventura, California");
++        // A real name is kept, whatever else the entry says.
++        e.name = "######ZL2J 0-30 MHz SDR".into();
++        assert_eq!(radio_name(&e), "ZL2J 0-30 MHz SDR");
++    }
++
++    /// Proves: a long name is cut to [`NAME_MAX`] at a word, never mid-word
++    /// when a word boundary is in reach.
++    #[test]
++    fn a_long_catalogue_name_is_cut_at_a_word() {
++        let n = catalogue_name("0,5-30 MHz SDR, Bad Münstereifel Eifel Germany active loop");
++        assert!(n.chars().count() <= NAME_MAX, "{n}");
++        assert_eq!(n, "0,5-30 MHz SDR, Bad Münstereifel");
+     }
+ }
+diff --git a/crates/sdroxide-ui/src/app/settings/mod.rs b/crates/sdroxide-ui/src/app/settings/mod.rs
+index 14c49dc8..99c13b32 100644
+--- a/crates/sdroxide-ui/src/app/settings/mod.rs
++++ b/crates/sdroxide-ui/src/app/settings/mod.rs
+@@ -853,6 +853,11 @@ impl SdroxideApp {
+             // Straight to the clipboard, which is what the button that asked
+             // for it promised — from here it goes into a bug report.
+             A::Report(_, text) => ctx.copy_text(text),
++            // The public-SDR map's receiver check, filed under its row by the
++            // address it carries back.
++            A::PublicSdrCheck { network, address, result } => {
++                self.public_sdr_check_answered(network, &address, &result)
++            }
+             // The far end does not answer device questions. Said once, remembered
+             // for the session: the controls that ask grey out with a reason
+             // instead of each one having to discover it for itself.
+@@ -3828,6 +3833,7 @@ impl SdroxideApp {
+                         requests.push(crate::app::RadioTabRequest::Add {
+                             station: only.key.clone(),
+                             preset: None,
++                            name: None,
+                         });
+                     }
+                 }
+@@ -3855,6 +3861,7 @@ impl SdroxideApp {
+                                 requests.push(crate::app::RadioTabRequest::Add {
+                                     station: t.key.clone(),
+                                     preset: None,
++                                    name: None,
+                                 });
+                                 ui.close();
+                             }
+diff --git a/crates/sdroxide-ui/src/lib.rs b/crates/sdroxide-ui/src/lib.rs
+index 975b4078..28706123 100644
+--- a/crates/sdroxide-ui/src/lib.rs
++++ b/crates/sdroxide-ui/src/lib.rs
+@@ -38,6 +38,8 @@ mod login_globe;
+ /// browser client drives a single (remote) radio.
+ mod multi;
+ mod prop_map;
++/// The PUBLIC SDRS window's map view: the receivers where they stand.
++mod publicsdr_map;
+ #[cfg(feature = "remote")]
+ mod remote;
+ /// Pinned certificates for `wss://` stations nothing public vouches for.
+diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
+index 2aeeb3af..2b0abc1f 100644
+--- a/crates/sdroxide-ui/src/multi.rs
++++ b/crates/sdroxide-ui/src/multi.rs
+@@ -507,7 +507,28 @@ impl MultiApp {
+                         self.tabs[i].app.open_radio_settings();
+                     }
+                 }
+-                RadioTabRequest::Add { station, preset } => self.add_radio(&station, preset, ctx),
++                // Added exactly as before, then named: the radio that was not
++                // here a moment ago is the one this request made.
++                // Why: HDZ 2026-11-04: "dabei wäre … der Sendername aus dem
++                //      Katalog zu übernehmen". Naming after the fact keeps
++                //      `add_radio`/`add_tab` and the strip's own "+" as they
++                //      are, so this works with the original tab strip and with
++                //      Panel Exchange alike ("es sollte ein Fallback-Verhalten
++                //      auf die Ausgangsversion geben").
++                // Pitfall: a radio added at a station is not here yet — it
++                //          arrives when the station announces it, and is named
++                //          there — so only this machine's radios get the name.
++                RadioTabRequest::Add { station, preset, name } => {
++                    let before: Vec<u32> = self.tabs.iter().map(|t| t.id).collect();
++                    let here = station.is_empty();
++                    self.add_radio(&station, preset, ctx);
++                    if let Some(name) = name.filter(|n| here && !n.is_empty()) {
++                        let new = self.tabs.iter().map(|t| t.id).find(|id| !before.contains(id));
++                        if let Some(id) = new {
++                            self.rename_tab(id, &name);
++                        }
++                    }
++                }
+                 #[cfg(not(target_arch = "wasm32"))]
+                 RadioTabRequest::Connect { url, name } => self.connect_tab(&url, name, ctx),
+                 RadioTabRequest::Close(id) => {
+@@ -526,37 +547,46 @@ impl MultiApp {
+                         t.app.reopen_source();
+                     }
+                 }
+-                RadioTabRequest::Rename { id, name } => {
+-                    if let Some(t) = self.tabs.iter_mut().find(|t| t.id == id) {
+-                        t.name = name.clone();
+-                        // A radio at the far end of a connection is named in
+-                        // the roster where it lives, so the name goes there —
+-                        // otherwise it would last exactly as long as this
+-                        // connection, and nobody else on that station would
+-                        // ever see it. A station that does not take roster
+-                        // edits keeps the name here and nowhere else, which is
+-                        // what it has always done.
+-                        if t.remote {
+-                            if t.app.station_roster_editable() {
+-                                let station_id = t.app.station_radio_id();
+-                                t.app.rename_station_radio(station_id, &name);
+-                            }
+-                            continue;
+-                        }
+-                        // In the browser there is no roster to record it in at
+-                        // all: every tab there is somebody else's radio.
+-                        #[cfg(not(target_arch = "wasm32"))]
+-                        if let Err(e) = sdroxide_config::rename_radio(id, &name) {
+-                            eprintln!("sdroxide: renaming radio {id}: {e}");
+-                        }
+-                    }
+-                }
++                RadioTabRequest::Rename { id, name } => self.rename_tab(id, &name),
+                 RadioTabRequest::RemoveFromStation(id) => self.remove_at_station(id),
+                 RadioTabRequest::Reorder(ids) => self.reorder_tabs(&ids),
+             }
+         }
+     }
+ 
++    /// Give radio `id` the name `name`, here and where the radio is kept.
++    ///
++    /// In: the tab id and the new name. Effect: the tab shows it at once; a
++    /// radio of this machine has it written to the roster on disk, a radio at
++    /// a station has it sent to that station's roster where the station takes
++    /// edits. Fails: a roster that cannot be written is reported on stderr and
++    /// the name lasts for this session.
++    // Why: one routine for the RENAME request and for a radio added from
++    //      "Public SDRs" with its directory name (`RadioTabRequest::Add`), so the second is
++    //      stored exactly like the first.
++    fn rename_tab(&mut self, id: u32, name: &str) {
++        let Some(t) = self.tabs.iter_mut().find(|t| t.id == id) else { return };
++        t.name = name.to_string();
++        // A radio at the far end of a connection is named in the roster where
++        // it lives, so the name goes there — otherwise it would last exactly as
++        // long as this connection, and nobody else on that station would ever
++        // see it. A station that does not take roster edits keeps the name
++        // here and nowhere else, which is what it has always done.
++        if t.remote {
++            if t.app.station_roster_editable() {
++                let station_id = t.app.station_radio_id();
++                t.app.rename_station_radio(station_id, name);
++            }
++            return;
++        }
++        // In the browser there is no roster to record it in at all: every tab
++        // there is somebody else's radio.
++        #[cfg(not(target_arch = "wasm32"))]
++        if let Err(e) = sdroxide_config::rename_radio(id, name) {
++            eprintln!("sdroxide: renaming radio {id}: {e}");
++        }
++    }
++
+     /// What the strip asked for, applied once the tabs are no longer
+     /// borrowed for drawing.
+     fn apply_strip_actions(&mut self, actions: Vec<StripAction>, ctx: &egui::Context) {
+diff --git a/crates/sdroxide-ui/src/publicsdr_map.rs b/crates/sdroxide-ui/src/publicsdr_map.rs
+new file mode 100644
+index 00000000..92aa82fd
+--- /dev/null
++++ b/crates/sdroxide-ui/src/publicsdr_map.rs
+@@ -0,0 +1,824 @@
++//! The map view of the "PUBLIC SDRS" window: every receiver the chips and the
++//! search let through, as a dot where its directory says it stands.
++//!
++//! The projection, the pan/zoom and the dotted continents are the FT8 panel
++//! map's ([`crate::widgets::worldmap`]), the way the APRS map's are
++//! ([`crate::aprs_map`]): one module owns where the world is. What is here is
++//! what a directory of receivers needs:
++//!
++//! - a dot per receiver in its network's colour ([`network_colour`]), grey
++//!   where the receiver cannot be taken, and its name beside it wherever the
++//!   name has room ([`place_labels`]);
++//! - an auto-fit to whatever is visible, so a search ("Japan", a callsign)
++//!   flies the map to the answer;
++//! - a click that picks *every* receiver under the pointer, not one: several
++//!   KiwiSDRs at one site share a coordinate to the last digit, and a click
++//!   that chose one of them by accident would hide the others.
++//!
++//! The window draws the picked receivers below the map as ordinary list rows,
++//! so ADD AS RADIO is the same button in both views.
++// Why: HDZ 2026-11-04: "eine Karte für die SDR-Stationen dran machen", "Straßen
++//      interessieren nicht, nur Städte". The program's own Natural Earth map has
++//      coastlines, borders, rivers and cities; OSM tiles (walkers) would have
++//      added a dependency, network fetches and a tile policy for streets nobody
++//      asked for, and would not run in the browser client.
++
++use eframe::egui::{Align2, Color32, FontId, Pos2, Rect, Sense, Ui, Vec2, pos2, vec2};
++use sdroxide_types::{PublicSdrEntry, PublicSdrNetwork};
++
++use crate::i18n::tr;
++use crate::theme;
++use crate::widgets::worldmap::{MapView, alpha, draw_base_cities, interact, wrap180};
++
++/// Below this size, in points, the map is not worth drawing. Also the floor
++/// for its width: a map narrower than it tall is a strip, not a map.
++pub const MIN_HEIGHT: f32 = 120.0;
++
++/// How close the pointer has to be to a dot to hover or pick it, in points.
++const HIT_RADIUS: f32 = 7.0;
++
++/// Most receivers one click picks. A city with a dozen KiwiSDRs is rare, and
++/// the rows below the map take height from the map itself.
++pub const MAX_PICKED: usize = 6;
++
++/// A receiver dot's radius, in points.
++const DOT_R: f32 = 3.2;
++
++/// Never auto-fit tighter than this longitudinal span, in degrees: one receiver
++/// found by its callsign should show its country, not its street. A hand zoom
++/// goes further ([`MapView::clamp`] has its own floor).
++const MIN_LON_SPAN: f64 = 6.0;
++
++/// Extra margin left around the outermost receiver, as a factor on the span
++/// they need: 1.25 leaves an eighth of the view free on each side.
++const PAD: f64 = 1.25;
++
++/// Per-frame ease toward the auto-fit: the fraction of the remaining way taken
++/// each frame. 0.08 settles in about half a second at 60 frames a second.
++const EASE: f64 = 0.08;
++
++/// Past this many dots on screen only the picked receivers are named: the
++/// world view has no room for a name anywhere, and trying every dot against
++/// every other costs a frame for nothing.
++const LABEL_DOTS_MAX: usize = 400;
++
++/// The font the names beside the dots are written in. One function rather than
++/// a literal at each use, because [`place_labels`] measures with it and
++/// [`show`] draws with it, and the two must agree to the point.
++fn label_font() -> FontId {
++    FontId::proportional(9.5)
++}
++
++/// The map's own state, owned by the app so the view survives across frames
++/// and across switching between LIST and MAP.
++#[derive(Default)]
++pub struct PublicSdrMapState {
++    /// Centre and zoom, eased toward the auto-fit until the operator pans or
++    /// zooms by hand; a double-click hands it back ([`interact`]).
++    pub view: MapView,
++    /// The receivers the last click picked, by [`key`], nearest first.
++    pub picked: Vec<String>,
++    /// The NAMES chip is off: only the picked receivers are named.
++    // Why: HDZ 2026-11-04: "gönn der Karte einen Toggle-Knopf 'Labels', ich will
++    //      nicht immer Labels sehen". Off rather than on as the stored flag, so
++    //      the derived default is names shown.
++    pub names_off: bool,
++    /// The CITIES chip is off: this map without cities, whatever the shared
++    /// setting says. Off as the stored flag for the same reason as `names_off`.
++    // Why: HDZ 2026-11-06: "sonst brauchen die anderen Karten ein Städte-Toggle"
++    //      (the FT8 map got one of its own).
++    pub cities_off: bool,
++    /// The connection check of each receiver a click picked, by [`key`].
++    /// Kept across clicks, so picking a receiver again within
++    /// [`CHECK_FRESH_S`] shows the answer it already has.
++    pub checks: std::collections::HashMap<String, Check>,
++    /// The map's size when the view was last fitted. A change — the window
++    /// resized, the rows under the map grown by a pick — moves the view
++    /// straight to the new fit instead of easing there ([`show`]).
++    // Why: HDZ 2026-11-04: "wenn man die Map das erste Mal aufmacht und etwas
++    //      auswählt, dann rutscht der Kartenzoom … das ist etwas fimmelig".
++    //      Easing is for a search narrowing the receivers; a map that changes
++    //      size under the pointer should not glide for half a second after it.
++    pub fitted_size: Vec2,
++}
++
++/// How long after a click its receivers are checked, in seconds: long enough
++/// that clicking along a cluster does not fire a check at every dot passed.
++// Why: HDZ 2026-11-04: "ein basic Check nach 500 ms ein Connection-Test".
++pub const CHECK_DELAY_S: f64 = 0.5;
++/// How long an answer is trusted before a new pick checks again.
++const CHECK_FRESH_S: f64 = 60.0;
++/// How long a check may go unanswered before it counts as silent. Past the
++/// three seconds a check takes and the queue of a remote station's one probe
++/// worker in front of it.
++const CHECK_GIVE_UP_S: f64 = 20.0;
++
++/// Where one receiver's connection check stands. Times are Unix seconds.
++///
++/// Lifecycle: [`PublicSdrMapState::schedule_checks`] makes it `Due`,
++/// [`PublicSdrMapState::due_checks`] turns `Due` into `Asked` (and an `Asked`
++/// nobody answered into `Answered` with an error),
++/// [`PublicSdrMapState::answered`] turns `Asked` into `Answered`.
++#[derive(Debug, Clone, PartialEq)]
++pub enum Check {
++    /// To be asked at `at`, about `endpoint` (`host:port`).
++    Due { at: f64, endpoint: String },
++    /// Asked at `at`; the answer will name `endpoint`.
++    Asked { at: f64, endpoint: String },
++    /// `Ok` with what answered, `Err` with why nothing did.
++    Answered { at: f64, result: Result<String, String> },
++}
++
++/// The endpoint a check asks about: the address the radio would connect to,
++/// by the same rule the radio's own config applies (default port added).
++///
++/// In: a directory entry. Out: `host:port`, as in `"1.2.3.4:5555"`.
++/// Fails: none; an address the config cannot make sense of comes back as it
++/// was, and the check reports why it could not connect.
++// Why: the check has to ask about the address ADD AS RADIO would use, or a
++//      receiver could read ONLINE and then fail to open. Built through
++//      `radio_config` rather than by appending a default port here, so the
++//      two cannot drift apart.
++// Pitfall: an sdr-list receiver goes through the KiwiSDR block, because
++//          `PublicSdrEntry::backend` maps it there; its port is the one the
++//          directory gave.
++pub fn endpoint(e: &PublicSdrEntry) -> String {
++    // A blank base: only this receiver's own block matters for the address.
++    let cfg = e.radio_config(&sdroxide_types::RadioConfig::default(), false);
++    match e.network {
++        PublicSdrNetwork::SpyServer => cfg.spyserver.endpoint(),
++        PublicSdrNetwork::KiwiSdr | PublicSdrNetwork::SdrList => cfg.kiwi.endpoint(),
++    }
++}
++
++impl PublicSdrMapState {
++    /// After a click: schedule a check of each picked receiver that has no
++    /// fresh answer and none on the way, [`CHECK_DELAY_S`] from `now`.
++    ///
++    /// In: the receivers the click picked, now (Unix seconds). Effect: a `Due`
++    /// entry in [`Self::checks`] for each that needs one. Nothing is sent
++    /// here; [`Self::due_checks`] sends.
++    pub fn schedule_checks(&mut self, picked: &[&PublicSdrEntry], now: f64) {
++        for e in picked {
++            let k = key(e);
++            // "Fresh" means: nothing to do. An answer younger than
++            // CHECK_FRESH_S is shown again; a check already on its way is
++            // left to arrive rather than asked twice.
++            let fresh = match self.checks.get(&k) {
++                Some(Check::Answered { at, .. }) => now - at < CHECK_FRESH_S,
++                Some(Check::Due { .. } | Check::Asked { .. }) => true,
++                None => false,
++            };
++            if !fresh {
++                self.checks
++                    .insert(k, Check::Due { at: now + CHECK_DELAY_S, endpoint: endpoint(e) });
++            }
++        }
++    }
++
++    /// The checks to send now, marked as asked; and the ones asked too long
++    /// ago, marked silent with `give_up` as the reason.
++    ///
++    /// In: now, the text for a check nobody answered. Out: (key, endpoint) of
++    /// each check that falls due, for the still-picked receivers only — a pick
++    /// replaced within the delay is never asked about.
++    /// Effect: `Due` → `Asked` for what is returned; `Asked` older than
++    /// [`CHECK_GIVE_UP_S`] → `Answered(Err(give_up))`; `Due` entries of
++    /// receivers no longer picked are dropped.
++    /// Fails: none.
++    pub fn due_checks(&mut self, now: f64, give_up: &str) -> Vec<(String, String)> {
++        let mut out = Vec::new();
++        // Only the current pick is walked: a check that fell due for a
++        // receiver the operator has clicked away from is of no interest.
++        for k in &self.picked {
++            let Some(c) = self.checks.get_mut(k) else { continue };
++            match c {
++                // Its moment has come: hand it to the caller to ask, and
++                // remember that it was asked, and when.
++                Check::Due { at, endpoint } if *at <= now => {
++                    out.push((k.clone(), endpoint.clone()));
++                    *c = Check::Asked { at: now, endpoint: endpoint.clone() };
++                }
++                // Asked, and nothing came back in time — a dropped request
++                // or a station that went away. Silent is the honest reading.
++                Check::Asked { at, .. } if now - *at > CHECK_GIVE_UP_S => {
++                    *c = Check::Answered { at: now, result: Err(give_up.to_string()) };
++                }
++                _ => {}
++            }
++        }
++        // A pick replaced before its check fell due leaves nothing behind.
++        let picked = &self.picked;
++        self.checks.retain(|k, c| !matches!(c, Check::Due { .. }) || picked.contains(k));
++        out
++    }
++
++    /// File an answer under every receiver asked about at that endpoint.
++    ///
++    /// In: the network and endpoint the answer names, the result, now.
++    /// Effect: each `Asked` check on that network and endpoint becomes
++    /// `Answered`. An answer nobody is waiting for (the check gave up, or the
++    /// map state was reset) is dropped.
++    // Invariant: matched on network *and* endpoint. Two networks can list the
++    //            same host and port (an sdr-list receiver that is also a
++    //            KiwiSDR), and the answer to one says nothing about the other.
++    pub fn answered(
++        &mut self,
++        network: PublicSdrNetwork,
++        address: &str,
++        result: &Result<String, String>,
++        now: f64,
++    ) {
++        // The network part of [`key`], so a key can be matched without the
++        // entry it came from.
++        let prefix = format!("{}|", network.label());
++        for (k, c) in self.checks.iter_mut() {
++            if let Check::Asked { endpoint, .. } = c
++                && endpoint == address
++                && k.starts_with(&prefix)
++            {
++                *c = Check::Answered { at: now, result: result.clone() };
++            }
++        }
++    }
++
++    /// Whether a picked receiver's check is still to come, so the window keeps
++    /// asking for frames until it arrives.
++    ///
++    /// Out: true while any picked receiver is `Due` or `Asked`.
++    // Why: egui draws only when something happens; without frames neither the
++    //      500 ms delay nor an answer arriving from a thread would ever show.
++    pub fn checks_pending(&self) -> bool {
++        self.picked
++            .iter()
++            .any(|k| matches!(self.checks.get(k), Some(Check::Due { .. } | Check::Asked { .. })))
++    }
++}
++
++/// What identifies one receiver across directory refreshes: its network and
++/// the address it is reached at. The name is not unique ("anonymous").
++///
++/// In: a directory entry. Out: `"<network label>|<address>"`, as in
++/// `"SpyServer|1.2.3.4:5555"`.
++// Invariant: the network label comes first and ends at the `|`;
++//            [`PublicSdrMapState::answered`] matches on that prefix.
++pub fn key(e: &PublicSdrEntry) -> String {
++    format!("{}|{}", e.network.label(), e.address)
++}
++
++/// The position a receiver is drawn at, if its directory gave one.
++///
++/// In: a directory entry. Out: (latitude, longitude) in degrees, widened to
++/// `f64` for the projection; `None` when either is missing (7 of 1,149 in the
++/// directories on 2026-11-04), and such a receiver gets no dot.
++fn position(e: &PublicSdrEntry) -> Option<(f64, f64)> {
++    match (e.lat, e.lon) {
++        (Some(lat), Some(lon)) => Some((f64::from(lat), f64::from(lon))),
++        _ => None,
++    }
++}
++
++/// The view to ease toward.
++///
++/// In: the visible receivers' positions, home, the map's aspect (height/width).
++/// Out: (centre lat, centre lon, lon span). Every receiver framed with a margin,
++/// centred on their centroid; when that takes the whole world, centred on home
++/// instead, so the operator's own side of the globe is the middle of it.
++fn target_view(pts: &[(f64, f64)], home: Option<(f64, f64)>, aspect: f64) -> (f64, f64, f64) {
++    if pts.is_empty() {
++        return (0.0, home.map_or(0.0, |h| h.1), 360.0);
++    }
++    // The centroid, with longitudes taken relative to the first point so a
++    // cluster across the date line (178°, -178°) averages to 180°, not 0°.
++    let n = pts.len() as f64;
++    let lon_ref = pts[0].1;
++    let clat = pts.iter().map(|p| p.0).sum::<f64>() / n;
++    let clon = wrap180(lon_ref + pts.iter().map(|p| wrap180(p.1 - lon_ref)).sum::<f64>() / n);
++    // The farthest receiver from the centre in each direction decides the span.
++    let mut max_dlat = 0.0f64;
++    let mut max_dlon = 0.0f64;
++    for &(lat, lon) in pts {
++        max_dlat = max_dlat.max((lat - clat).abs());
++        max_dlon = max_dlon.max(wrap180(lon - clon).abs());
++    }
++    // Whichever of the two needs more room sets the zoom; the latitude need is
++    // turned into a longitude span through the map's aspect, because the
++    // projection is linear in both and the view is given by its lon span.
++    let need_lon = 2.0 * max_dlon * PAD;
++    let need_lat = 2.0 * max_dlat * PAD;
++    let lon_span = need_lon.max(need_lat / aspect.max(1e-3)).clamp(MIN_LON_SPAN, 360.0);
++    // The whole world: turn it so home is in the middle.
++    let clon = match home {
++        Some(h) if lon_span >= 360.0 => h.1,
++        _ => clon,
++    };
++    // Keep the view inside the poles, as `MapView::clamp` does for a hand pan.
++    let lat_span = (lon_span * aspect).min(180.0);
++    let clat = if lat_span >= 180.0 {
++        0.0
++    } else {
++        clat.clamp(-90.0 + lat_span / 2.0, 90.0 - lat_span / 2.0)
++    };
++    (clat, clon, lon_span)
++}
++
++/// A receiver's colour on the map, one per network, all from the palette.
++///
++/// In: the network, the map's palette. Out: KiwiSDR the primary accent (cyan),
++/// SpyServer the map's own station colour (white on a dark map, ink on a light
++/// one), sdr-list green.
++// Why: HDZ 2026-11-04: "die rote Farbe für die Spy Server als Symbol ist auch
++//      nicht so gut, nimm lieber eine andere Farbe, die die Palette des Programms
++//      hergibt". The list's pink is the map's pick ring and reads as an alarm on
++//      a dot; the palette has no blue besides cyan (Kiwi) and cyan_dim, which on
++//      a 3 pt dot is not told from cyan and sits on the river blue.
++fn network_colour(n: PublicSdrNetwork, map: &theme::MapPalette) -> eframe::egui::Color32 {
++    match n {
++        PublicSdrNetwork::KiwiSdr => theme::CYAN(),
++        PublicSdrNetwork::SpyServer => map.station,
++        PublicSdrNetwork::SdrList => theme::GREEN(),
++    }
++}
++
++/// Where the names go: beside every dot whose name fits.
++///
++/// In: the map rect, the dots on screen, the picked keys, whether the NAMES
++/// chip is on. Out: the receivers to name and the rect each name takes. Picked
++/// receivers are tried first, then the free ones, then those that cannot be
++/// taken; with the chip off, or past [`LABEL_DOTS_MAX`] dots, only the picked
++/// ones.
++// Why: HDZ 2026-11-04: "wenn ich SpyServer inaktiviere, dann zeigen Kiwi-Server
++//      Labels an, sonst nur blau". Names used to be all-or-nothing at 30 dots on
++//      screen, so a network chip switched every name in view on or off, and the
++//      names that were drawn ran over one another. Placing each where it has
++//      room makes the names follow the zoom, not the filter.
++fn place_labels<'a>(
++    p: &eframe::egui::Painter,
++    bounds: Rect,
++    screen: &[(&'a PublicSdrEntry, Pos2)],
++    picked: &[String],
++    names_on: bool,
++) -> Vec<(&'a PublicSdrEntry, Rect)> {
++    let is_picked = |e: &PublicSdrEntry| picked.iter().any(|k| *k == key(e));
++    // Whether anything but the picked receivers is named at all.
++    let all = names_on && screen.len() <= LABEL_DOTS_MAX;
++    // The order names are tried in, which is the order they win space in:
++    // tier 0 picked, tier 1 free, tier 2 cannot be taken.
++    let mut order: Vec<usize> = Vec::new();
++    for tier in 0..3 {
++        for (i, (e, _)) in screen.iter().enumerate() {
++            let t = if is_picked(e) {
++                0
++            } else if e.blocked_reason().is_none() {
++                1
++            } else {
++                2
++            };
++            if t == tier && (all || t == 0) {
++                order.push(i);
++            }
++        }
++    }
++    // Measured with the font they are drawn in, so a placed name is exactly
++    // the rect it takes. The colour does not change the size.
++    let dots: Vec<Pos2> = screen.iter().map(|(_, c)| *c).collect();
++    let sizes: Vec<Vec2> = screen
++        .iter()
++        .map(|(e, _)| p.layout_no_wrap(e.name.clone(), label_font(), Color32::WHITE).size())
++        .collect();
++    fit_labels(bounds, &dots, &sizes, &order).into_iter().map(|(i, r)| (screen[i].0, r)).collect()
++}
++
++/// Greedy label placement, the geometry half of [`place_labels`].
++///
++/// In: the bounds, every dot, every label's size (same index), the order to
++/// try them in. Out: (index, rect) for each label placed. A label goes right of
++/// its dot, else left of it; it is placed only inside the bounds, clear of
++/// every label placed before it and of every other dot.
++/// Fails: none; a label with no room is left out, never squeezed.
++fn fit_labels(bounds: Rect, dots: &[Pos2], sizes: &[Vec2], order: &[usize]) -> Vec<(usize, Rect)> {
++    /// Space between a dot and its name, in points.
++    const GAP: f32 = 3.0;
++    /// Space kept free around each placed name, in points.
++    const MARGIN: f32 = 1.5;
++    let mut placed: Vec<(usize, Rect)> = Vec::new();
++    for &i in order {
++        // The two places a name may go, vertically centred on its dot.
++        let (c, s) = (dots[i], sizes[i]);
++        let right = Rect::from_min_size(pos2(c.x + DOT_R + GAP, c.y - s.y / 2.0), s);
++        let left = Rect::from_min_size(pos2(c.x - DOT_R - GAP - s.x, c.y - s.y / 2.0), s);
++        // Room means: inside the map, clear of every name already placed, and
++        // not over any other receiver's dot (its own dot is beside it).
++        let fits = |r: Rect| {
++            bounds.contains_rect(r)
++                && !placed.iter().any(|(_, q)| q.expand(MARGIN).intersects(r))
++                && !dots.iter().enumerate().any(|(j, d)| j != i && r.expand(DOT_R).contains(*d))
++        };
++        // Right first, the way a map is read; left only if right is taken.
++        if let Some(r) = [right, left].into_iter().find(|r| fits(*r)) {
++            placed.push((i, r));
++        }
++    }
++    placed
++}
++
++/// The hover text for one receiver: name, place, band, users, distance, and
++/// the reason it cannot be taken where there is one.
++///
++/// In: the entry, home. Out: two to four lines, the first unindented so a
++/// tooltip listing several receivers reads as one block per receiver, as in
++/// `"KiwiSDR · DF0HQ\n   Dortmund\n   0–30 MHz · 2/8 · 12 km"`. Each part is
++/// left out where the directory gave nothing.
++fn tip_line(e: &PublicSdrEntry, home: Option<(f64, f64)>) -> String {
++    let mut s = format!("{} · {}", e.network.label(), e.name);
++    if !e.location.trim().is_empty() {
++        s.push_str(&format!("\n   {}", e.location.trim()));
++    }
++    s.push_str(&format!("\n   {}", e.range_label()));
++    if e.max_users > 0 {
++        s.push_str(&format!(" · {}/{}", e.users, e.max_users));
++    }
++    if let (Some(h), Some(p)) = (home, position(e)) {
++        s.push_str(&format!(" · {:.0} km", sdroxide_types::distance_km(h, p)));
++    }
++    if let Some(why) = e.blocked_reason() {
++        s.push_str(&format!("\n   {why}"));
++    }
++    s
++}
++
++/// Draw the map of `entries` into a rect `h` points high.
++///
++/// In: the receivers the window's filters let through, home (from the station
++/// grid), the height to fill. Out: true when a click changed
++/// [`PublicSdrMapState::picked`] (the window then shows those receivers' rows).
++/// Effect: pans/zooms `state.view`; a click on dots sets `picked` to every
++/// receiver within [`HIT_RADIUS`] of it, nearest first, at most [`MAX_PICKED`];
++/// a click on empty map clears it.
++/// Fails: none; receivers without a position are left off (the window counts
++/// them), and a map narrower than [`MIN_HEIGHT`] is not drawn.
++pub fn show(
++    ui: &mut Ui,
++    state: &mut PublicSdrMapState,
++    entries: &[&PublicSdrEntry],
++    home: Option<(f64, f64)>,
++    h: f32,
++) -> bool {
++    // Too small to be a map: draw nothing and leave the space to the rows.
++    let w = ui.available_width();
++    if w < MIN_HEIGHT || h < MIN_HEIGHT {
++        return false;
++    }
++    let (rect, resp) = ui.allocate_exact_size(vec2(w, h), Sense::click_and_drag());
++    if !ui.is_rect_visible(rect) {
++        return false;
++    }
++    // The theme's map colours, and a painter clipped to the map so nothing
++    // drawn near the edge spills into the rows below.
++    let map = theme::map();
++    let p = ui.painter_at(rect);
++    p.rect_filled(rect, 0.0, map.sea);
++
++    // ── the view ──
++    // Height over width: how much latitude a given longitude span shows.
++    let aspect = (rect.height() / rect.width()) as f64;
++    // Only receivers with a position take part in anything below.
++    let placed: Vec<(&PublicSdrEntry, (f64, f64))> =
++        entries.iter().filter_map(|e| position(e).map(|q| (*e, q))).collect();
++    let pts: Vec<(f64, f64)> = placed.iter().map(|(_, q)| *q).collect();
++    let (t_clat, t_clon, t_span) = target_view(&pts, home, aspect);
++    let resized = state.fitted_size != rect.size();
++    state.fitted_size = rect.size();
++    let view = &mut state.view;
++    // A NaN from a bad input event would otherwise survive every clamp (#656).
++    view.sanitize();
++    // First frame, or the map changed size: straight to the fit. Hand-moved:
++    // stay, only kept legal. Otherwise: ease toward the fit, so a search
++    // glides rather than jumps.
++    if !view.initialized || (resized && !view.manual) {
++        view.clat = t_clat;
++        view.clon = t_clon;
++        view.lon_span = t_span;
++        view.initialized = true;
++    } else if view.manual {
++        view.clamp(aspect);
++    } else {
++        view.clat += (t_clat - view.clat) * EASE;
++        view.clon = wrap180(view.clon + wrap180(t_clon - view.clon) * EASE);
++        view.lon_span += (t_span - view.lon_span) * EASE;
++        let settled = (view.clat - t_clat).abs() < 0.02
++            && wrap180(t_clon - view.clon).abs() < 0.02
++            && (view.lon_span - t_span).abs() < 0.02;
++        // Frames only while moving; a settled map costs nothing.
++        if !settled {
++            crate::repaint::after_ms(ui.ctx(), 16);
++        }
++    }
++    if interact(ui, view, &resp, aspect) {
++        crate::repaint::animate(ui.ctx());
++    }
++    let (clat, clon, lon_span) = (view.clat, view.clon, view.lon_span);
++    let lat_span = lon_span * aspect;
++    let manual = view.manual;
++
++    // Sea, land, borders, rivers and cities, as every flat map in the program.
++    draw_base_cities(&p, rect, clat, clon, lon_span, lat_span, map, !state.cities_off);
++
++    // (lat, lon) in degrees to a point on screen: linear in both, longitude
++    // wrapped around the centre so the world repeats sideways.
++    let project = |(lat, lon): (f64, f64)| -> Pos2 {
++        let dlon = wrap180(lon - clon);
++        pos2(
++            rect.left() + (0.5 + (dlon / lon_span) as f32) * rect.width(),
++            rect.top() + (0.5 - ((lat - clat) / lat_span) as f32) * rect.height(),
++        )
++    };
++
++    // Screen positions once, and everything under the pointer, nearest first.
++    // A dot half off the edge still counts: it is drawn clipped and can be
++    // hovered.
++    let screen: Vec<(&PublicSdrEntry, Pos2)> = placed
++        .iter()
++        .map(|(e, q)| (*e, project(*q)))
++        .filter(|(_, c)| rect.expand(DOT_R).contains(*c))
++        .collect();
++    let under = |m: Pos2| -> Vec<(usize, f32)> {
++        let mut v: Vec<(usize, f32)> = screen
++            .iter()
++            .enumerate()
++            .map(|(i, (_, c))| (i, c.distance(m)))
++            .filter(|&(_, d)| d <= HIT_RADIUS)
++            .collect();
++        v.sort_by(|a, b| a.1.total_cmp(&b.1));
++        v
++    };
++    let hovered: Vec<(usize, f32)> = resp.hover_pos().map(under).unwrap_or_default();
++
++    // ── receivers: the ones that cannot be taken first, under the rest ──
++    // Grey for a receiver that cannot be taken, whatever its network: the
++    // reason is in its tooltip and in its row.
++    let colour = |e: &PublicSdrEntry| {
++        if e.blocked_reason().is_some() { theme::gray(110) } else { network_colour(e.network, map) }
++    };
++    for pass_blocked in [true, false] {
++        for (e, c) in &screen {
++            let blocked = e.blocked_reason().is_some();
++            if blocked != pass_blocked {
++                continue;
++            }
++            // A halo, so a dot over the stippled land stays readable.
++            p.circle_filled(*c, DOT_R + 1.6, alpha(map.sea, 170.0));
++            p.circle_filled(*c, DOT_R, alpha(colour(e), if blocked { 170.0 } else { 235.0 }));
++        }
++    }
++
++    // ── names, wherever one fits ──
++    for (e, rect_l) in place_labels(&p, rect, &screen, &state.picked, !state.names_off) {
++        p.text(
++            rect_l.left_center(),
++            Align2::LEFT_CENTER,
++            &e.name,
++            label_font(),
++            alpha(colour(e), 210.0),
++        );
++    }
++
++    // ── picked and hovered, on top ──
++    // A ring in the pick colour around each picked receiver, so the dots the
++    // rows below belong to can be found again.
++    for (e, c) in &screen {
++        if state.picked.iter().any(|k| *k == key(e)) {
++            p.circle_stroke(*c, DOT_R + 3.5, (1.6, map.dx));
++        }
++    }
++    // The nearest dot under the pointer, lit and redrawn over its neighbours.
++    if let Some(&(i, _)) = hovered.first() {
++        let (e, c) = screen[i];
++        p.circle_filled(c, DOT_R + 1.5, map.hover);
++        p.circle_filled(c, DOT_R, network_colour(e.network, map));
++    }
++
++    // ── us ──
++    // Home from the station grid, drawn like the FT8 and APRS maps draw it.
++    if let Some(hq) = home {
++        let c = project(hq);
++        p.circle_filled(c, 7.0, alpha(map.home, 55.0));
++        p.circle_filled(c, 3.4, map.home);
++        p.circle_stroke(c, 6.5, (1.2, alpha(map.home, 170.0)));
++    }
++
++    // ── interaction ──
++    let mut changed = false;
++    if !hovered.is_empty() {
++        // One block per receiver under the pointer, and a count of the rest.
++        let tip = hovered
++            .iter()
++            .take(MAX_PICKED)
++            .map(|&(i, _)| tip_line(screen[i].0, home))
++            .collect::<Vec<_>>()
++            .join("\n");
++        let more = hovered.len().saturating_sub(MAX_PICKED);
++        let tip = if more > 0 { format!("{tip}\n+{more}") } else { tip };
++        resp.clone().on_hover_text(tip);
++        // A click picks all of them (at most MAX_PICKED, nearest first) and
++        // schedules their connection checks.
++        if resp.clicked() {
++            let chosen: Vec<&PublicSdrEntry> =
++                hovered.iter().take(MAX_PICKED).map(|&(i, _)| screen[i].0).collect();
++            state.picked = chosen.iter().map(|e| key(e)).collect();
++            state.schedule_checks(&chosen, crate::time::now_unix_f64());
++            changed = true;
++        }
++    } else if resp.clicked() && !state.picked.is_empty() {
++        // A click on open sea or land lets go of the pick.
++        state.picked.clear();
++        changed = true;
++    }
++
++    // Hand-moved: say how to give the view back to the auto-fit.
++    if manual && resp.hovered() {
++        p.text(
++            rect.right_bottom() + vec2(-6.0, -4.0),
++            Align2::RIGHT_BOTTOM,
++            tr!("aprsmap-double-click-reframe"),
++            FontId::proportional(9.0),
++            map.hint,
++        );
++    }
++    changed
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    /// An empty map shows the world, turned to home's longitude.
++    #[test]
++    fn an_empty_map_shows_the_world_around_home() {
++        let (lat, lon, span) = target_view(&[], Some((51.5, 7.5)), 0.5);
++        assert_eq!(span, 360.0);
++        assert_eq!(lat, 0.0);
++        assert_eq!(lon, 7.5);
++    }
++
++    /// One receiver found by its callsign shows its country, not its street.
++    #[test]
++    fn one_receiver_is_framed_with_a_floor() {
++        let (lat, lon, span) = target_view(&[(35.0, 139.0)], None, 0.5);
++        assert!(span >= MIN_LON_SPAN);
++        assert!((lat - 35.0).abs() < 1e-9 && (lon - 139.0).abs() < 1e-9);
++    }
++
++    /// Receivers on both sides of the date line are framed across it, not
++    /// around the whole world the other way.
++    #[test]
++    fn the_date_line_does_not_split_a_cluster() {
++        let (_, lon, span) = target_view(&[(-40.0, 178.0), (-41.0, -178.0)], None, 0.5);
++        assert!(span < 30.0, "{span}");
++        assert!(lon.abs() > 170.0, "{lon}");
++    }
++
++    /// Proves: a lone dot is named, to its right ([`fit_labels`]).
++    #[test]
++    fn a_lone_dot_gets_its_name_on_the_right() {
++        let b = Rect::from_min_size(pos2(0.0, 0.0), vec2(400.0, 200.0));
++        let got = fit_labels(b, &[pos2(100.0, 100.0)], &[vec2(60.0, 12.0)], &[0]);
++        assert_eq!(got.len(), 1);
++        assert!(got[0].1.left() > 100.0);
++    }
++
++    /// Proves: two dots side by side never get overlapping names — the second
++    /// goes left or is left out — and no name covers another dot.
++    #[test]
++    fn names_never_overlap_and_never_cover_a_dot() {
++        let b = Rect::from_min_size(pos2(0.0, 0.0), vec2(400.0, 200.0));
++        let dots = [pos2(100.0, 100.0), pos2(104.0, 104.0), pos2(130.0, 100.0)];
++        let sizes = [vec2(60.0, 12.0); 3];
++        let got = fit_labels(b, &dots, &sizes, &[0, 1, 2]);
++        for (a, (i, ra)) in got.iter().enumerate() {
++            for (j, rb) in got.iter().skip(a + 1).map(|(j, r)| (*j, *r)) {
++                assert!(!ra.intersects(rb), "labels {i} and {j} overlap");
++            }
++            for (k, d) in dots.iter().enumerate() {
++                assert!(k == *i || !ra.contains(*d), "label {i} covers dot {k}");
++            }
++        }
++    }
++
++    /// Proves: a name that would leave the map is put on the other side, and
++    /// one with room on neither is dropped.
++    #[test]
++    fn a_name_at_the_edge_flips_or_is_dropped() {
++        let b = Rect::from_min_size(pos2(0.0, 0.0), vec2(200.0, 100.0));
++        let got = fit_labels(b, &[pos2(190.0, 50.0)], &[vec2(60.0, 12.0)], &[0]);
++        assert_eq!(got.len(), 1);
++        assert!(got[0].1.right() < 190.0, "flipped to the left");
++        let got = fit_labels(b, &[pos2(100.0, 50.0)], &[vec2(150.0, 12.0)], &[0]);
++        assert!(got.is_empty(), "no room either side");
++    }
++
++    /// A SpyServer at `address`, enough for the check logic.
++    fn spy(address: &str) -> PublicSdrEntry {
++        PublicSdrEntry {
++            network: PublicSdrNetwork::SpyServer,
++            name: "anonymous".into(),
++            location: String::new(),
++            antenna: String::new(),
++            device: "AirspyOne".into(),
++            address: address.into(),
++            lat: Some(1.0),
++            lon: Some(2.0),
++            grid: String::new(),
++            min_hz: 0.0,
++            max_hz: 1e9,
++            users: 0,
++            max_users: 4,
++            api_channels: None,
++            max_iq_rate: 0.0,
++            full_control: true,
++            session_limit_min: 0,
++            snr_db: None,
++        }
++    }
++
++    /// Proves: a click's receivers are asked about [`CHECK_DELAY_S`] after it,
++    /// not before, once, and the answer finds its row by endpoint.
++    #[test]
++    fn a_pick_is_checked_after_the_delay_and_answered_by_endpoint() {
++        let (a, b) = (spy("1.2.3.4:5555"), spy("5.6.7.8"));
++        let mut st = PublicSdrMapState::default();
++        st.picked = vec![key(&a), key(&b)];
++        st.schedule_checks(&[&a, &b], 100.0);
++        assert!(st.due_checks(100.3, "x").is_empty(), "not before the delay");
++        let due = st.due_checks(100.6, "x");
++        assert_eq!(due.len(), 2);
++        assert!(due.iter().any(|(_, ep)| ep == "5.6.7.8:5555"), "default port added: {due:?}");
++        assert!(st.due_checks(100.7, "x").is_empty(), "asked once");
++        assert!(st.checks_pending());
++        st.answered(PublicSdrNetwork::SpyServer, "1.2.3.4:5555", &Ok("up".into()), 101.0);
++        assert_eq!(st.checks[&key(&a)], Check::Answered { at: 101.0, result: Ok("up".into()) });
++        assert!(matches!(st.checks[&key(&b)], Check::Asked { .. }), "the other still waits");
++    }
++
++    /// Proves: a check nobody answers turns silent after [`CHECK_GIVE_UP_S`],
++    /// and a fresh answer is reused rather than asked again.
++    #[test]
++    fn an_unanswered_check_turns_silent_and_a_fresh_one_is_kept() {
++        let a = spy("1.2.3.4:5555");
++        let mut st = PublicSdrMapState::default();
++        st.picked = vec![key(&a)];
++        st.schedule_checks(&[&a], 0.0);
++        st.due_checks(1.0, "none");
++        st.due_checks(1.0 + CHECK_GIVE_UP_S + 1.0, "none");
++        assert!(
++            matches!(&st.checks[&key(&a)], Check::Answered { result: Err(m), .. } if m == "none")
++        );
++        let before = st.checks[&key(&a)].clone();
++        st.schedule_checks(&[&a], 30.0);
++        assert_eq!(st.checks[&key(&a)], before, "fresh: not scheduled again");
++        st.schedule_checks(&[&a], 30.0 + CHECK_FRESH_S);
++        assert!(matches!(st.checks[&key(&a)], Check::Due { .. }), "stale: checked again");
++    }
++
++    /// Proves: a pick replaced before its check fell due is never asked about.
++    #[test]
++    fn a_replaced_pick_is_not_checked() {
++        let (a, b) = (spy("1.2.3.4:5555"), spy("5.6.7.8:5555"));
++        let mut st = PublicSdrMapState::default();
++        st.picked = vec![key(&a)];
++        st.schedule_checks(&[&a], 0.0);
++        st.picked = vec![key(&b)];
++        st.schedule_checks(&[&b], 0.2);
++        let due = st.due_checks(1.0, "x");
++        assert_eq!(due, vec![(key(&b), "5.6.7.8:5555".to_string())]);
++        assert!(!st.checks.contains_key(&key(&a)));
++    }
++
++    /// The key tells two "anonymous" SpyServers apart by their address.
++    #[test]
++    fn the_key_is_network_and_address() {
++        let mut e = PublicSdrEntry {
++            network: PublicSdrNetwork::SpyServer,
++            name: "anonymous".into(),
++            location: String::new(),
++            antenna: String::new(),
++            device: "AirspyOne".into(),
++            address: "1.2.3.4:5555".into(),
++            lat: Some(1.0),
++            lon: Some(2.0),
++            grid: String::new(),
++            min_hz: 0.0,
++            max_hz: 1e9,
++            users: 0,
++            max_users: 4,
++            api_channels: None,
++            max_iq_rate: 0.0,
++            full_control: true,
++            session_limit_min: 0,
++            snr_db: None,
++        };
++        let a = key(&e);
++        e.address = "5.6.7.8:5555".into();
++        assert_ne!(a, key(&e));
++    }
++}
+diff --git a/crates/sdroxide-ui/src/widgets/worldmap.rs b/crates/sdroxide-ui/src/widgets/worldmap.rs
+index 5ef178bd..10b87890 100644
+--- a/crates/sdroxide-ui/src/widgets/worldmap.rs
++++ b/crates/sdroxide-ui/src/widgets/worldmap.rs
+@@ -373,9 +373,25 @@ pub(crate) fn draw_base(
+     lon_span: f64,
+     lat_span: f64,
+     map: &theme::MapPalette,
++) -> f32 {
++    draw_base_cities(p, rect, clat, clon, lon_span, lat_span, map, theme::map_cities())
++}
++
++/// [`draw_base`] for a map with a cities switch of its own: `cities` instead
++/// of the shared setting.
++#[allow(clippy::too_many_arguments)]
++pub(crate) fn draw_base_cities(
++    p: &eframe::egui::Painter,
++    rect: eframe::egui::Rect,
++    clat: f64,
++    clon: f64,
++    lon_span: f64,
++    lat_span: f64,
++    map: &theme::MapPalette,
++    cities: bool,
+ ) -> f32 {
+     let dot_r = draw_ground(p, rect, clat, clon, lon_span, lat_span, map);
+-    if theme::map_cities() {
++    if cities {
+         draw_cities(p, rect, clat, clon, lon_span, lat_span, dot_r, map);
+     }
+     dot_r
+diff --git a/src/devices.rs b/src/devices.rs
+index a9590246..2e2a61d2 100644
+--- a/src/devices.rs
++++ b/src/devices.rs
+@@ -54,9 +54,64 @@ pub fn probe(req: DeviceProbe, radio: u32) -> ProbeAnswer {
+         DeviceProbe::Test(t) => ProbeAnswer::Test(t.kind(), test(&t)),
+         DeviceProbe::Report(k) => ProbeAnswer::Report(k, report(k, radio)),
+         DeviceProbe::Relays => ProbeAnswer::Relays(sdroxide_relay::list()),
++        DeviceProbe::PublicSdrCheck { network, address } => {
++            let result = public_sdr_check(network, &address);
++            ProbeAnswer::PublicSdrCheck { network, address, result }
++        }
+     }
+ }
+ 
++/// Whether a receiver from the public-SDR directories answers from here.
++///
++/// In: its network and endpoint (`host:port`). Out: `Ok` with one line on what
++/// answered, `Err` with why nothing did, within [`CHECK_TIMEOUT`].
++/// Effect: a KiwiSDR is asked for `/status` over HTTP (no channel is taken), a
++/// SpyServer is greeted and hung up on, an sdr-list receiver gets a TCP
++/// connect and nothing more, because nothing here speaks its protocol yet.
++/// Fails: unresolvable host, refused or timed-out connection, a reply that is
++/// not the protocol the directory promised.
++// Why: HDZ 2026-11-04: "wenn man jetzt einen Server anklickt, wäre ein basic
++//      Check nach 500 ms ein Connection-Test". The same tests the settings'
++//      "Test connection" runs, so the map and the dialog agree about a receiver.
++fn public_sdr_check(
++    network: sdroxide_types::PublicSdrNetwork,
++    address: &str,
++) -> Result<String, String> {
++    use sdroxide_types::PublicSdrNetwork as N;
++    match network {
++        // `/status` over HTTP: up, users, and whether non-browser apps may in.
++        N::KiwiSdr => sdroxide_kiwisdr::test_connection(address, CHECK_TIMEOUT),
++        // Hello, device info, hang up; no stream is started.
++        N::SpyServer => sdroxide_spyserver::test_connection(address, CHECK_TIMEOUT),
++        // Nothing here speaks these protocols yet, so the honest check is the
++        // lowest one: does anything accept a connection on that port.
++        N::SdrList => {
++            use std::net::{TcpStream, ToSocketAddrs};
++            // Every address the name resolves to (IPv4 and IPv6), tried in turn;
++            // the first that accepts answers.
++            let addrs: Vec<_> = address
++                .to_socket_addrs()
++                .map_err(|e| format!("{address}: {e}"))?
++                .collect();
++            // The reason reported if none accepts: the last error seen, or
++            // that the name resolved to nothing at all.
++            let mut last = format!("{address}: no address to connect to");
++            for a in addrs {
++                match TcpStream::connect_timeout(&a, CHECK_TIMEOUT) {
++                    // Connected, and dropped again at once: nothing is sent.
++                    Ok(_) => return Ok(format!("{address} accepts connections")),
++                    Err(e) => last = format!("{address}: {e}"),
++                }
++            }
++            Err(last)
++        }
++    }
++}
++
++/// How long [`public_sdr_check`] waits, as the settings' tests do: three
++/// seconds per connection attempt (and, for a KiwiSDR, for the whole request).
++const CHECK_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(3);
++
+ /// `fobos_rx_list_devices`, translated into the wasm-safe type. `libfobos`'s
+ /// own `DevInfo` also carries the index `fobos_rx_open` wants, which is not
+ /// here: `sdroxide-fobos::device::open` re-derives it by matching the serial
+diff --git a/src/local_controller.rs b/src/local_controller.rs
+index 835eb903..1952541b 100644
+--- a/src/local_controller.rs
++++ b/src/local_controller.rs
+@@ -41,6 +41,14 @@ pub struct LocalController {
+     routing: AudioRouting,
+     /// Where this radio's `radio.json` lives — radio 0 is the legacy root.
+     store: sdroxide_config::Store,
++    /// Answers to the probes this controller runs on a thread rather than in
++    /// [`RadioController::probe`] itself, handed out by
++    /// [`RadioController::poll_probe`]. The sender is cloned into each thread.
++    // Why: the map's receiver check (`DeviceProbe::PublicSdrCheck`) is asked
++    //      on a click, up to six at once at three seconds each; answered in
++    //      `probe` it would freeze the window for as long.
++    bg_probe_tx: std::sync::mpsc::Sender<sdroxide_types::ProbeAnswer>,
++    bg_probe_rx: std::sync::mpsc::Receiver<sdroxide_types::ProbeAnswer>,
+ }
+ 
+ impl LocalController {
+@@ -53,7 +61,10 @@ impl LocalController {
+         routing: AudioRouting,
+         store: sdroxide_config::Store,
+     ) -> Self {
++        let (bg_probe_tx, bg_probe_rx) = std::sync::mpsc::channel();
+         LocalController {
++            bg_probe_tx,
++            bg_probe_rx,
+             cmd_tx: handles.cmd_tx,
+             event_rx: handles.event_rx,
+             spectrum: handles.spectrum_out,
+@@ -232,9 +243,39 @@ impl RadioController for LocalController {
+         // about this machine: the diagnostic report is this radio's session,
+         // and on a station with two of a kind the other one's is worse than
+         // none.
++        //
++        // The map's receiver check runs on a thread of its own and answers
++        // through `poll_probe`: it waits on the internet, several at a time.
++        // Effect: returns `None` for it, as a remote controller does, which
++        // the UI already treats as "the answer comes later".
++        // Fails: a thread that cannot be spawned answers in place instead.
++        if matches!(req, sdroxide_types::DeviceProbe::PublicSdrCheck { .. }) {
++            // What the thread needs, taken out of `self` before it starts.
++            let tx = self.bg_probe_tx.clone();
++            let id = self.store.radio_id();
++            // A copy for the thread; `req` stays here for the fallback below.
++            let req2 = req.clone();
++            let spawned = std::thread::Builder::new()
++                .name("sdroxide-sdr-check".into())
++                .spawn(move || {
++                    // A send fails only when this controller is gone, and then
++                    // nobody is waiting for the answer.
++                    let _ = tx.send(crate::devices::probe(req2, id));
++                });
++            if spawned.is_ok() {
++                return None;
++            }
++        }
+         Some(crate::devices::probe(req, self.store.radio_id()))
+     }
+ 
++    /// Answers from the probe threads [`RadioController::probe`] started, one
++    /// per call, drained each frame by the UI. Never blocks; `None` when none
++    /// has arrived.
++    fn poll_probe(&mut self) -> Option<sdroxide_types::ProbeAnswer> {
++        self.bg_probe_rx.try_recv().ok()
++    }
++
+     fn radio_config(&self) -> Option<RadioConfig> {
+         Some(self.store.load_radio_config())
+     }

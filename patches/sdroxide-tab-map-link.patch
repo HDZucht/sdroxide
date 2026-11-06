@@ -1,0 +1,614 @@
+diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+index 4276778b..07b41c15 100644
+--- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+@@ -4061,6 +4061,7 @@ publicsdr-view-list = LISTE
+ publicsdr-view-map = KARTE
+ publicsdr-view-map-tip = Dieselben Empfänger auf einer Weltkarte. Ein Klick auf einen Punkt wählt alle Empfänger darunter.
+ publicsdr-map-pick = Klick auf einen Punkt wählt die Empfänger darunter.
++publicsdr-map-ghost = { $name }: gerade nicht im Katalog — zuletzt hier gesehen am { $seen }
+ publicsdr-map-names = NAMEN
+ publicsdr-map-names-tip = Namen der Empfänger auf der Karte zeigen. Aus: nur die gewählten tragen ihren Namen.
+ publicsdr-check-online = ONLINE
+@@ -4289,6 +4290,7 @@ multi-open-pane = Eine weitere Spalte mit einem Funkgerät öffnen, das gerade n
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Ein Funkgerät in diese Reihe holen. Die Ringe markieren Funkgeräte mit offener Verbindung.
+ multi-new-radio = Neues Funkgerät…
++multi-show-on-map = Auf der Karte zeigen
+ multi-asked-station-another-radio = Die Station nach einem weiteren Funkgerät gefragt…
+ multi-client-cannot-open-connection = Dieser Client kann keine Verbindung öffnen.
+ 
+diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+index 2e76bb8b..141d6863 100644
+--- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+@@ -4070,6 +4070,7 @@ publicsdr-view-list = LIST
+ publicsdr-view-map = MAP
+ publicsdr-view-map-tip = The same receivers on a world map. Click a dot to pick every receiver under it.
+ publicsdr-map-pick = Click a dot to pick the receivers under it.
++publicsdr-map-ghost = { $name }: not in the directory now — last seen here on { $seen }
+ publicsdr-map-names = NAMES
+ publicsdr-map-names-tip = Show the receivers' names on the map. Off: only the picked ones are named.
+ publicsdr-check-online = ONLINE
+@@ -4301,6 +4302,7 @@ multi-open-pane = Open another pane with a radio that is not on screen
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Put a radio on this row. The rings mark radios whose link is open.
+ multi-new-radio = New radio…
++multi-show-on-map = Show on the map
+ multi-asked-station-another-radio = Asked the station for another radio…
+ multi-client-cannot-open-connection = This client cannot open a connection.
+ 
+diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+index d48f4f7c..aeb7304e 100644
+--- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+@@ -4048,6 +4048,7 @@ publicsdr-view-list = LISTA
+ publicsdr-view-map = MAPA
+ publicsdr-view-map-tip = Los mismos receptores en un mapa mundial. Haz clic en un punto para elegir todos los receptores bajo él.
+ publicsdr-map-pick = Haz clic en un punto para elegir los receptores bajo él.
++publicsdr-map-ghost = { $name }: ahora no está en el directorio — visto aquí por última vez el { $seen }
+ publicsdr-map-names = NOMBRES
+ publicsdr-map-names-tip = Mostrar los nombres de los receptores en el mapa. Desactivado: solo se nombran los elegidos.
+ publicsdr-check-online = EN LÍNEA
+@@ -4279,6 +4280,7 @@ multi-open-pane = Abrir otro panel con una radio que no está en pantalla
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Poner una radio en esta fila. Los anillos marcan las radios con el enlace abierto.
+ multi-new-radio = Nueva radio…
++multi-show-on-map = Mostrar en el mapa
+ multi-asked-station-another-radio = Se ha pedido otra radio a la estación…
+ multi-client-cannot-open-connection = Este cliente no puede abrir una conexión.
+ 
+diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+index f1351ad1..fe0c13a0 100644
+--- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+@@ -4065,6 +4065,7 @@ publicsdr-view-list = LISTE
+ publicsdr-view-map = CARTE
+ publicsdr-view-map-tip = Les mêmes récepteurs sur une carte du monde. Cliquez sur un point pour choisir tous les récepteurs dessous.
+ publicsdr-map-pick = Cliquez sur un point pour choisir les récepteurs dessous.
++publicsdr-map-ghost = { $name } : absent de l'annuaire pour l'instant — vu ici pour la dernière fois le { $seen }
+ publicsdr-map-names = NOMS
+ publicsdr-map-names-tip = Afficher les noms des récepteurs sur la carte. Désactivé : seuls les récepteurs choisis sont nommés.
+ publicsdr-check-online = EN LIGNE
+@@ -4297,6 +4298,7 @@ multi-open-pane = Ouvrir un autre volet avec une radio qui n'est pas à l'écran
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Mettre une radio dans cette rangée. Les anneaux marquent les radios dont la liaison est ouverte.
+ multi-new-radio = Nouvelle radio…
++multi-show-on-map = Afficher sur la carte
+ multi-asked-station-another-radio = Demande à la station une autre radio…
+ multi-client-cannot-open-connection = Ce client ne peut pas ouvrir de connexion.
+ 
+diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+index d0eafb64..237d6e73 100644
+--- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+@@ -4069,6 +4069,7 @@ publicsdr-view-list = ELENCO
+ publicsdr-view-map = MAPPA
+ publicsdr-view-map-tip = Gli stessi ricevitori su una mappa del mondo. Clic su un punto per scegliere tutti i ricevitori sotto di esso.
+ publicsdr-map-pick = Clic su un punto per scegliere i ricevitori sotto di esso.
++publicsdr-map-ghost = { $name }: ora non è nell'elenco — visto qui l'ultima volta il { $seen }
+ publicsdr-map-names = NOMI
+ publicsdr-map-names-tip = Mostra i nomi dei ricevitori sulla mappa. Disattivato: solo quelli scelti hanno il nome.
+ publicsdr-check-online = ONLINE
+@@ -4300,6 +4301,7 @@ multi-open-pane = Apri un altro riquadro con una radio che non è sullo schermo
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Metti una radio in questa riga. Gli anelli indicano le radio con il collegamento aperto.
+ multi-new-radio = Nuova radio…
++multi-show-on-map = Mostra sulla mappa
+ multi-asked-station-another-radio = Chiesta alla stazione un'altra radio…
+ multi-client-cannot-open-connection = Questo client non può aprire una connessione.
+ 
+diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+index 3ab17b49..27156936 100644
+--- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+@@ -4043,6 +4043,7 @@ publicsdr-view-list = リスト
+ publicsdr-view-map = 地図
+ publicsdr-view-map-tip = 同じ受信機を世界地図に表示します。点をクリックすると、その下のすべての受信機を選択します。
+ publicsdr-map-pick = 点をクリックすると、その下の受信機を選択します。
++publicsdr-map-ghost = { $name }：現在ディレクトリにありません — 最後にここで見たのは { $seen }
+ publicsdr-map-names = 名前
+ publicsdr-map-names-tip = 地図に受信機の名前を表示します。オフ：選択した受信機だけに名前を表示します。
+ publicsdr-check-online = オンライン
+@@ -4270,6 +4271,7 @@ multi-open-pane = 画面に出ていない無線機で別のペインを開く
+ multi-pick-radio = 無線機 ▼
+ multi-pick-radio-tip = この列に無線機を加えます。リングはリンクが開いている無線機を示します。
+ multi-new-radio = 新しい無線機…
++multi-show-on-map = 地図に表示
+ multi-asked-station-another-radio = ステーションに別の無線機を依頼しました…
+ multi-client-cannot-open-connection = このクライアントは接続を開けません。
+ 
+diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+index 42567525..244697d8 100644
+--- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+@@ -4059,6 +4059,7 @@ publicsdr-view-list = LIJST
+ publicsdr-view-map = KAART
+ publicsdr-view-map-tip = Dezelfde ontvangers op een wereldkaart. Klik op een punt om alle ontvangers eronder te kiezen.
+ publicsdr-map-pick = Klik op een punt om de ontvangers eronder te kiezen.
++publicsdr-map-ghost = { $name }: nu niet in de lijst — hier voor het laatst gezien op { $seen }
+ publicsdr-map-names = NAMEN
+ publicsdr-map-names-tip = Toon de namen van de ontvangers op de kaart. Uit: alleen de gekozen ontvangers krijgen een naam.
+ publicsdr-check-online = ONLINE
+@@ -4290,6 +4291,7 @@ multi-open-pane = Een volgend paneel openen met een radio die niet in beeld is
+ multi-pick-radio = Radio ▼
+ multi-pick-radio-tip = Een radio in deze rij zetten. De ringen markeren radio's waarvan de verbinding open is.
+ multi-new-radio = Nieuwe radio…
++multi-show-on-map = Op de kaart tonen
+ multi-asked-station-another-radio = Het station om nog een radio gevraagd…
+ multi-client-cannot-open-connection = Deze client kan geen verbinding openen.
+ 
+diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+index 41769b83..751b633c 100644
+--- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+@@ -4066,6 +4066,7 @@ publicsdr-view-list = LISTA
+ publicsdr-view-map = MAPA
+ publicsdr-view-map-tip = Os mesmos receptores em um mapa-múndi. Clique em um ponto para escolher todos os receptores sob ele.
+ publicsdr-map-pick = Clique em um ponto para escolher os receptores sob ele.
++publicsdr-map-ghost = { $name }: fora do diretório agora — visto aqui pela última vez em { $seen }
+ publicsdr-map-names = NOMES
+ publicsdr-map-names-tip = Mostrar os nomes dos receptores no mapa. Desligado: só os escolhidos são nomeados.
+ publicsdr-check-online = ON-LINE
+@@ -4297,6 +4298,7 @@ multi-open-pane = Abrir outro painel com um rádio que não está na tela
+ multi-pick-radio = Rádio ▼
+ multi-pick-radio-tip = Colocar um rádio nesta fileira. Os anéis marcam os rádios com o link aberto.
+ multi-new-radio = Novo rádio…
++multi-show-on-map = Mostrar no mapa
+ multi-asked-station-another-radio = Pedi à estação outro rádio…
+ multi-client-cannot-open-connection = Este cliente não consegue abrir uma conexão.
+ 
+diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+index 04065d07..5dbde692 100644
+--- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+@@ -4073,6 +4073,7 @@ publicsdr-view-list = СПИСОК
+ publicsdr-view-map = КАРТА
+ publicsdr-view-map-tip = Те же приёмники на карте мира. Щелчок по точке выбирает все приёмники под ней.
+ publicsdr-map-pick = Щёлкните по точке, чтобы выбрать приёмники под ней.
++publicsdr-map-ghost = { $name }: сейчас нет в каталоге — последний раз здесь { $seen }
+ publicsdr-map-names = ИМЕНА
+ publicsdr-map-names-tip = Показывать названия приёмников на карте. Выкл.: подписаны только выбранные.
+ publicsdr-check-online = В СЕТИ
+@@ -4304,6 +4305,7 @@ multi-open-pane = Открыть ещё одну панель с радио, к
+ multi-pick-radio = Радио ▼
+ multi-pick-radio-tip = Поставить радио в этот ряд. Кольца отмечают радио с открытой связью.
+ multi-new-radio = Новое радио…
++multi-show-on-map = Показать на карте
+ multi-asked-station-another-radio = Запрошено у станции другое радио…
+ multi-client-cannot-open-connection = Этот клиент не может открыть соединение.
+ 
+diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+index bd0cdd1b..ed5bc34e 100644
+--- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+@@ -4064,6 +4064,7 @@ publicsdr-view-list = LİSTE
+ publicsdr-view-map = HARİTA
+ publicsdr-view-map-tip = Aynı alıcılar bir dünya haritasında. Bir noktaya tıklamak altındaki tüm alıcıları seçer.
+ publicsdr-map-pick = Altındaki alıcıları seçmek için bir noktaya tıklayın.
++publicsdr-map-ghost = { $name }: şu an dizinde yok — burada en son { $seen } tarihinde görüldü
+ publicsdr-map-names = ADLAR
+ publicsdr-map-names-tip = Alıcıların adlarını haritada göster. Kapalı: yalnızca seçilenlerin adı yazılır.
+ publicsdr-check-online = ÇEVRİMİÇİ
+@@ -4295,6 +4296,7 @@ multi-open-pane = Ekranda olmayan bir telsizle başka bir bölme aç
+ multi-pick-radio = Radyo ▼
+ multi-pick-radio-tip = Bu sıraya bir telsiz koy. Halkalar bağlantısı açık telsizleri gösterir.
+ multi-new-radio = Yeni telsiz…
++multi-show-on-map = Haritada göster
+ multi-asked-station-another-radio = İstasyondan başka bir radyo istendi…
+ multi-client-cannot-open-connection = Bu istemci bir bağlantı açamaz.
+ 
+diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+index 11ea3dbe..c87c0e97 100644
+--- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+@@ -4037,6 +4037,7 @@ publicsdr-view-list = 列表
+ publicsdr-view-map = 地图
+ publicsdr-view-map-tip = 在世界地图上显示同样的接收机。点击一个点即可选择其下的所有接收机。
+ publicsdr-map-pick = 点击一个点以选择其下的接收机。
++publicsdr-map-ghost = { $name }：当前不在目录中 — 上次在此出现于 { $seen }
+ publicsdr-map-names = 名称
+ publicsdr-map-names-tip = 在地图上显示接收机名称。关闭：只显示所选接收机的名称。
+ publicsdr-check-online = 在线
+@@ -4267,6 +4268,7 @@ multi-open-pane = 用一台未在屏幕上的电台打开另一个窗格
+ multi-pick-radio = 电台 ▼
+ multi-pick-radio-tip = 把一台电台放进这一行。圆环标出连接已打开的电台。
+ multi-new-radio = 新电台…
++multi-show-on-map = 在地图上显示
+ multi-asked-station-another-radio = 已向电台站点请求另一台电台……
+ multi-client-cannot-open-connection = 此客户端无法打开连接。
+ 
+diff --git a/crates/sdroxide-ui/src/app/publicsdr.rs b/crates/sdroxide-ui/src/app/publicsdr.rs
+index 2991d79d..e9c9d09a 100644
+--- a/crates/sdroxide-ui/src/app/publicsdr.rs
++++ b/crates/sdroxide-ui/src/app/publicsdr.rs
+@@ -524,6 +524,7 @@ impl SdroxideApp {
+         // show the last session's receivers with their last answers.
+         if !open {
+             self.public_sdr_map_state.picked.clear();
++            self.public_sdr_map_state.ghost = None;
+         }
+ 
+         if refresh {
+@@ -555,6 +556,8 @@ impl SdroxideApp {
+         my_pos: Option<(f64, f64)>,
+     ) -> Option<PublicSdrEntry> {
+         use crate::publicsdr_map::{MAX_PICKED, key, show};
++        // A radio asked to be shown here: pick its receiver and look at it.
++        self.public_sdr_map_state.take_focus(all, crate::time::now_unix_f64());
+         // Everything below stays inside the width the window has now. Outside
+         // a scroll area, a row that measures itself by what is free would
+         // otherwise widen the window a little every frame, until it filled
+@@ -705,11 +708,42 @@ impl SdroxideApp {
+     // Why: HDZ 2026-11-04: "dabei wäre statt Kiwisdr … der Sendername aus dem
+     //      Katalog zu übernehmen". Without a name the radio was called after
+     //      its interface, so every public receiver read "Kiwisdr".
++    /// Whether this radio listens to a public receiver (KiwiSDR or SpyServer),
++    /// so that its name on the tab can open the map on it.
++    // Pitfall: asked of the controller, not read from `radio_cfg`: that is the
++    //          settings page's copy, filled only once the page has been
++    //          opened, so a radio added earlier had no link (HDZ 2026-11-04:
++    //          "geht noch nicht, und die bestehenden müssten retro gelinkt
++    //          werden").
++    pub(crate) fn on_public_sdr(&self) -> bool {
++        self.ctrl.radio_config().as_ref().and_then(crate::publicsdr_map::radio_target).is_some()
++    }
++
++    /// Open Public SDRs on the map, at the receiver this radio listens to.
++    ///
++    /// In: nothing. Effect: the window opens in MAP with the request held in
++    /// [`crate::publicsdr_map::PublicSdrMapState::focus`]; the directory is
++    /// asked for as on any opening. Nothing for a radio on no public receiver.
++    pub(crate) fn show_self_on_public_map(&mut self) {
++        let Some(target) =
++            self.ctrl.radio_config().as_ref().and_then(crate::publicsdr_map::radio_target)
++        else {
++            return;
++        };
++        self.public_sdr_map_state.focus = Some(target);
++        self.public_sdr_map = true;
++        self.show_public_sdrs = true;
++    }
++
+     fn take_public_sdr(&mut self, entry: &PublicSdrEntry) {
+         // A brand-new radio has none of this radio's settings, and should not
+         // inherit them: it is a different receiver.
+         let fresh =
+             entry.radio_config(&sdroxide_types::RadioConfig::default(), self.public_sdr_low_bw);
++        // Where it stands, for the day the directory no longer lists it.
++        if let Some(target) = crate::publicsdr_map::radio_target(&fresh) {
++            self.public_sdr_map_state.remember(&target, entry);
++        }
+         self.radio_tab_requests.push(RadioTabRequest::Add {
+             station: self.station_key(),
+             preset: Some(Box::new(fresh)),
+@@ -725,6 +759,7 @@ impl SdroxideApp {
+         //      die Radios stale".
+         self.show_public_sdrs = false;
+         self.public_sdr_map_state.picked.clear();
++        self.public_sdr_map_state.ghost = None;
+     }
+ }
+ 
+diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
+index d345ccaf..e3359583 100644
+--- a/crates/sdroxide-ui/src/multi.rs
++++ b/crates/sdroxide-ui/src/multi.rs
+@@ -144,6 +144,9 @@ enum StripAction {
+     },
+     /// "New radio…" at the foot of the pick menu: the strip's former "+".
+     Add,
++    /// A click on the name of the radio a pane shows, where that radio is a
++    /// public receiver: Public SDRs opens on the map, at that receiver.
++    ShowOnMap(u32),
+ }
+ 
+ pub struct MultiApp {
+@@ -750,6 +753,11 @@ impl MultiApp {
+                 StripAction::Pick { pane, id } => self.pick(pane, id, ctx),
+                 StripAction::Unpick { pane, id } => self.unpick(pane, id, ctx),
+                 StripAction::AddPane => self.add_pane(ctx),
++                StripAction::ShowOnMap(id) => {
++                    if let Some(t) = self.tabs.iter_mut().find(|t| t.id == id) {
++                        t.app.show_self_on_public_map();
++                    }
++                }
+                 StripAction::Mute { id, muted } => {
+                     // To the engine, not latched here: the chip and the MUTE
+                     // button both read the engine's answer back, so they
+@@ -860,7 +868,32 @@ impl MultiApp {
+                     if !tab.enabled {
+                         label = label.weak();
+                     }
+-                    Self::tab_name(ui, label, egui::Sense::hover());
++                    // The name of the radio this pane shows is a link to the
++                    // map, where that radio is a public receiver: underlined
++                    // while the pointer is on it, as a link reads. Anywhere
++                    // else a click on the tab is what it always was.
++                    // Why: HDZ 2026-11-04: "wenn du linken kannst, kannst du den
++                    //      Link auch ohne Symbol an den Namen heften"; only on
++                    //      the tab already shown, because a click on any other
++                    //      tab shows that radio.
++                    if here && tab.app.on_public_sdr() {
++                        let name = Self::tab_name(ui, label, egui::Sense::click());
++                        let name = if name.hovered() {
++                            ui.painter().hline(
++                                name.rect.x_range(),
++                                name.rect.bottom() - 1.0,
++                                egui::Stroke::new(1.0, crate::theme::CYAN()),
++                            );
++                            name.on_hover_cursor(egui::CursorIcon::PointingHand)
++                        } else {
++                            name
++                        };
++                        if name.on_hover_text(tr!("multi-show-on-map")).clicked() {
++                            actions.push(StripAction::ShowOnMap(id));
++                        }
++                    } else {
++                        Self::tab_name(ui, label, egui::Sense::hover());
++                    }
+                     // On the air: the one thing worth seeing from any tab.
+                     if tab.app.tab_tx_on() {
+                         ui.label(
+diff --git a/crates/sdroxide-ui/src/publicsdr_map.rs b/crates/sdroxide-ui/src/publicsdr_map.rs
+index 0caf8f05..164d5dab 100644
+--- a/crates/sdroxide-ui/src/publicsdr_map.rs
++++ b/crates/sdroxide-ui/src/publicsdr_map.rs
+@@ -95,6 +95,112 @@ pub struct PublicSdrMapState {
+     //      Easing is for a search narrowing the receivers; a map that changes
+     //      size under the pointer should not glide for half a second after it.
+     pub fitted_size: Vec2,
++    /// A radio asked to be shown on the map: the receiver it is set up for,
++    /// as [`radio_target`] gives it. Held until the directory is in, then
++    /// turned into a pick and a view on it ([`PublicSdrMapState::take_focus`]).
++    pub focus: Option<(bool, String)>,
++    /// Where the radios' receivers were last seen, by [`target_key`]: written
++    /// when a receiver is added as a radio and whenever a radio's receiver is
++    /// found in the directory, read when it is not. Loaded on first use.
++    pub known: Option<std::collections::HashMap<String, KnownPosition>>,
++    /// A radio's receiver the directory no longer lists, drawn at its last
++    /// known place as a hollow ring ([`show`]).
++    pub ghost: Option<KnownPosition>,
++}
++
++/// Where a receiver stood when the directory last listed it.
++// Why: HDZ 2026-11-04: "ein Radio sollte seine Altposition speichern, wenn die
++//      Map es nicht hergibt, dann gibt's ein Symbol". The directories are live
++//      lists: a KiwiSDR that is off for an evening drops out of kiwisdr.com,
++//      and an address can change; the radio still listens there.
++// Invariant: kept in this window's own file, never in the radio's
++//      configuration, which travels over the wire to remote clients.
++#[derive(Debug, Clone, Default, PartialEq, serde::Serialize, serde::Deserialize)]
++pub struct KnownPosition {
++    pub lat: f64,
++    pub lon: f64,
++    /// The receiver's name as the directory gave it.
++    pub name: String,
++    /// The day it was last seen there, `YYYY-MM-DD`; empty where no clock
++    /// was asked (the browser build).
++    pub seen: String,
++}
++
++/// The key a radio's receiver is remembered under: network kind and address,
++/// as [`radio_target`] gives them.
++pub fn target_key(target: &(bool, String)) -> String {
++    format!("{}|{}", if target.0 { "SpyServer" } else { "KiwiSDR" }, target.1)
++}
++
++/// The file the known positions live in, beside the other configuration.
++/// None under unit tests, which must not touch the operator's configuration.
++#[cfg(not(target_arch = "wasm32"))]
++fn known_path() -> Option<std::path::PathBuf> {
++    if cfg!(test) {
++        return None;
++    }
++    sdroxide_config::config_dir().ok().map(|d| d.join("publicsdr-positions.json"))
++}
++
++/// Read the known positions; an absent or unreadable file is an empty list.
++fn load_known() -> std::collections::HashMap<String, KnownPosition> {
++    #[cfg(not(target_arch = "wasm32"))]
++    if let Some(p) = known_path()
++        && let Ok(text) = std::fs::read_to_string(p)
++    {
++        return serde_json::from_str(&text).unwrap_or_default();
++    }
++    std::collections::HashMap::new()
++}
++
++/// Write the known positions. A failure is reported and otherwise ignored:
++/// the list is a convenience, and the map works without it.
++fn save_known(known: &std::collections::HashMap<String, KnownPosition>) {
++    #[cfg(not(target_arch = "wasm32"))]
++    if let Some(p) = known_path() {
++        let written = serde_json::to_string_pretty(known)
++            .map_err(|e| e.to_string())
++            .and_then(|s| std::fs::write(&p, s).map_err(|e| e.to_string()));
++        if let Err(e) = written {
++            eprintln!("sdroxide: recording public SDR positions in {}: {e}", p.display());
++        }
++    }
++    #[cfg(target_arch = "wasm32")]
++    let _ = known;
++}
++
++/// Today as `YYYY-MM-DD`, on a build that has a clock to ask.
++fn today() -> String {
++    #[cfg(not(target_arch = "wasm32"))]
++    {
++        chrono::Local::now().format("%Y-%m-%d").to_string()
++    }
++    #[cfg(target_arch = "wasm32")]
++    String::new()
++}
++
++/// How much longitude the map shows around a receiver a radio asked to be
++/// shown at: its country and the receivers next to it.
++const FOCUS_LON_SPAN: f64 = 24.0;
++
++/// The public receiver a radio is set up for, if it is one.
++///
++/// In: the radio's configuration. Out: `(is SpyServer, host:port)` for a
++/// KiwiSDR or SpyServer interface (either SpyServer shape), by the same
++/// `endpoint` rule [`endpoint`] uses for a directory entry; `None` for every
++/// other interface. Fails: none.
++// Why: HDZ 2026-11-04: "wenn du linken kannst, kannst du den Link auch ohne
++//      Symbol an den Namen heften" — the radio's name on its tab opens this
++//      map on the receiver it listens to. Matched by address, not by name,
++//      because a name is the operator's to change and "anonymous" repeats.
++pub fn radio_target(cfg: &sdroxide_types::RadioConfig) -> Option<(bool, String)> {
++    use sdroxide_types::Backend;
++    match cfg.backend {
++        Backend::KiwiSdr => Some((false, cfg.kiwi.endpoint())),
++        Backend::SpyServer => Some((true, cfg.spyserver.endpoint())),
++        Backend::SpyServerVfo => Some((true, cfg.spyserver_vfo.endpoint())),
++        _ => None,
++    }
+ }
+ 
+ /// How long after a click its receivers are checked, in seconds: long enough
+@@ -147,6 +253,70 @@ pub fn endpoint(e: &PublicSdrEntry) -> String {
+ }
+ 
+ impl PublicSdrMapState {
++    /// Turn a radio's request to be shown ([`Self::focus`]) into a pick of its
++    /// receiver and a view on it, once the directory is there to find it in.
++    ///
++    /// In: the whole directory, now (Unix seconds). Effect: with the receiver
++    /// found, it is the one pick (its check scheduled as for a click) and the
++    /// view is centred on it at [`FOCUS_LON_SPAN`], held like a hand-set view
++    /// until a double-click hands it back to the fit. A receiver the directory
++    /// does not list (gone, or entered by hand) leaves the map as it is.
++    /// Fails: none; an empty directory keeps the request for a later frame.
++    pub fn take_focus(&mut self, all: &[PublicSdrEntry], now: f64) {
++        let Some(target) = self.focus.clone() else { return };
++        if all.is_empty() {
++            return;
++        }
++        self.focus = None;
++        self.ghost = None;
++        let (spy, ep) = (target.0, target.1.as_str());
++        let found = all
++            .iter()
++            .find(|e| matches!(e.network, PublicSdrNetwork::SpyServer) == spy && endpoint(e) == ep);
++        // Where to look: the receiver as the directory has it, remembered for
++        // the day it is gone; or, gone, where it was last seen, marked.
++        let at = match found {
++            Some(e) => {
++                self.picked = vec![key(e)];
++                self.schedule_checks(&[e], now);
++                self.remember(&target, e);
++                position(e)
++            }
++            None => {
++                // Nothing in the directory to pick: an old pick would stand
++                // for a receiver this radio is not on.
++                self.picked.clear();
++                let known = self.known.get_or_insert_with(load_known);
++                self.ghost = known.get(&target_key(&target)).cloned();
++                self.ghost.as_ref().map(|g| (g.lat, g.lon))
++            }
++        };
++        if let Some((lat, lon)) = at {
++            self.view.clat = lat;
++            self.view.clon = lon;
++            self.view.lon_span = FOCUS_LON_SPAN;
++            self.view.initialized = true;
++            self.view.manual = true;
++        }
++    }
++
++    /// Remember where a radio's receiver stands, as the directory gives it.
++    ///
++    /// In: the radio's target ([`radio_target`]) and the directory entry.
++    /// Effect: the entry's place, name and today's date under
++    /// [`target_key`], written to the file when anything changed. Nothing
++    /// for an entry without a position. Fails: none (see [`save_known`]).
++    pub fn remember(&mut self, target: &(bool, String), e: &PublicSdrEntry) {
++        let Some((lat, lon)) = position(e) else { return };
++        let now = KnownPosition { lat, lon, name: e.name.clone(), seen: today() };
++        let known = self.known.get_or_insert_with(load_known);
++        let slot = known.entry(target_key(target)).or_default();
++        if *slot != now {
++            *slot = now;
++            save_known(known);
++        }
++    }
++
+     /// After a click: schedule a check of each picked receiver that has no
+     /// fresh answer and none on the way, [`CHECK_DELAY_S`] from `now`.
+     ///
+@@ -602,6 +772,31 @@ pub fn show(
+         p.circle_stroke(c, 6.5, (1.2, alpha(map.home, 170.0)));
+     }
+ 
++    // ── a radio's receiver the directory no longer lists ──
++    // A hollow ring where it was last seen, in the pick colour, with a dashed
++    // look from four arcs: there is no dot to ring, and the gap says so.
++    if let Some(g) = &state.ghost {
++        let c = project((g.lat, g.lon));
++        let r = DOT_R + 4.0;
++        for k in 0..4 {
++            let a0 = k as f32 * std::f32::consts::FRAC_PI_2 + 0.25;
++            let arc: Vec<Pos2> = (0..=8)
++                .map(|i| {
++                    let a = a0 + (std::f32::consts::FRAC_PI_2 - 0.5) * i as f32 / 8.0;
++                    pos2(c.x + r * a.cos(), c.y + r * a.sin())
++                })
++                .collect();
++            p.add(eframe::egui::Shape::line(arc, (1.6, map.dx)));
++        }
++        if resp.hover_pos().is_some_and(|h| h.distance(c) <= r + 2.0) {
++            resp.clone().on_hover_text(tr!(
++                "publicsdr-map-ghost",
++                name = g.name.clone(),
++                seen = g.seen.clone()
++            ));
++        }
++    }
++
+     // ── interaction ──
+     let mut changed = false;
+     if !hovered.is_empty() {
+@@ -816,4 +1011,41 @@ mod tests {
+         e.address = "5.6.7.8:5555".into();
+         assert_ne!(a, key(&e));
+     }
++    /// Proves: a radio on a public SpyServer finds its receiver by address,
++    /// which becomes the one pick, checked and looked at, and a radio on
++    /// another interface asks for nothing ([`radio_target`],
++    /// [`PublicSdrMapState::take_focus`]).
++    #[test]
++    fn a_radio_is_shown_at_its_own_receiver() {
++        let all = vec![spy("1.2.3.4:5555"), spy("5.6.7.8:5555")];
++        let mut cfg = sdroxide_types::RadioConfig::default();
++        assert!(radio_target(&cfg).is_none(), "no public interface, nothing to show");
++        cfg = all[1].radio_config(&cfg, false);
++        let mut st = PublicSdrMapState { focus: radio_target(&cfg), ..Default::default() };
++        // No directory yet: the request waits.
++        st.take_focus(&[], 100.0);
++        assert!(st.focus.is_some() && st.picked.is_empty());
++        st.take_focus(&all, 100.0);
++        assert!(st.focus.is_none());
++        assert_eq!(st.picked, vec![key(&all[1])]);
++        assert!(st.checks_pending(), "the receiver is checked as after a click");
++        assert!(st.view.manual && (st.view.lon_span - FOCUS_LON_SPAN).abs() < 1e-9);
++        assert!((st.view.clat - 1.0).abs() < 1e-9 && (st.view.clon - 2.0).abs() < 1e-9);
++        assert!(st.ghost.is_none(), "found in the directory: no ghost");
++        let target = radio_target(&cfg).unwrap();
++        assert!(st.known.as_ref().is_some_and(|k| k.contains_key(&target_key(&target))));
++
++        // Gone from the directory: the map goes to where it was last seen and
++        // marks it, with nothing picked.
++        let mut moved = all[1].clone();
++        moved.lat = Some(10.0);
++        moved.lon = Some(20.0);
++        st.remember(&target, &moved);
++        st.focus = Some(target);
++        st.take_focus(&all[..1], 200.0);
++        assert!(st.picked.is_empty());
++        let g = st.ghost.as_ref().expect("a ghost where it was last seen");
++        assert!((g.lat - 10.0).abs() < 1e-6 && (g.lon - 20.0).abs() < 1e-6);
++        assert!((st.view.clat - 10.0).abs() < 1e-6 && (st.view.clon - 20.0).abs() < 1e-6);
++    }
+ }

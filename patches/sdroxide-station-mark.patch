@@ -1,0 +1,229 @@
+diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+index eefd18c2..db303ae2 100644
+--- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
+@@ -469,6 +469,8 @@ settings-add-radio-computer = Ein Funkgerät auf diesem Computer hinzufügen
+ settings-radio-s-settings-are-below = Die Einstellungen dieses Funkgeräts stehen unten. Zum Verschieben entlang der Leiste ziehen.
+ settings-switch-radio-dialog-follows-drag = Zu diesem Funkgerät wechseln (der Dialog folgt). Zum Verschieben entlang der Leiste ziehen.
+ settings-tx = ● SENDEN
++settings-station-radio = Station:
++settings-station-radio-tip = Das Stationsgerät. Es betreibt die Netzdienste der Station (Spot-Feeds, Rotor, Verstärker, Sende-/Empfangsschalter) und übernimmt die Einstellungen der Befehlszeile, deshalb bleibt es in der Liste. Zum Ruhen mit VERBINDUNG abschalten; für andere Hardware unten eine andere Schnittstelle wählen.
+ settings-mute-radio-s-audio = Audio dieses Funkgeräts stummschalten
+ settings-link = VERBINDUNG
+ settings-close-radio-configuration-kept = Dieses Funkgerät schließen (seine Konfiguration bleibt erhalten)
+diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+index 30436a7e..568826ca 100644
+--- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
+@@ -474,6 +474,8 @@ settings-add-radio-computer = Add a radio on this computer
+ settings-radio-s-settings-are-below = This radio's settings are below. Drag to move it along the strip.
+ settings-switch-radio-dialog-follows-drag = Switch to this radio (the dialog follows). Drag to move it along the strip.
+ settings-tx = ● TX
++settings-station-radio = Station:
++settings-station-radio-tip = The station radio. It runs the station's network services (spot feeds, rotator, amplifier, T/R switch) and takes the command line's settings, so it stays in the list. To rest it, switch it off with LINK; to use other hardware, choose another interface below.
+ settings-mute-radio-s-audio = Mute this radio's audio
+ settings-link = LINK
+ settings-close-radio-configuration-kept = Close this radio (its configuration is kept)
+diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+index 86e4a0a0..4431d963 100644
+--- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
+@@ -468,6 +468,8 @@ settings-add-radio-computer = Añadir una radio en este ordenador
+ settings-radio-s-settings-are-below = Los ajustes de esta radio están abajo. Arrastra para moverla por la tira.
+ settings-switch-radio-dialog-follows-drag = Cambiar a esta radio (el diálogo la sigue). Arrastra para moverla por la tira.
+ settings-tx = ● TX
++settings-station-radio = Estación:
++settings-station-radio-tip = La radio de la estación. Ejecuta los servicios de red de la estación (fuentes de spots, rotor, amplificador, conmutador TX/RX) y recibe los ajustes de la línea de comandos, por eso permanece en la lista. Para dejarla en reposo, apáguela con ENLACE; para usar otro hardware, elija otra interfaz abajo.
+ settings-mute-radio-s-audio = Silenciar el audio de esta radio
+ settings-link = ENLACE
+ settings-close-radio-configuration-kept = Cerrar esta radio (se conserva su configuración)
+diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+index 932082b3..b5a6ffb0 100644
+--- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
+@@ -469,6 +469,8 @@ settings-add-radio-computer = Ajouter une radio sur cet ordinateur
+ settings-radio-s-settings-are-below = Les réglages de cette radio sont ci-dessous. Faites glisser pour la déplacer le long de la barre.
+ settings-switch-radio-dialog-follows-drag = Passer à cette radio (la boîte suit). Faites glisser pour la déplacer le long de la barre.
+ settings-tx = ● TX
++settings-station-radio = Station :
++settings-station-radio-tip = La radio de la station. Elle fait tourner les services réseau de la station (flux de spots, rotor, amplificateur, commutateur émission/réception) et reçoit les réglages de la ligne de commande ; elle reste donc dans la liste. Pour la mettre au repos, coupez-la avec LIAISON ; pour un autre matériel, choisissez une autre interface ci-dessous.
+ settings-mute-radio-s-audio = Couper l'audio de cette radio
+ settings-link = LIAISON
+ settings-close-radio-configuration-kept = Fermer cette radio (sa configuration est conservée)
+diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+index 3c5e5ae7..3c6c8162 100644
+--- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
+@@ -469,6 +469,8 @@ settings-add-radio-computer = Aggiungi una radio su questo computer
+ settings-radio-s-settings-are-below = Le impostazioni di questa radio sono qui sotto. Trascina per spostarla lungo la barra.
+ settings-switch-radio-dialog-follows-drag = Passa a questa radio (la finestra segue). Trascina per spostarla lungo la barra.
+ settings-tx = ● TX
++settings-station-radio = Stazione:
++settings-station-radio-tip = La radio della stazione. Esegue i servizi di rete della stazione (flussi di spot, rotore, amplificatore, commutatore TX/RX) e riceve le impostazioni della riga di comando, per questo resta nell'elenco. Per metterla a riposo, spegnila con COLLEGAMENTO; per usare altro hardware, scegli un'altra interfaccia qui sotto.
+ settings-mute-radio-s-audio = Silenzia l'audio di questa radio
+ settings-link = COLLEGAMENTO
+ settings-close-radio-configuration-kept = Chiudi questa radio (la sua configurazione viene conservata)
+diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+index adb34b29..0890ad10 100644
+--- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
+@@ -473,6 +473,8 @@ settings-add-radio-computer = このコンピューターに無線機を追加
+ settings-radio-s-settings-are-below = この無線機の設定は下にあります。ドラッグして帯に沿って移動できます。
+ settings-switch-radio-dialog-follows-drag = この無線機に切り替えます（ダイアログも追従します）。ドラッグして帯に沿って移動できます。
+ settings-tx = ● TX
++settings-station-radio = 局:
++settings-station-radio-tip = 局の無線機です。局のネットワークサービス（スポットフィード、ローテーター、アンプ、送受信切替器）を動かし、コマンドラインの設定を受け取るため、一覧に残ります。休ませるには LINK で切り、別のハードウェアを使うには下で別のインターフェースを選んでください。
+ settings-mute-radio-s-audio = この無線機の音声をミュート
+ settings-link = LINK
+ settings-close-radio-configuration-kept = この無線機を閉じます（構成は保持されます）
+diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+index 8491e281..2bec8f94 100644
+--- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
+@@ -469,6 +469,8 @@ settings-add-radio-computer = Een radio op deze computer toevoegen
+ settings-radio-s-settings-are-below = De instellingen van deze radio staan hieronder. Sleep om hem langs de balk te verplaatsen.
+ settings-switch-radio-dialog-follows-drag = Naar deze radio schakelen (het dialoogvenster volgt). Sleep om hem langs de balk te verplaatsen.
+ settings-tx = ● TX
++settings-station-radio = Station:
++settings-station-radio-tip = De stationsradio. Hij draait de netwerkdiensten van het station (spotfeeds, rotor, versterker, zend-/ontvangschakelaar) en krijgt de instellingen van de opdrachtregel, daarom blijft hij in de lijst. Om hem te laten rusten, schakel hem uit met VERBINDING; voor andere hardware kiest u hieronder een andere interface.
+ settings-mute-radio-s-audio = De audio van deze radio dempen
+ settings-link = VERBINDING
+ settings-close-radio-configuration-kept = Deze radio sluiten (de configuratie blijft bewaard)
+diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+index ab8c5eb5..07b9d64d 100644
+--- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
+@@ -474,6 +474,8 @@ settings-add-radio-computer = Adicionar um rádio neste computador
+ settings-radio-s-settings-are-below = As configurações deste rádio estão abaixo. Arraste para movê-lo ao longo da barra.
+ settings-switch-radio-dialog-follows-drag = Trocar para este rádio (a caixa acompanha). Arraste para movê-lo ao longo da barra.
+ settings-tx = ● TX
++settings-station-radio = Estação:
++settings-station-radio-tip = O rádio da estação. Ele executa os serviços de rede da estação (feeds de spots, rotor, amplificador, chave TX/RX) e recebe as configurações da linha de comando, por isso permanece na lista. Para deixá-lo em repouso, desligue-o com LINK; para usar outro hardware, escolha outra interface abaixo.
+ settings-mute-radio-s-audio = Silenciar o áudio deste rádio
+ settings-link = LINK
+ settings-close-radio-configuration-kept = Fechar este rádio (a configuração é mantida)
+diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+index b3e2b794..30c6ae8f 100644
+--- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
+@@ -474,6 +474,8 @@ settings-add-radio-computer = Добавить радио на этот комп
+ settings-radio-s-settings-are-below = Настройки этого радио ниже. Перетащите, чтобы переместить вдоль полосы.
+ settings-switch-radio-dialog-follows-drag = Переключиться на это радио (диалог следует за ним). Перетащите, чтобы переместить вдоль полосы.
+ settings-tx = ● TX
++settings-station-radio = Станция:
++settings-station-radio-tip = Радио станции. Оно обслуживает сетевые службы станции (споты, поворотное устройство, усилитель, переключатель приём/передача) и получает параметры командной строки, поэтому остаётся в списке. Чтобы оно отдыхало, выключите его кнопкой СВЯЗЬ; для другого оборудования выберите ниже другой интерфейс.
+ settings-mute-radio-s-audio = Отключить звук этого радио
+ settings-link = СВЯЗЬ
+ settings-close-radio-configuration-kept = Закрыть это радио (его конфигурация сохраняется)
+diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+index 03d6f054..b9e6403b 100644
+--- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
+@@ -474,6 +474,8 @@ settings-add-radio-computer = Bu bilgisayara bir radyo ekle
+ settings-radio-s-settings-are-below = Bu radyonun ayarları aşağıdadır. Şeritte taşımak için sürükleyin.
+ settings-switch-radio-dialog-follows-drag = Bu radyoya geç (iletişim kutusu izler). Şeritte taşımak için sürükleyin.
+ settings-tx = ● TX
++settings-station-radio = İstasyon:
++settings-station-radio-tip = İstasyon telsizi. İstasyonun ağ hizmetlerini (spot akışları, rotor, amplifikatör, gönderme/alma anahtarı) çalıştırır ve komut satırı ayarlarını alır; bu yüzden listede kalır. Dinlendirmek için BAĞLANTI ile kapatın; başka bir donanım için aşağıda başka bir arayüz seçin.
+ settings-mute-radio-s-audio = Bu radyonun sesini sustur
+ settings-link = BAĞLANTI
+ settings-close-radio-configuration-kept = Bu radyoyu kapat (yapılandırması korunur)
+diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+index 9ceb3f38..8b871321 100644
+--- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
++++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
+@@ -474,6 +474,8 @@ settings-add-radio-computer = 在本计算机上添加电台
+ settings-radio-s-settings-are-below = 此电台的设置在下方。拖动可沿条带移动它。
+ settings-switch-radio-dialog-follows-drag = 切换到此电台（对话框随之切换）。拖动可沿条带移动它。
+ settings-tx = ● 发射
++settings-station-radio = 主台：
++settings-station-radio-tip = 本站的主电台。它运行本站的网络服务（Spot 源、旋转器、功放、收发切换器），并接收命令行设置，因此始终留在列表中。要让它休息，请用“连接”关闭；要换用其他硬件，请在下方选择另一个接口。
+ settings-mute-radio-s-audio = 静音此电台的音频
+ settings-link = 连接
+ settings-close-radio-configuration-kept = 关闭此电台（保留其配置）
+diff --git a/crates/sdroxide-ui/src/app/settings/mod.rs b/crates/sdroxide-ui/src/app/settings/mod.rs
+index 14c49dc8..3b1ce76a 100644
+--- a/crates/sdroxide-ui/src/app/settings/mod.rs
++++ b/crates/sdroxide-ui/src/app/settings/mod.rs
+@@ -3669,8 +3669,28 @@ impl SdroxideApp {
+         let mut dragging: Option<u32> = ui.data(|d| d.get_temp(drag_id)).unwrap_or(None);
+         let mut placed: Vec<(u32, egui::Rect)> = Vec::new();
+         let mut dropped = false;
+-        ui.horizontal_wrapped(|ui| {
+-            for chip in &self.radio_roster {
++        // The station radio stands in a frame, headed "Station:", together with
++        // what goes beside it (mute, LINK). Its standing (the station's network
++        // services, the command line, `/ws`, no "×") is then read off the strip
++        // itself rather than off a close box that is missing. The frame travels
++        // with the chip: the strip stays one row, arranged by drag as before
++        // (#224), and moving the station radio moves no role.
++        // Why: HDZ 2026-11-04 (settings, Radio page): first "erste Zeile exklusiv
++        //      für Station", then "wenn das Stationsgerät ziehbar ist, dann kann
++        //      man doch mit zwei senkrechten Strichen oder einer Klammer für
++        //      Station die besondere Rolle machen, dann könnte es bei einer Zeile
++        //      bleiben … dann müsste die Station eingerahmt gehören".
++        // Invariant: the frame holds exactly the radio that has no "×", i.e.
++        //      this machine's station radio; a connection is never in it.
++        let station = self.radio_roster.iter().find(|c| c.station.is_empty() && c.first_of_station);
++        // One chip with what goes beside it: its markers, mute, LINK and "×";
++        // the gap after it is the caller's, so it falls outside the frame.
++        // `requests` is passed in rather than captured, because the "+" after
++        // the chips needs it too.
++        let mut one_chip =
++            |ui: &mut egui::Ui,
++             chip: &crate::app::RadioChip,
++             requests: &mut Vec<crate::app::RadioTabRequest>| {
+                 let mut label = RichText::new(chip.display_name()).size(12.5);
+                 if !chip.enabled {
+                     label = label.weak();
+@@ -3692,15 +3712,12 @@ impl SdroxideApp {
+                 if resp.drag_stopped() {
+                     dropped = true;
+                 }
+-                if resp
+-                    .on_hover_text(if chip.focused {
+-                        tr!("settings-radio-s-settings-are-below")
+-                    } else {
+-                        tr!("settings-switch-radio-dialog-follows-drag")
+-                    })
+-                    .clicked()
+-                    && !chip.focused
+-                {
++                let resp = resp.on_hover_text(if chip.focused {
++                    tr!("settings-radio-s-settings-are-below")
++                } else {
++                    tr!("settings-switch-radio-dialog-follows-drag")
++                });
++                if resp.clicked() && !chip.focused {
+                     requests.push(crate::app::RadioTabRequest::Focus(chip.id));
+                 }
+                 if let Some(owner) = chip.attached_to {
+@@ -3803,6 +3820,28 @@ impl SdroxideApp {
+                         Self::close_station_radio_menu(ui, &close, chip, requests);
+                     }
+                 }
++            };
++        ui.horizontal_wrapped(|ui| {
++            for chip in &self.radio_roster {
++                if station.is_none_or(|s| s.id != chip.id) {
++                    one_chip(ui, chip, requests);
++                    ui.add_space(6.0);
++                    continue;
++                }
++                egui::Frame::new()
++                    .stroke(egui::Stroke::new(1.0, crate::theme::CYAN()))
++                    .inner_margin(egui::Margin::symmetric(6, 3))
++                    .show(ui, |ui| {
++                        ui.horizontal(|ui| {
++                            ui.label(
++                                RichText::new(tr!("settings-station-radio"))
++                                    .size(11.0)
++                                    .color(crate::theme::CYAN()),
++                            )
++                            .on_hover_text(tr!("settings-station-radio-tip"));
++                            one_chip(ui, chip, requests);
++                        });
++                    });
+                 ui.add_space(6.0);
+             }
+             // Absent where there is nothing to add: a client that only drives

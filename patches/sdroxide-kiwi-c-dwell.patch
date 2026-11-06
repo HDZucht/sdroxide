@@ -1,0 +1,287 @@
+diff --git a/crates/sdroxide-radio/src/engine.rs b/crates/sdroxide-radio/src/engine.rs
+index 455dc511..629d17f9 100644
+--- a/crates/sdroxide-radio/src/engine.rs
++++ b/crates/sdroxide-radio/src/engine.rs
+@@ -3251,6 +3251,16 @@ struct Engine {
+     /// refuses puts the dial back here rather than leaving the operator on a
+     /// frequency the radio cannot receive (see [`Engine::tune_refused`]).
+     good_vfo_hz: f64,
++    /// The active VFO, in Hz, as [`Engine::recentre_after_dwell`] last saw it:
++    /// a different value there means the dial has moved since.
++    dwell_vfo_hz: f64,
++    /// When the active VFO came to [`Self::dwell_vfo_hz`]: the start of the
++    /// rest that [`DWELL_RECENTRE`] is measured from.
++    dwell_since: Instant,
++    /// The rest at [`Self::dwell_vfo_hz`] has had its one recentre (or needed
++    /// none). Cleared when the dial moves.
++    // Invariant: at most one retune per resting place, taken or refused.
++    dwell_done: bool,
+     /// What each VFO was left listening in, indexed by [`Vfo::index`]: the mode
+     /// and the passband that went with it.
+     ///
+@@ -3813,6 +3823,15 @@ fn qo100_auto_correction(
+ /// runs, and the ceiling the spacing doubles up to while attempts keep failing.
+ const RETRY_FIRST: Duration = Duration::from_secs(1);
+ const RETRY_MAX: Duration = Duration::from_secs(15);
++/// How long the dial has to rest before [`Engine::recentre_after_dwell`] centres
++/// the I/Q on it.
++// Why: HDZ 2026-11-04: "wenn der Cursor 5 sec an einer Stelle steht". Long
++//      enough that crawling along a band with the cursor never triggers it.
++const DWELL_RECENTRE: Duration = Duration::from_secs(5);
++/// How far off the I/Q centre a resting dial has to be, as a share of the span,
++/// before it is worth a retune: a twentieth, 600 Hz of a KiwiSDR's 12 kHz.
++// Why: a dial a few hertz off centre gains nothing from a retune.
++const DWELL_OFF_CENTRE: f64 = 0.05;
+ 
+ /// How long [`Engine::abandon_retry`] waits for the answer of an attempt it is
+ /// throwing away. It is only ever called with the factory lock held, so the
+@@ -4578,6 +4597,11 @@ fn engine_thread(
+         retry_every: RETRY_FIRST,
+         // Where the source opened, which is by definition a frequency it took.
+         good_vfo_hz: source_center_hz,
++        // The dial starts where the source opened, which is its centre: nothing
++        // to recentre until it moves.
++        dwell_vfo_hz: source_center_hz,
++        dwell_since: Instant::now(),
++        dwell_done: true,
+         // Both VFOs start on the mode the receiver came up in; the remembered
+         // pair is folded in below, once the engine owns them.
+         vfo_memory: [initial_vfo_memory.clone(), initial_vfo_memory],
+@@ -5023,6 +5047,9 @@ fn engine_thread(
+         }
+ 
+         let now = Instant::now();
++        // Once per pass, before the lanes: a recentre taken here is drawn in
++        // this pass's frames. A no-op on every front end that does not opt in.
++        engine.recentre_after_dwell();
+         // Ahead of both lanes: on a front end with no I/Q the main panadapter is
+         // built from the same sweep as the strip, so the sweep has to be in hand
+         // before either frame is made.
+@@ -18551,6 +18578,50 @@ impl Engine {
+         }
+     }
+ 
++    /// Centre the I/Q on a dial that has stood still for [`DWELL_RECENTRE`], on
++    /// a front end where retuning costs nothing ([`IqSource::recentre_on_dwell`]).
++    ///
++    /// [`Self::keep_vfo_in_span`] moves the window only once the dial is 45 % of
++    /// the span off its centre, which is right for hardware whose LO is worth
++    /// keeping still. On a KiwiSDR the window is 12 kHz and a retune is a line
++    /// to the server, so a station tuned near the edge is heard with half its
++    /// sidebands outside the window, and stays so. Once the dial has rested, the
++    /// window comes round it: once per resting place, and not while the
++    /// operator is still moving.
++    ///
++    /// In: nothing; reads the active VFO, the I/Q centre and the span.
++    /// Effect: at most one [`Self::retune_for_vfo`] per resting place.
++    /// Fails: a refused tune is reported by `retune_for_vfo` as usual and not
++    /// asked again until the dial moves.
++    // Why: HDZ 2026-11-04 (SDR-Radio): "wenn der Cursor 5 sec an einer Stelle
++    //      steht, sollte ein Redraw ausgelöst werden". Chosen over keeping the
++    //      Kiwi's zoomed band view around the dial (patch B), which helped only
++    //      with the band view zoomed in, not with the 12 kHz that is heard.
++    fn recentre_after_dwell(&mut self) {
++        // A demod-audio rig has no I/Q window to move; a source that has not
++        // opted in keeps `keep_vfo_in_span` as its only rule.
++        if self.audio_mode || !self.source.recentre_on_dwell() {
++            return;
++        }
++        let vfo = self.state.active_freq_hz();
++        // The dial moved: a new rest starts now.
++        if vfo != self.dwell_vfo_hz {
++            (self.dwell_vfo_hz, self.dwell_since, self.dwell_done) = (vfo, Instant::now(), false);
++            return;
++        }
++        // Still moving, or this rest has had its turn.
++        if self.dwell_done || self.dwell_since.elapsed() < DWELL_RECENTRE {
++            return;
++        }
++        // Once, whether or not the front end takes it: a refused tune asked
++        // again every block would be a refusal on screen sixty times a second.
++        self.dwell_done = true;
++        // `sample_rate` is the span of the I/Q window, in Hz.
++        if (vfo - self.state.center_hz).abs() > self.state.sample_rate * DWELL_OFF_CENTRE {
++            self.retune_for_vfo(vfo);
++        }
++    }
++
+     /// Retune hardware center if the active VFO left the usable span — or, on a
+     /// front end that has to keep clear of its own LO, came too close to it.
+     fn keep_vfo_in_span(&mut self) {
+diff --git a/crates/sdroxide-radio/src/source.rs b/crates/sdroxide-radio/src/source.rs
+index 295be7fa..a431f172 100644
+--- a/crates/sdroxide-radio/src/source.rs
++++ b/crates/sdroxide-radio/src/source.rs
+@@ -643,6 +643,20 @@ pub trait IqSource: Send {
+         false
+     }
+ 
++    /// Whether a retune costs this front end nothing, so the engine may centre
++    /// the I/Q on a dial that has come to rest (see `Engine::recentre_after_dwell`).
++    ///
++    /// True for a KiwiSDR, whose 12 kHz window moves by a line to the server.
++    /// False for hardware whose LO is worth keeping still between retunes.
++    ///
++    /// Asked once per pass of the engine loop, so it has to be cheap.
++    /// Default: false.
++    // Why: opt-in rather than a list of drivers in the engine: the source is
++    //      the one that knows what a retune costs it.
++    fn recentre_on_dwell(&self) -> bool {
++        false
++    }
++
+     /// Where a transceiver's I/Q lands when the radio is in CW: on the
+     /// frequency its VFO displays (true), or a sidetone pitch below it (false).
+     ///
+@@ -1405,6 +1419,12 @@ impl IqSource for ConvertedSource {
+         format!("{} (+{:.6} MHz converter)", self.inner.describe(), self.step.rx_offset_hz / 1e6)
+     }
+ 
++    /// A converter moves where the hardware sits, not what a retune costs it:
++    /// the answer is the hardware's.
++    fn recentre_on_dwell(&self) -> bool {
++        self.inner.recentre_on_dwell()
++    }
++
+     fn wide_spectrum_db(&mut self, out: &mut Vec<f32>) -> Option<(f64, f64)> {
+         let (center, span) = self.inner.wide_spectrum_db(out)?;
+         Some((self.down(center), span))
+diff --git a/crates/sdroxide-radio/tests/dwell_recentres_the_iq.rs b/crates/sdroxide-radio/tests/dwell_recentres_the_iq.rs
+new file mode 100644
+index 00000000..e4d13e20
+--- /dev/null
++++ b/crates/sdroxide-radio/tests/dwell_recentres_the_iq.rs
+@@ -0,0 +1,114 @@
++//! A dial that has come to rest gets the I/Q centred on it — on a front end
++//! where a retune costs nothing.
++//!
++//! A KiwiSDR streams 12 kHz of I/Q. `keep_vfo_in_span` moves that window only
++//! once the dial is 45 % of it off centre, so a station tuned 4 kHz from the
++//! centre keeps one sideband against the window's edge for as long as it is
++//! listened to. After the dial has stood still for five seconds the engine
++//! centres the I/Q on it, once; on hardware that does not opt in nothing moves.
++
++use std::sync::Arc;
++use std::sync::atomic::{AtomicU64, Ordering};
++use std::time::Duration;
++
++use sdroxide_radio::{Complex32, EngineConfig, IqSource, Result, start_engine};
++use sdroxide_types::{Command, DeviceCaps, Vfo};
++
++const RATE: f64 = 12_000.0;
++const START: f64 = 7_350_000.0;
++/// 4 kHz up: inside the 45 % (5.4 kHz) that `keep_vfo_in_span` leaves alone.
++const DIAL: f64 = 7_354_000.0;
++
++/// A KiwiSDR stand-in: 12 kHz of silence, a centre the test can read from
++/// outside the engine, and `cheap` as its answer to `recentre_on_dwell`.
++struct Kiwiish {
++    /// The I/Q centre in Hz, as `f64` bits, shared with the test.
++    center: Arc<AtomicU64>,
++    cheap: bool,
++}
++
++impl IqSource for Kiwiish {
++    fn sample_rate(&self) -> f64 {
++        RATE
++    }
++    fn center_hz(&self) -> f64 {
++        f64::from_bits(self.center.load(Ordering::Relaxed))
++    }
++    fn set_center_hz(&mut self, hz: f64) -> Result<()> {
++        self.center.store(hz.to_bits(), Ordering::Relaxed);
++        Ok(())
++    }
++    fn read(&mut self, buf: &mut [Complex32]) -> Result<usize> {
++        std::thread::sleep(Duration::from_millis(20));
++        let n = buf.len().min(240);
++        buf[..n].fill(Complex32::new(0.0, 0.0));
++        Ok(n)
++    }
++    fn describe(&self) -> String {
++        "mock KiwiSDR".into()
++    }
++    fn recentre_on_dwell(&self) -> bool {
++        self.cheap
++    }
++}
++
++fn caps() -> DeviceCaps {
++    DeviceCaps {
++        driver: "kiwisdr".into(),
++        label: "mock KiwiSDR".into(),
++        rx_channels: 1,
++        sample_rates: vec![RATE],
++        freq_ranges_rx: vec![(0.0, 30_000_000.0)],
++        ..DeviceCaps::default()
++    }
++}
++
++/// Open at [`START`], tune to [`DIAL`], and return the I/Q centre after `early`
++/// and after `late` of rest.
++fn centres(cheap: bool, early: Duration, late: Duration) -> (f64, f64) {
++    let center = Arc::new(AtomicU64::new(START.to_bits()));
++    let mut h = start_engine(
++        Box::new(Kiwiish { center: center.clone(), cheap }),
++        caps(),
++        EngineConfig { remember_session: false, ..Default::default() },
++    );
++    let thread = h.thread.take();
++    std::thread::sleep(Duration::from_millis(250));
++    h.cmd_tx.send(Command::SetVfo { vfo: Vfo::A, hz: DIAL }).unwrap();
++    let drain = |h: &mut sdroxide_radio::EngineHandles, d: Duration| {
++        let until = std::time::Instant::now() + d;
++        while std::time::Instant::now() < until {
++            while h.event_rx.try_recv().is_ok() {}
++            let _ = h.spectrum_out.update();
++            std::thread::sleep(Duration::from_millis(20));
++        }
++    };
++    drain(&mut h, early);
++    let a = f64::from_bits(center.load(Ordering::Relaxed));
++    drain(&mut h, late - early);
++    let b = f64::from_bits(center.load(Ordering::Relaxed));
++    drop(h.cmd_tx);
++    if let Some(t) = thread {
++        let _ = t.join();
++    }
++    (a, b)
++}
++
++/// Proves: on a front end that opts in, the I/Q stays put while the dial has
++/// rested 2 s and is centred on it after 6.5 s.
++#[test]
++fn a_resting_dial_gets_the_iq_centred_on_it() {
++    let (early, late) = centres(true, Duration::from_secs(2), Duration::from_millis(6_500));
++    // Still moving (well, just set): the window stays where it was.
++    assert_eq!(early, START, "the I/Q moved before the dial had rested");
++    // Five seconds on, it has come round the dial.
++    assert_eq!(late, DIAL, "the I/Q was not centred on the resting dial");
++}
++
++/// Proves: on a front end that does not opt in, nothing moves however long
++/// the dial rests.
++#[test]
++fn hardware_that_does_not_opt_in_is_left_alone() {
++    let (_, late) = centres(false, Duration::from_secs(1), Duration::from_millis(6_500));
++    assert_eq!(late, START);
++}
+diff --git a/src/kiwisdr_source.rs b/src/kiwisdr_source.rs
+index 4f143517..c2a2d9dc 100644
+--- a/src/kiwisdr_source.rs
++++ b/src/kiwisdr_source.rs
+@@ -187,6 +187,14 @@ impl IqSource for KiwiSdrSource {
+         Some(self.handle.smeter_dbm())
+     }
+ 
++    /// A retune is a `SET mod` line to the server, so the 12 kHz may follow a
++    /// dial that has come to rest.
++    // Why: HDZ 2026-11-04: on a 12 kHz window `keep_vfo_in_span` (45 %) left an
++    //      AM station tuned 4 kHz off centre with one sideband at the edge.
++    fn recentre_on_dwell(&self) -> bool {
++        true
++    }
++
+     /// The receiver's AGC and manual gain, on the pseudo-element route the
+     /// SpyServer's controls use — no `Command` variant, no `DeviceCaps` change,
+     /// and the names live in [`KiwiConfig`] so the wasm settings UI can build
