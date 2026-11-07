@@ -1,16 +1,16 @@
 diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-index 92a68b54..1b18508c 100644
+index b1c640c1..38f29829 100644
 --- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-@@ -4061,6 +4061,7 @@ publicsdr-view-list = LISTE
+@@ -4079,6 +4079,7 @@ publicsdr-view-list = LISTE
  publicsdr-view-map = KARTE
- publicsdr-view-map-tip = Dieselben Empfänger auf einer Weltkarte. Ein Klick auf einen Punkt wählt alle Empfänger darunter.
+ publicsdr-view-map-tip = Empfänger auf Weltkarte; Klick auf Punkt wählt alle darunter
  publicsdr-map-pick = Klick auf einen Punkt wählt die Empfänger darunter.
 +publicsdr-map-ghost = { $name }: gerade nicht im Katalog — zuletzt hier gesehen am { $seen }
  publicsdr-map-names = NAMEN
- publicsdr-map-names-tip = Namen der Empfänger auf der Karte zeigen. Aus: nur die gewählten tragen ihren Namen.
+ publicsdr-map-names-tip = Namen aller Empfänger; aus: nur gewählte
  publicsdr-check-online = ONLINE
-@@ -4286,6 +4287,7 @@ multi-close-radio-s-split-view = Die geteilte Ansicht dieses Funkgeräts schlie
+@@ -4305,6 +4306,7 @@ multi-close-radio-s-split-view = Die geteilte Ansicht dieses Funkgeräts schlie
  multi-open-radio-split-view-own = Dieses Funkgerät in einer eigenen geteilten Ansicht öffnen
  multi-already-open-another-split-view = Schon in einer anderen geteilten Ansicht geöffnet
  multi-show-radio-here = Dieses Funkgerät hier zeigen
@@ -19,18 +19,18 @@ index 92a68b54..1b18508c 100644
  multi-add-radio = Ein Funkgerät hinzufügen
  multi-asked-station-another-radio = Die Station nach einem weiteren Funkgerät gefragt…
 diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-index 9e76bc60..274887b0 100644
+index 6a7446c5..091ff1e2 100644
 --- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-@@ -4070,6 +4070,7 @@ publicsdr-view-list = LIST
+@@ -4088,6 +4088,7 @@ publicsdr-view-list = LIST
  publicsdr-view-map = MAP
- publicsdr-view-map-tip = The same receivers on a world map. Click a dot to pick every receiver under it.
+ publicsdr-view-map-tip = Receivers on world map; click dot to pick all under it
  publicsdr-map-pick = Click a dot to pick the receivers under it.
 +publicsdr-map-ghost = { $name }: not in the directory now — last seen here on { $seen }
  publicsdr-map-names = NAMES
- publicsdr-map-names-tip = Show the receivers' names on the map. Off: only the picked ones are named.
+ publicsdr-map-names-tip = Names of all receivers; off: picked only
  publicsdr-check-online = ONLINE
-@@ -4298,6 +4299,7 @@ multi-close-radio-s-split-view = Close this radio's split view
+@@ -4317,6 +4318,7 @@ multi-close-radio-s-split-view = Close this radio's split view
  multi-open-radio-split-view-own = Open this radio in a split view of its own
  multi-already-open-another-split-view = Already open in another split view
  multi-show-radio-here = Show this radio here
@@ -39,10 +39,10 @@ index 9e76bc60..274887b0 100644
  multi-add-radio = Add a radio
  multi-asked-station-another-radio = Asked the station for another radio…
 diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-index 005000d7..0aa3bf90 100644
+index 5a348d1e..d8e662b1 100644
 --- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-@@ -4048,6 +4048,7 @@ publicsdr-view-list = LISTA
+@@ -4066,6 +4066,7 @@ publicsdr-view-list = LISTA
  publicsdr-view-map = MAPA
  publicsdr-view-map-tip = Los mismos receptores en un mapa mundial. Haz clic en un punto para elegir todos los receptores bajo él.
  publicsdr-map-pick = Haz clic en un punto para elegir los receptores bajo él.
@@ -50,7 +50,7 @@ index 005000d7..0aa3bf90 100644
  publicsdr-map-names = NOMBRES
  publicsdr-map-names-tip = Mostrar los nombres de los receptores en el mapa. Desactivado: solo se nombran los elegidos.
  publicsdr-check-online = EN LÍNEA
-@@ -4276,6 +4277,7 @@ multi-close-radio-s-split-view = Cerrar la vista dividida de esta radio
+@@ -4295,6 +4296,7 @@ multi-close-radio-s-split-view = Cerrar la vista dividida de esta radio
  multi-open-radio-split-view-own = Abrir esta radio en una vista dividida propia
  multi-already-open-another-split-view = Ya está abierta en otra vista dividida
  multi-show-radio-here = Mostrar esta radio aquí
@@ -59,10 +59,10 @@ index 005000d7..0aa3bf90 100644
  multi-add-radio = Añadir una radio
  multi-asked-station-another-radio = Se ha pedido otra radio a la estación…
 diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-index a3dfda98..01b065f1 100644
+index fd344ab7..ed76c38e 100644
 --- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-@@ -4065,6 +4065,7 @@ publicsdr-view-list = LISTE
+@@ -4083,6 +4083,7 @@ publicsdr-view-list = LISTE
  publicsdr-view-map = CARTE
  publicsdr-view-map-tip = Les mêmes récepteurs sur une carte du monde. Cliquez sur un point pour choisir tous les récepteurs dessous.
  publicsdr-map-pick = Cliquez sur un point pour choisir les récepteurs dessous.
@@ -70,7 +70,7 @@ index a3dfda98..01b065f1 100644
  publicsdr-map-names = NOMS
  publicsdr-map-names-tip = Afficher les noms des récepteurs sur la carte. Désactivé : seuls les récepteurs choisis sont nommés.
  publicsdr-check-online = EN LIGNE
-@@ -4294,6 +4295,7 @@ multi-close-radio-s-split-view = Fermer la vue scindée de cette radio
+@@ -4313,6 +4314,7 @@ multi-close-radio-s-split-view = Fermer la vue scindée de cette radio
  multi-open-radio-split-view-own = Ouvrir cette radio dans une vue scindée à part
  multi-already-open-another-split-view = Déjà ouverte dans une autre vue scindée
  multi-show-radio-here = Afficher cette radio ici
@@ -79,10 +79,10 @@ index a3dfda98..01b065f1 100644
  multi-add-radio = Ajouter une radio
  multi-asked-station-another-radio = Demande à la station une autre radio…
 diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-index dba42143..7dd7b578 100644
+index a6c2aefd..8aa43939 100644
 --- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-@@ -4069,6 +4069,7 @@ publicsdr-view-list = ELENCO
+@@ -4087,6 +4087,7 @@ publicsdr-view-list = ELENCO
  publicsdr-view-map = MAPPA
  publicsdr-view-map-tip = Gli stessi ricevitori su una mappa del mondo. Clic su un punto per scegliere tutti i ricevitori sotto di esso.
  publicsdr-map-pick = Clic su un punto per scegliere i ricevitori sotto di esso.
@@ -90,7 +90,7 @@ index dba42143..7dd7b578 100644
  publicsdr-map-names = NOMI
  publicsdr-map-names-tip = Mostra i nomi dei ricevitori sulla mappa. Disattivato: solo quelli scelti hanno il nome.
  publicsdr-check-online = ONLINE
-@@ -4297,6 +4298,7 @@ multi-close-radio-s-split-view = Chiudi la vista divisa di questa radio
+@@ -4316,6 +4317,7 @@ multi-close-radio-s-split-view = Chiudi la vista divisa di questa radio
  multi-open-radio-split-view-own = Apri questa radio in una vista divisa propria
  multi-already-open-another-split-view = Già aperta in un'altra vista divisa
  multi-show-radio-here = Mostra questa radio qui
@@ -99,10 +99,10 @@ index dba42143..7dd7b578 100644
  multi-add-radio = Aggiungi una radio
  multi-asked-station-another-radio = Chiesta alla stazione un'altra radio…
 diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-index fb135eb1..b0bf70ea 100644
+index e408d0ec..9c79141e 100644
 --- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-@@ -4043,6 +4043,7 @@ publicsdr-view-list = リスト
+@@ -4061,6 +4061,7 @@ publicsdr-view-list = リスト
  publicsdr-view-map = 地図
  publicsdr-view-map-tip = 同じ受信機を世界地図に表示します。点をクリックすると、その下のすべての受信機を選択します。
  publicsdr-map-pick = 点をクリックすると、その下の受信機を選択します。
@@ -110,7 +110,7 @@ index fb135eb1..b0bf70ea 100644
  publicsdr-map-names = 名前
  publicsdr-map-names-tip = 地図に受信機の名前を表示します。オフ：選択した受信機だけに名前を表示します。
  publicsdr-check-online = オンライン
-@@ -4267,6 +4268,7 @@ multi-close-radio-s-split-view = この無線機の分割表示を閉じます
+@@ -4286,6 +4287,7 @@ multi-close-radio-s-split-view = この無線機の分割表示を閉じます
  multi-open-radio-split-view-own = この無線機を、独自の分割表示で開きます
  multi-already-open-another-split-view = 別の分割表示ですでに開いています
  multi-show-radio-here = この無線機をここに表示
@@ -119,10 +119,10 @@ index fb135eb1..b0bf70ea 100644
  multi-add-radio = 無線機を追加
  multi-asked-station-another-radio = ステーションに別の無線機を依頼しました…
 diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-index 5cbe958a..8f7ea85e 100644
+index 829c8a03..c7f613d6 100644
 --- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-@@ -4059,6 +4059,7 @@ publicsdr-view-list = LIJST
+@@ -4077,6 +4077,7 @@ publicsdr-view-list = LIJST
  publicsdr-view-map = KAART
  publicsdr-view-map-tip = Dezelfde ontvangers op een wereldkaart. Klik op een punt om alle ontvangers eronder te kiezen.
  publicsdr-map-pick = Klik op een punt om de ontvangers eronder te kiezen.
@@ -130,7 +130,7 @@ index 5cbe958a..8f7ea85e 100644
  publicsdr-map-names = NAMEN
  publicsdr-map-names-tip = Toon de namen van de ontvangers op de kaart. Uit: alleen de gekozen ontvangers krijgen een naam.
  publicsdr-check-online = ONLINE
-@@ -4287,6 +4288,7 @@ multi-close-radio-s-split-view = De gesplitste weergave van deze radio sluiten
+@@ -4306,6 +4307,7 @@ multi-close-radio-s-split-view = De gesplitste weergave van deze radio sluiten
  multi-open-radio-split-view-own = Deze radio openen in een eigen gesplitste weergave
  multi-already-open-another-split-view = Al geopend in een andere gesplitste weergave
  multi-show-radio-here = Deze radio hier tonen
@@ -139,10 +139,10 @@ index 5cbe958a..8f7ea85e 100644
  multi-add-radio = Een radio toevoegen
  multi-asked-station-another-radio = Het station om nog een radio gevraagd…
 diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-index 3becea3d..2597bacd 100644
+index d62b1321..5326336b 100644
 --- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-@@ -4066,6 +4066,7 @@ publicsdr-view-list = LISTA
+@@ -4084,6 +4084,7 @@ publicsdr-view-list = LISTA
  publicsdr-view-map = MAPA
  publicsdr-view-map-tip = Os mesmos receptores em um mapa-múndi. Clique em um ponto para escolher todos os receptores sob ele.
  publicsdr-map-pick = Clique em um ponto para escolher os receptores sob ele.
@@ -150,7 +150,7 @@ index 3becea3d..2597bacd 100644
  publicsdr-map-names = NOMES
  publicsdr-map-names-tip = Mostrar os nomes dos receptores no mapa. Desligado: só os escolhidos são nomeados.
  publicsdr-check-online = ON-LINE
-@@ -4294,6 +4295,7 @@ multi-close-radio-s-split-view = Fechar a visão dividida deste rádio
+@@ -4313,6 +4314,7 @@ multi-close-radio-s-split-view = Fechar a visão dividida deste rádio
  multi-open-radio-split-view-own = Abrir este rádio em uma visão dividida própria
  multi-already-open-another-split-view = Já aberto em outra visão dividida
  multi-show-radio-here = Mostrar este rádio aqui
@@ -159,10 +159,10 @@ index 3becea3d..2597bacd 100644
  multi-add-radio = Adicionar um rádio
  multi-asked-station-another-radio = Pedi à estação outro rádio…
 diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-index 75fcffcf..651b408b 100644
+index e99d34bd..bcfc15aa 100644
 --- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-@@ -4073,6 +4073,7 @@ publicsdr-view-list = СПИСОК
+@@ -4091,6 +4091,7 @@ publicsdr-view-list = СПИСОК
  publicsdr-view-map = КАРТА
  publicsdr-view-map-tip = Те же приёмники на карте мира. Щелчок по точке выбирает все приёмники под ней.
  publicsdr-map-pick = Щёлкните по точке, чтобы выбрать приёмники под ней.
@@ -170,7 +170,7 @@ index 75fcffcf..651b408b 100644
  publicsdr-map-names = ИМЕНА
  publicsdr-map-names-tip = Показывать названия приёмников на карте. Выкл.: подписаны только выбранные.
  publicsdr-check-online = В СЕТИ
-@@ -4301,6 +4302,7 @@ multi-close-radio-s-split-view = Закрыть разделённый вид э
+@@ -4320,6 +4321,7 @@ multi-close-radio-s-split-view = Закрыть разделённый вид э
  multi-open-radio-split-view-own = Открыть это радио в собственном разделённом виде
  multi-already-open-another-split-view = Уже открыто в другом разделённом виде
  multi-show-radio-here = Показать это радио здесь
@@ -179,10 +179,10 @@ index 75fcffcf..651b408b 100644
  multi-add-radio = Добавить радио
  multi-asked-station-another-radio = Запрошено у станции другое радио…
 diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-index 00719bec..6535d798 100644
+index c3e14cce..70c77732 100644
 --- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-@@ -4064,6 +4064,7 @@ publicsdr-view-list = LİSTE
+@@ -4082,6 +4082,7 @@ publicsdr-view-list = LİSTE
  publicsdr-view-map = HARİTA
  publicsdr-view-map-tip = Aynı alıcılar bir dünya haritasında. Bir noktaya tıklamak altındaki tüm alıcıları seçer.
  publicsdr-map-pick = Altındaki alıcıları seçmek için bir noktaya tıklayın.
@@ -190,7 +190,7 @@ index 00719bec..6535d798 100644
  publicsdr-map-names = ADLAR
  publicsdr-map-names-tip = Alıcıların adlarını haritada göster. Kapalı: yalnızca seçilenlerin adı yazılır.
  publicsdr-check-online = ÇEVRİMİÇİ
-@@ -4292,6 +4293,7 @@ multi-close-radio-s-split-view = Bu radyonun bölünmüş görünümünü kapat
+@@ -4311,6 +4312,7 @@ multi-close-radio-s-split-view = Bu radyonun bölünmüş görünümünü kapat
  multi-open-radio-split-view-own = Bu radyoyu kendi bölünmüş görünümünde açın
  multi-already-open-another-split-view = Zaten başka bir bölünmüş görünümde açık
  multi-show-radio-here = Bu radyoyu burada göster
@@ -199,10 +199,10 @@ index 00719bec..6535d798 100644
  multi-add-radio = Bir radyo ekle
  multi-asked-station-another-radio = İstasyondan başka bir radyo istendi…
 diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-index 98a9ca06..ef326df6 100644
+index c9c69d13..c80111d9 100644
 --- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-@@ -4037,6 +4037,7 @@ publicsdr-view-list = 列表
+@@ -4055,6 +4055,7 @@ publicsdr-view-list = 列表
  publicsdr-view-map = 地图
  publicsdr-view-map-tip = 在世界地图上显示同样的接收机。点击一个点即可选择其下的所有接收机。
  publicsdr-map-pick = 点击一个点以选择其下的接收机。
@@ -210,7 +210,7 @@ index 98a9ca06..ef326df6 100644
  publicsdr-map-names = 名称
  publicsdr-map-names-tip = 在地图上显示接收机名称。关闭：只显示所选接收机的名称。
  publicsdr-check-online = 在线
-@@ -4264,6 +4265,7 @@ multi-close-radio-s-split-view = 关闭此电台的分屏视图
+@@ -4283,6 +4284,7 @@ multi-close-radio-s-split-view = 关闭此电台的分屏视图
  multi-open-radio-split-view-own = 在其自己的分屏视图中打开此电台
  multi-already-open-another-split-view = 已在另一个分屏视图中打开
  multi-show-radio-here = 在此处显示此电台
@@ -219,7 +219,7 @@ index 98a9ca06..ef326df6 100644
  multi-add-radio = 添加电台
  multi-asked-station-another-radio = 已向电台站点请求另一台电台……
 diff --git a/crates/sdroxide-ui/src/app/publicsdr.rs b/crates/sdroxide-ui/src/app/publicsdr.rs
-index 2991d79d..e9c9d09a 100644
+index dc475fcd..2e2a82c1 100644
 --- a/crates/sdroxide-ui/src/app/publicsdr.rs
 +++ b/crates/sdroxide-ui/src/app/publicsdr.rs
 @@ -524,6 +524,7 @@ impl SdroxideApp {
@@ -239,7 +239,7 @@ index 2991d79d..e9c9d09a 100644
          // Everything below stays inside the width the window has now. Outside
          // a scroll area, a row that measures itself by what is free would
          // otherwise widen the window a little every frame, until it filled
-@@ -705,11 +708,42 @@ impl SdroxideApp {
+@@ -736,11 +739,42 @@ impl SdroxideApp {
      // Why: HDZ 2026-11-04: "dabei wäre statt Kiwisdr … der Sendername aus dem
      //      Katalog zu übernehmen". Without a name the radio was called after
      //      its interface, so every public receiver read "Kiwisdr".
@@ -282,7 +282,7 @@ index 2991d79d..e9c9d09a 100644
          self.radio_tab_requests.push(RadioTabRequest::Add {
              station: self.station_key(),
              preset: Some(Box::new(fresh)),
-@@ -725,6 +759,7 @@ impl SdroxideApp {
+@@ -756,6 +790,7 @@ impl SdroxideApp {
          //      die Radios stale".
          self.show_public_sdrs = false;
          self.public_sdr_map_state.picked.clear();
@@ -291,7 +291,7 @@ index 2991d79d..e9c9d09a 100644
  }
  
 diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
-index 2b0abc1f..26d81bff 100644
+index a939e1a3..f4564ccc 100644
 --- a/crates/sdroxide-ui/src/multi.rs
 +++ b/crates/sdroxide-ui/src/multi.rs
 @@ -132,6 +132,9 @@ enum StripAction {
@@ -304,7 +304,7 @@ index 2b0abc1f..26d81bff 100644
  }
  
  pub struct MultiApp {
-@@ -603,6 +606,11 @@ impl MultiApp {
+@@ -615,6 +618,11 @@ impl MultiApp {
                      }
                  }
                  StripAction::Power { id, on } => self.set_power(id, on),
@@ -316,7 +316,7 @@ index 2b0abc1f..26d81bff 100644
                  // The main window's strip only ever offers this machine's own
                  // roster — it is drawn on every pane and a menu there would be
                  // in the way. Adding a radio at a station is one screen away,
-@@ -703,7 +711,32 @@ impl MultiApp {
+@@ -715,7 +723,32 @@ impl MultiApp {
                      if !tab.enabled {
                          label = label.weak();
                      }
@@ -351,10 +351,10 @@ index 2b0abc1f..26d81bff 100644
                      if tab.app.tab_tx_on() {
                          ui.label(
 diff --git a/crates/sdroxide-ui/src/publicsdr_map.rs b/crates/sdroxide-ui/src/publicsdr_map.rs
-index 0caf8f05..164d5dab 100644
+index 92aa82fd..0bf44931 100644
 --- a/crates/sdroxide-ui/src/publicsdr_map.rs
 +++ b/crates/sdroxide-ui/src/publicsdr_map.rs
-@@ -95,6 +95,112 @@ pub struct PublicSdrMapState {
+@@ -100,6 +100,112 @@ pub struct PublicSdrMapState {
      //      Easing is for a search narrowing the receivers; a map that changes
      //      size under the pointer should not glide for half a second after it.
      pub fitted_size: Vec2,
@@ -467,7 +467,7 @@ index 0caf8f05..164d5dab 100644
  }
  
  /// How long after a click its receivers are checked, in seconds: long enough
-@@ -147,6 +253,70 @@ pub fn endpoint(e: &PublicSdrEntry) -> String {
+@@ -152,6 +258,70 @@ pub fn endpoint(e: &PublicSdrEntry) -> String {
  }
  
  impl PublicSdrMapState {
@@ -538,7 +538,7 @@ index 0caf8f05..164d5dab 100644
      /// After a click: schedule a check of each picked receiver that has no
      /// fresh answer and none on the way, [`CHECK_DELAY_S`] from `now`.
      ///
-@@ -602,6 +772,31 @@ pub fn show(
+@@ -607,6 +777,31 @@ pub fn show(
          p.circle_stroke(c, 6.5, (1.2, alpha(map.home, 170.0)));
      }
  
@@ -570,7 +570,7 @@ index 0caf8f05..164d5dab 100644
      // ── interaction ──
      let mut changed = false;
      if !hovered.is_empty() {
-@@ -816,4 +1011,41 @@ mod tests {
+@@ -821,4 +1016,41 @@ mod tests {
          e.address = "5.6.7.8:5555".into();
          assert_ne!(a, key(&e));
      }
@@ -612,10 +612,18 @@ index 0caf8f05..164d5dab 100644
 +        assert!((st.view.clat - 10.0).abs() < 1e-6 && (st.view.clon - 20.0).abs() < 1e-6);
 +    }
  }
-diff --git a/vendor/faad2 b/vendor/faad2
-index 673a22a3..a3350400 160000
---- a/vendor/faad2
-+++ b/vendor/faad2
-@@ -1 +1 @@
--Subproject commit 673a22a3c7c33e96e2ff7aae7c4d2bc190dfbf92
-+Subproject commit a335040022e14ff9b6c54bbd459590d4c7edffe8-dirty
+diff --git a/docs/USER_MANUAL.md b/docs/USER_MANUAL.md
+index e13cd062..1025bb73 100644
+--- a/docs/USER_MANUAL.md
++++ b/docs/USER_MANUAL.md
+@@ -16868,6 +16868,10 @@ after the click by the machine the radio is attached to (a KiwiSDR's status
+ page, a SpyServer's greeting, a TCP connect; three seconds each, no channel
+ taken). The map fills its window; resize the window to make it larger.
+ 
++The name on such a radio's tab leads back: a click on it opens the map at that
++receiver. Where the directory no longer lists it, the map draws it at its last
++known place as a dashed ring, remembered from when it was added or last seen.
++
+ The lists are fetched by the machine the radio is attached to, not by the
+ screen you are sitting at — so this works the same in the browser client, and
+ a receiver is judged reachable from where it will actually be connected to.

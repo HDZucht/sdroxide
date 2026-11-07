@@ -4,9 +4,9 @@ Instructions for a coding agent (or a person) that applies a patch from `patches
 
 ## 1. Choose the base
 
-1. Use upstream `main` at commit `555d771e` (v1.6.11). Every patch was measured on it.
+1. Use upstream `main` at commit `d10ae79c` (v1.7.0). Every patch was measured on it (updated 2026-11-07).
 2. Clone upstream, not this fork's `main`:
-   `git clone https://github.com/dividebysandwich/sdroxide && cd sdroxide && git checkout 555d771e`
+   `git clone https://github.com/dividebysandwich/sdroxide && cd sdroxide && git checkout d10ae79c`
 3. Get the submodules. The build fails without them:
    `git submodule update --init --recursive`
 

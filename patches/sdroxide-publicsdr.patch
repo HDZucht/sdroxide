@@ -61,10 +61,10 @@ index 005b4cdc..ae73aeb2 100644
 +    PublicSdrCheck { network: PublicSdrNetwork, address: String, result: Result<String, String> },
  }
 diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-index eefd18c2..c7faca5f 100644
+index a5d7b6c6..b1c640c1 100644
 --- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-@@ -4048,21 +4048,27 @@ fsq-add = Hinzufügen
+@@ -4064,21 +4064,27 @@ fsq-add = Hinzufügen
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -78,7 +78,7 @@ index eefd18c2..c7faca5f 100644
 -publicsdr-open-receiver-another-radio-leave = Den Empfänger als weiteres Funkgerät öffnen und dieses in Ruhe lassen
 -publicsdr-cancel = ABBRECHEN
 +publicsdr-add-as-radio = ALS RADIO HINZUFÜGEN
-+publicsdr-add-as-radio-tip = Diesen Empfänger als eigenes Funkgerät hinzufügen, benannt nach seinem Eintrag im Verzeichnis. Das Funkgerät, auf dem du bist, bleibt, wie es ist.
++publicsdr-add-as-radio-tip = Als eigenes Funkgerät hinzufügen, Name aus Verzeichnis
  publicsdr-public-sdrs = ÖFFENTLICHE SDRS
  publicsdr-available = VERFÜGBAR
  publicsdr-hide-receivers-are-full-ones = Empfänger ausblenden, die voll sind, und die, deren Betreiber keine Kanäle für Apps außer einem Browser geöffnet hat
@@ -89,10 +89,10 @@ index eefd18c2..c7faca5f 100644
 +publicsdr-map-cities-tip = Städte auf dieser Karte ein oder aus.
 +publicsdr-view-list = LISTE
 +publicsdr-view-map = KARTE
-+publicsdr-view-map-tip = Dieselben Empfänger auf einer Weltkarte. Ein Klick auf einen Punkt wählt alle Empfänger darunter.
++publicsdr-view-map-tip = Empfänger auf Weltkarte; Klick auf Punkt wählt alle darunter
 +publicsdr-map-pick = Klick auf einen Punkt wählt die Empfänger darunter.
 +publicsdr-map-names = NAMEN
-+publicsdr-map-names-tip = Namen der Empfänger auf der Karte zeigen. Aus: nur die gewählten tragen ihren Namen.
++publicsdr-map-names-tip = Namen aller Empfänger; aus: nur gewählte
 +publicsdr-check-online = ONLINE
 +publicsdr-check-silent = STUMM
 +publicsdr-check-waiting = PRÜFE…
@@ -100,7 +100,7 @@ index eefd18c2..c7faca5f 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Einen SpyServer in seiner Form mit niedriger Bandbreite nehmen: ein schmales I/Q-Fenster, das der Skala folgt, plus die eigene Bandansicht des Servers, statt Megabit an Breitband-I/Q. Ohne Wirkung auf einen KiwiSDR, der nur die eine Form hat.
  publicsdr-refresh = ⟳ AKTUALISIEREN
  publicsdr-fetch-both-directories-again = Beide Verzeichnisse erneut abrufen
-@@ -4072,9 +4078,6 @@ publicsdr-fetching-receiver-lists = Die Empfängerlisten werden abgerufen…
+@@ -4088,9 +4094,6 @@ publicsdr-fetching-receiver-lists = Die Empfängerlisten werden abgerufen…
  publicsdr-machine-radio-attached-does-not = Der Rechner, an dem dieses Funkgerät angeschlossen ist, beantwortet keine Gerätefragen, daher kann er die Listen ebenfalls nicht abrufen.
  publicsdr-no-match = kein Treffer
  publicsdr-nothing-matches-try-turning-filter = nichts passt — einen Filterchip wieder einschalten
@@ -110,7 +110,7 @@ index eefd18c2..c7faca5f 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4901,14 +4904,7 @@ publicsdr-antenna =
+@@ -4918,14 +4921,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } Empfänger · { $per_net } · abgerufen vor { $age }
  publicsdr-showing-search-narrow = { $shown } von { $n } angezeigt — suchen, um einzugrenzen
  publicsdr-match = { $n } Treffer
@@ -126,7 +126,7 @@ index eefd18c2..c7faca5f 100644
  publicsdr-opening-another-radio = { $entry } wird als weiteres Funkgerät geöffnet…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5233,7 +5229,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5250,7 +5246,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (Netzwerk)
  cat-family-flrig = flrig (Netzwerk)
@@ -135,10 +135,10 @@ index eefd18c2..c7faca5f 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  agc-mode-off = Aus
 diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-index 30436a7e..b1935510 100644
+index 2cdbf09d..6a7446c5 100644
 --- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-@@ -4057,21 +4057,27 @@ fsq-add = Add
+@@ -4073,21 +4073,27 @@ fsq-add = Add
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -152,7 +152,7 @@ index 30436a7e..b1935510 100644
 -publicsdr-open-receiver-another-radio-leave = Open the receiver as another radio and leave this one alone
 -publicsdr-cancel = CANCEL
 +publicsdr-add-as-radio = ADD AS RADIO
-+publicsdr-add-as-radio-tip = Add this receiver as a radio of its own, named after its directory entry. The radio you are on stays as it is.
++publicsdr-add-as-radio-tip = Add as radio, named from directory
  publicsdr-public-sdrs = PUBLIC SDRS
  publicsdr-available = AVAILABLE
  publicsdr-hide-receivers-are-full-ones = Hide receivers that are full, and the ones whose operator has not opened any channels to apps other than a browser
@@ -163,10 +163,10 @@ index 30436a7e..b1935510 100644
 +publicsdr-map-cities-tip = Cities on this map, on or off.
 +publicsdr-view-list = LIST
 +publicsdr-view-map = MAP
-+publicsdr-view-map-tip = The same receivers on a world map. Click a dot to pick every receiver under it.
++publicsdr-view-map-tip = Receivers on world map; click dot to pick all under it
 +publicsdr-map-pick = Click a dot to pick the receivers under it.
 +publicsdr-map-names = NAMES
-+publicsdr-map-names-tip = Show the receivers' names on the map. Off: only the picked ones are named.
++publicsdr-map-names-tip = Names of all receivers; off: picked only
 +publicsdr-check-online = ONLINE
 +publicsdr-check-silent = SILENT
 +publicsdr-check-waiting = CHECKING…
@@ -174,7 +174,7 @@ index 30436a7e..b1935510 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Take a SpyServer in its low-bandwidth shape: a narrow I/Q window that follows the dial plus the server's own band view, instead of megabits of wideband I/Q. No effect on a KiwiSDR, which has only the one shape.
  publicsdr-refresh = ⟳ REFRESH
  publicsdr-fetch-both-directories-again = Fetch both directories again
-@@ -4081,9 +4087,6 @@ publicsdr-fetching-receiver-lists = Fetching the receiver lists…
+@@ -4097,9 +4103,6 @@ publicsdr-fetching-receiver-lists = Fetching the receiver lists…
  publicsdr-machine-radio-attached-does-not = The machine this radio is attached to does not answer device questions, so it cannot fetch the lists either.
  publicsdr-no-match = no match
  publicsdr-nothing-matches-try-turning-filter = nothing matches — try turning a filter chip back on
@@ -184,7 +184,7 @@ index 30436a7e..b1935510 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4916,14 +4919,7 @@ publicsdr-antenna =
+@@ -4933,14 +4936,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } receivers · { $per_net } · fetched { $age } ago
  publicsdr-showing-search-narrow = showing { $shown } of { $n } — search to narrow it
  publicsdr-match = { $n } match
@@ -200,7 +200,7 @@ index 30436a7e..b1935510 100644
  publicsdr-opening-another-radio = Opening { $entry } as another radio…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5249,7 +5245,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5266,7 +5262,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (network)
  cat-family-flrig = flrig (network)
@@ -209,10 +209,10 @@ index 30436a7e..b1935510 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  agc-mode-off = Off
 diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-index 86e4a0a0..d9cd4639 100644
+index b60d4a01..5a348d1e 100644
 --- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-@@ -4037,21 +4037,25 @@ fsq-add = Añadir
+@@ -4053,21 +4053,25 @@ fsq-add = Añadir
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -246,7 +246,7 @@ index 86e4a0a0..d9cd4639 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Toma un SpyServer en su forma de bajo ancho de banda: una ventana I/Q estrecha que sigue al dial más la vista de banda propia del servidor, en lugar de megabits de I/Q de banda ancha. Sin efecto en un KiwiSDR, que solo tiene una forma.
  publicsdr-refresh = ⟳ ACTUALIZAR
  publicsdr-fetch-both-directories-again = Obtener de nuevo ambos directorios
-@@ -4061,9 +4065,6 @@ publicsdr-fetching-receiver-lists = Obteniendo las listas de receptores…
+@@ -4077,9 +4081,6 @@ publicsdr-fetching-receiver-lists = Obteniendo las listas de receptores…
  publicsdr-machine-radio-attached-does-not = La máquina a la que está conectada esta radio no responde a preguntas de dispositivos, así que tampoco puede obtener las listas.
  publicsdr-no-match = sin coincidencias
  publicsdr-nothing-matches-try-turning-filter = nada coincide — prueba a volver a activar un chip de filtro
@@ -256,7 +256,7 @@ index 86e4a0a0..d9cd4639 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4892,14 +4893,7 @@ publicsdr-antenna =
+@@ -4909,14 +4910,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } receptores · { $per_net } · obtenidos hace { $age }
  publicsdr-showing-search-narrow = mostrando { $shown } de { $n } — busca para acotar
  publicsdr-match = { $n } coincidencia
@@ -272,7 +272,7 @@ index 86e4a0a0..d9cd4639 100644
  publicsdr-opening-another-radio = Abriendo { $entry } como otra radio…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5228,7 +5222,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5245,7 +5239,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (red)
  cat-family-flrig = flrig (red)
@@ -281,10 +281,10 @@ index 86e4a0a0..d9cd4639 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  agc-mode-off = Off
 diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-index 932082b3..0db10b46 100644
+index 5a834f0f..fd344ab7 100644
 --- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-@@ -4054,21 +4054,25 @@ fsq-add = Ajouter
+@@ -4070,21 +4070,25 @@ fsq-add = Ajouter
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -318,7 +318,7 @@ index 932082b3..0db10b46 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Prendre un SpyServer dans sa forme à faible débit : une fenêtre I/Q étroite qui suit le cadran, plus la vue de bande propre au serveur, au lieu de mégabits d'I/Q large bande. Sans effet sur un KiwiSDR, qui n'a que cette forme.
  publicsdr-refresh = ⟳ ACTUALISER
  publicsdr-fetch-both-directories-again = Récupérer à nouveau les deux annuaires
-@@ -4078,9 +4082,6 @@ publicsdr-fetching-receiver-lists = Récupération des listes de récepteurs…
+@@ -4094,9 +4098,6 @@ publicsdr-fetching-receiver-lists = Récupération des listes de récepteurs…
  publicsdr-machine-radio-attached-does-not = La machine à laquelle cette radio est reliée ne répond pas aux questions sur les périphériques, donc elle ne peut pas récupérer les listes non plus.
  publicsdr-no-match = aucune correspondance
  publicsdr-nothing-matches-try-turning-filter = rien ne correspond — essayez de réactiver une puce de filtre
@@ -328,7 +328,7 @@ index 932082b3..0db10b46 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4911,14 +4912,7 @@ publicsdr-antenna =
+@@ -4928,14 +4929,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } récepteurs · { $per_net } · récupéré il y a { $age }
  publicsdr-showing-search-narrow = affichage de { $shown } sur { $n } — recherchez pour affiner
  publicsdr-match = { $n } correspondance
@@ -344,7 +344,7 @@ index 932082b3..0db10b46 100644
  publicsdr-opening-another-radio = Ouverture de { $entry } comme une autre radio…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5244,7 +5238,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5261,7 +5255,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (réseau)
  cat-family-flrig = flrig (réseau)
@@ -353,10 +353,10 @@ index 932082b3..0db10b46 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  agc-mode-off = Arrêt
 diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-index 3c5e5ae7..5336cf81 100644
+index f82214fc..a6c2aefd 100644
 --- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-@@ -4058,21 +4058,25 @@ fsq-add = Aggiungi
+@@ -4074,21 +4074,25 @@ fsq-add = Aggiungi
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -390,7 +390,7 @@ index 3c5e5ae7..5336cf81 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Usa uno SpyServer nella sua forma a bassa larghezza di banda: una finestra I/Q stretta che segue la sintonia più la vista di banda propria del server, invece di megabit di I/Q a banda larga. Nessun effetto su un KiwiSDR, che ha una sola forma.
  publicsdr-refresh = ⟳ AGGIORNA
  publicsdr-fetch-both-directories-again = Scarica di nuovo entrambe le directory
-@@ -4082,9 +4086,6 @@ publicsdr-fetching-receiver-lists = Recupero degli elenchi dei ricevitori…
+@@ -4098,9 +4102,6 @@ publicsdr-fetching-receiver-lists = Recupero degli elenchi dei ricevitori…
  publicsdr-machine-radio-attached-does-not = La macchina a cui è collegata questa radio non risponde alle domande sui dispositivi, quindi non può nemmeno scaricare gli elenchi.
  publicsdr-no-match = nessuna corrispondenza
  publicsdr-nothing-matches-try-turning-filter = nulla corrisponde — prova a riattivare un filtro
@@ -400,7 +400,7 @@ index 3c5e5ae7..5336cf81 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4914,14 +4915,7 @@ publicsdr-antenna =
+@@ -4931,14 +4932,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } ricevitori · { $per_net } · scaricati { $age } fa
  publicsdr-showing-search-narrow = mostrati { $shown } di { $n } — cerca per restringere
  publicsdr-match = { $n } corrispondenza
@@ -416,7 +416,7 @@ index 3c5e5ae7..5336cf81 100644
  publicsdr-opening-another-radio = Apertura di { $entry } come un'altra radio…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5247,7 +5241,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5264,7 +5258,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (rete)
  cat-family-flrig = flrig (rete)
@@ -425,10 +425,10 @@ index 3c5e5ae7..5336cf81 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  agc-mode-off = Off
 diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-index adb34b29..50b1f90c 100644
+index fb499478..e408d0ec 100644
 --- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-@@ -4032,21 +4032,25 @@ fsq-add = 追加
+@@ -4048,21 +4048,25 @@ fsq-add = 追加
  
  ## PublicSDR（src/app/publicsdr.rs）
  
@@ -462,7 +462,7 @@ index adb34b29..50b1f90c 100644
  publicsdr-take-spyserver-low-bandwidth-shape = SpyServer を低帯域の形で受信します。ダイヤルに追従する狭い I/Q 窓と、サーバー自身のバンド表示を使い、広帯域の I/Q の数メガビットは使いません。KiwiSDR には影響しません。KiwiSDR の形はこの 1 つだけです。
  publicsdr-refresh = ⟳ 更新
  publicsdr-fetch-both-directories-again = 両方のディレクトリを再度取得します
-@@ -4056,9 +4060,6 @@ publicsdr-fetching-receiver-lists = 受信機の一覧を取得中…
+@@ -4072,9 +4076,6 @@ publicsdr-fetching-receiver-lists = 受信機の一覧を取得中…
  publicsdr-machine-radio-attached-does-not = この無線機が接続されているマシンはデバイスへの問い合わせに応答しないため、一覧も取得できません。
  publicsdr-no-match = 一致なし
  publicsdr-nothing-matches-try-turning-filter = 一致するものがありません。フィルターのチップを一つ戻してみてください
@@ -472,7 +472,7 @@ index adb34b29..50b1f90c 100644
  
  ## HD（src/app/hd.rs）
  
-@@ -4860,14 +4861,7 @@ publicsdr-antenna =
+@@ -4877,14 +4878,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = 受信機 { $entries } 件 · { $per_net } · 取得 { $age } 前
  publicsdr-showing-search-narrow = { $n } 件中 { $shown } 件を表示中 — 検索で絞り込めます
  publicsdr-match = { $n } 件一致
@@ -488,7 +488,7 @@ index adb34b29..50b1f90c 100644
  publicsdr-opening-another-radio = { $entry } を別の無線機として開いています…
  
  ## QO-100：値を含むメッセージ（src/app/qo100.rs）
-@@ -5182,7 +5176,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5199,7 +5193,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld（ネットワーク）
  cat-family-flrig = flrig（ネットワーク）
@@ -497,10 +497,10 @@ index adb34b29..50b1f90c 100644
  ## sdroxide-types の値。チップ、メニュー、一覧に描かれるものです（src/i18n/labels.rs）。
  agc-mode-off = オフ
 diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-index 8491e281..dea81144 100644
+index 956e7a98..829c8a03 100644
 --- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-@@ -4048,21 +4048,25 @@ fsq-add = Toevoegen
+@@ -4064,21 +4064,25 @@ fsq-add = Toevoegen
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -534,7 +534,7 @@ index 8491e281..dea81144 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Een SpyServer in zijn vorm met lage bandbreedte nemen: een smal I/Q-venster dat de dial volgt plus de eigen bandweergave van de server, in plaats van megabits aan breedband-I/Q. Geen effect op een KiwiSDR, die maar de ene vorm heeft.
  publicsdr-refresh = ⟳ VERNIEUWEN
  publicsdr-fetch-both-directories-again = Beide mappen opnieuw ophalen
-@@ -4072,9 +4076,6 @@ publicsdr-fetching-receiver-lists = De ontvangerlijsten ophalen…
+@@ -4088,9 +4092,6 @@ publicsdr-fetching-receiver-lists = De ontvangerlijsten ophalen…
  publicsdr-machine-radio-attached-does-not = De machine waarop deze radio is aangesloten, beantwoordt geen vragen over apparaten, dus kan hij de lijsten ook niet ophalen.
  publicsdr-no-match = geen overeenkomst
  publicsdr-nothing-matches-try-turning-filter = niets past — probeer een filter weer aan te zetten
@@ -544,7 +544,7 @@ index 8491e281..dea81144 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4904,14 +4905,7 @@ publicsdr-antenna =
+@@ -4921,14 +4922,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } ontvangers · { $per_net } · opgehaald { $age } geleden
  publicsdr-showing-search-narrow = { $shown } van { $n } getoond — zoek om te verfijnen
  publicsdr-match = { $n } treffer
@@ -560,7 +560,7 @@ index 8491e281..dea81144 100644
  publicsdr-opening-another-radio = { $entry } openen als een andere radio…
  
  ## qo100: messages with values (src/app/qo100.rs)
-@@ -5236,7 +5230,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5253,7 +5247,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (netwerk)
  cat-family-flrig = flrig (netwerk)
@@ -569,10 +569,10 @@ index 8491e281..dea81144 100644
  ## Values from sdroxide-types drawn on chips, menus and lists (src/i18n/labels.rs).
  
 diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-index ab8c5eb5..7d593494 100644
+index 0d63f183..d62b1321 100644
 --- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-@@ -4055,21 +4055,25 @@ fsq-add = Adicionar
+@@ -4071,21 +4071,25 @@ fsq-add = Adicionar
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -606,7 +606,7 @@ index ab8c5eb5..7d593494 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Usa um SpyServer na sua forma de baixa largura de banda: uma janela I/Q estreita que segue o dial, mais a visão de banda do próprio servidor, em vez de megabits de I/Q de banda larga. Sem efeito em um KiwiSDR, que só tem essa forma.
  publicsdr-refresh = ⟳ ATUALIZAR
  publicsdr-fetch-both-directories-again = Busca os dois diretórios de novo
-@@ -4079,9 +4083,6 @@ publicsdr-fetching-receiver-lists = Buscando as listas de receptores…
+@@ -4095,9 +4099,6 @@ publicsdr-fetching-receiver-lists = Buscando as listas de receptores…
  publicsdr-machine-radio-attached-does-not = A máquina à qual este rádio está conectado não responde a perguntas sobre dispositivos, então também não consegue buscar as listas.
  publicsdr-no-match = nenhum resultado
  publicsdr-nothing-matches-try-turning-filter = nada corresponde — tente reativar um dos filtros
@@ -616,7 +616,7 @@ index ab8c5eb5..7d593494 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4912,14 +4913,7 @@ publicsdr-antenna =
+@@ -4929,14 +4930,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } receptores · { $per_net } · buscado há { $age }
  publicsdr-showing-search-narrow = mostrando { $shown } de { $n } — pesquise para restringir
  publicsdr-match = { $n } resultado
@@ -632,7 +632,7 @@ index ab8c5eb5..7d593494 100644
  publicsdr-opening-another-radio = Abrindo { $entry } como outro rádio…
  
  ## qo100: mensagens com valores (src/app/qo100.rs)
-@@ -5245,7 +5239,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5262,7 +5256,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (rede)
  cat-family-flrig = flrig (rede)
@@ -641,10 +641,10 @@ index ab8c5eb5..7d593494 100644
  ## Valores de sdroxide-types exibidos em chips, menus e listas (src/i18n/labels.rs).
  agc-mode-off = Desligado
 diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-index b3e2b794..e7c4a66c 100644
+index 989d9e99..e99d34bd 100644
 --- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-@@ -4062,21 +4062,25 @@ fsq-add = Добавить
+@@ -4078,21 +4078,25 @@ fsq-add = Добавить
  
  ## PublicSDR (src/app/publicsdr.rs)
  
@@ -678,7 +678,7 @@ index b3e2b794..e7c4a66c 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Брать SpyServer в его форме низкой полосы: узкое окно I/Q, которое следует за шкалой, плюс собственный вид диапазона сервера, вместо мегабит широкополосного I/Q. На KiwiSDR это ничего не меняет — у него только одна форма.
  publicsdr-refresh = ⟳ ОБНОВИТЬ
  publicsdr-fetch-both-directories-again = Загрузить оба каталога заново
-@@ -4086,9 +4090,6 @@ publicsdr-fetching-receiver-lists = Загрузка списков приёмн
+@@ -4102,9 +4106,6 @@ publicsdr-fetching-receiver-lists = Загрузка списков приёмн
  publicsdr-machine-radio-attached-does-not = Машина, к которой подключено это радио, не отвечает на вопросы об устройствах, поэтому она тоже не может загрузить списки.
  publicsdr-no-match = совпадений нет
  publicsdr-nothing-matches-try-turning-filter = ничто не совпадает — попробуйте снова включить один из фильтров
@@ -688,7 +688,7 @@ index b3e2b794..e7c4a66c 100644
  
  ## HD (src/app/hd.rs)
  
-@@ -4915,14 +4916,7 @@ publicsdr-antenna =
+@@ -4932,14 +4933,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = приёмников: { $entries } · { $per_net } · загружено { $age } назад
  publicsdr-showing-search-narrow = показано { $shown } из { $n } — поиском сузьте список
  publicsdr-match = совпадений: { $n }
@@ -704,7 +704,7 @@ index b3e2b794..e7c4a66c 100644
  publicsdr-opening-another-radio = Открываю { $entry } как другое радио…
  
  ## qo100: сообщения со значениями (src/app/qo100.rs)
-@@ -5240,7 +5234,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5257,7 +5251,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (сеть)
  cat-family-flrig = flrig (сеть)
@@ -713,10 +713,10 @@ index b3e2b794..e7c4a66c 100644
  ## Значения из sdroxide-types, нарисованные на чипах, меню и списках (src/i18n/labels.rs).
  agc-mode-off = Выкл.
 diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-index 03d6f054..085def24 100644
+index 97d066a3..c3e14cce 100644
 --- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-@@ -4053,21 +4053,25 @@ fsq-add = Ekle
+@@ -4069,21 +4069,25 @@ fsq-add = Ekle
  
  ## publicsdr (src/app/publicsdr.rs)
  
@@ -750,7 +750,7 @@ index 03d6f054..085def24 100644
  publicsdr-take-spyserver-low-bandwidth-shape = Bir SpyServer'ı düşük bant genişliği biçiminde alın: skalayı izleyen dar bir I/Q penceresi artı sunucunun kendi bant görünümü; megabit genişbant I/Q yerine. Yalnızca bir biçimi olan bir KiwiSDR'ı etkilemez.
  publicsdr-refresh = ⟳ YENİLE
  publicsdr-fetch-both-directories-again = İki dizini yeniden alın
-@@ -4077,9 +4081,6 @@ publicsdr-fetching-receiver-lists = Alıcı listeleri alınıyor…
+@@ -4093,9 +4097,6 @@ publicsdr-fetching-receiver-lists = Alıcı listeleri alınıyor…
  publicsdr-machine-radio-attached-does-not = Bu radyonun bağlı olduğu makine aygıt sorularını yanıtlamıyor, bu yüzden listeleri de alamaz.
  publicsdr-no-match = eşleşme yok
  publicsdr-nothing-matches-try-turning-filter = Hiçbir şey eşleşmiyor — bir filtre çipini yeniden açmayı deneyin
@@ -760,7 +760,7 @@ index 03d6f054..085def24 100644
  
  ## hd (src/app/hd.rs)
  
-@@ -4903,14 +4904,7 @@ publicsdr-antenna =
+@@ -4920,14 +4921,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } alıcı · { $per_net } · { $age } önce alındı
  publicsdr-showing-search-narrow = { $n } içinden { $shown } gösteriliyor — daraltmak için arayın
  publicsdr-match = { $n } eşleşme
@@ -776,7 +776,7 @@ index 03d6f054..085def24 100644
  publicsdr-opening-another-radio = { $entry } başka bir radyo olarak açılıyor…
  
  ## qo100: değerli iletiler (src/app/qo100.rs)
-@@ -5236,7 +5230,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5253,7 +5247,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld (ağ)
  cat-family-flrig = flrig (ağ)
@@ -785,10 +785,10 @@ index 03d6f054..085def24 100644
  ## sdroxide-types değerleri, çiplerde, menülerde ve listelerde gösterilenler (src/i18n/labels.rs).
  agc-mode-off = Kapalı
 diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-index 9ceb3f38..ba7353d4 100644
+index 3369778c..c9c69d13 100644
 --- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-@@ -4026,21 +4026,25 @@ fsq-add = 添加
+@@ -4042,21 +4042,25 @@ fsq-add = 添加
  
  ## 公共 SDR（src/app/publicsdr.rs）
  
@@ -822,7 +822,7 @@ index 9ceb3f38..ba7353d4 100644
  publicsdr-take-spyserver-low-bandwidth-shape = 以低带宽形式接入 SpyServer：一个跟随表盘的窄幅 I/Q 窗口，加上服务器自己的频段视图，而不是数兆比特的宽带 I/Q。对 KiwiSDR 无影响，因为它只有这一种形式。
  publicsdr-refresh = ⟳ 刷新
  publicsdr-fetch-both-directories-again = 重新获取两个目录
-@@ -4050,9 +4054,6 @@ publicsdr-fetching-receiver-lists = 正在获取接收机列表……
+@@ -4066,9 +4070,6 @@ publicsdr-fetching-receiver-lists = 正在获取接收机列表……
  publicsdr-machine-radio-attached-does-not = 此电台所连接的机器不应答设备查询，因此它也无法获取列表。
  publicsdr-no-match = 无匹配
  publicsdr-nothing-matches-try-turning-filter = 没有任何内容匹配——请尝试重新打开某个过滤标签
@@ -832,7 +832,7 @@ index 9ceb3f38..ba7353d4 100644
  
  ## HD Radio（src/app/hd.rs）
  
-@@ -4857,14 +4858,7 @@ publicsdr-antenna =
+@@ -4874,14 +4875,7 @@ publicsdr-antenna =
  publicsdr-receivers-fetched-ago = { $entries } 台接收机 · { $per_net } · 获取于 { $age } 前
  publicsdr-showing-search-narrow = 显示 { $n } 个中的 { $shown } 个——搜索以缩小范围
  publicsdr-match = { $n } 个匹配
@@ -848,7 +848,7 @@ index 9ceb3f38..ba7353d4 100644
  publicsdr-opening-another-radio = 正在将 { $entry } 作为另一台电台打开……
  
  ## QO-100：带数值的消息（src/app/qo100.rs）
-@@ -5178,7 +5172,6 @@ cat-family-rs-hfiq = RS-HFIQ
+@@ -5195,7 +5189,6 @@ cat-family-rs-hfiq = RS-HFIQ
  cat-family-tr-usdx = (tr)uSDX
  cat-family-rigctld = Hamlib rigctld（网络）
  cat-family-flrig = flrig（网络）
@@ -857,10 +857,10 @@ index 9ceb3f38..ba7353d4 100644
  ## sdroxide-types 中的取值，显示在标签、菜单和列表上（src/i18n/labels.rs）。
  agc-mode-off = 关
 diff --git a/crates/sdroxide-ui/src/app/mod.rs b/crates/sdroxide-ui/src/app/mod.rs
-index 16f1cb43..42469010 100644
+index 9ab75228..0058aa59 100644
 --- a/crates/sdroxide-ui/src/app/mod.rs
 +++ b/crates/sdroxide-ui/src/app/mod.rs
-@@ -392,15 +392,11 @@ pub struct SdroxideApp {
+@@ -393,15 +393,11 @@ pub struct SdroxideApp {
      /// Take a SpyServer in its VFO+FFT shape rather than wideband. No effect on
      /// a KiwiSDR, which has only one shape.
      public_sdr_low_bw: bool,
@@ -881,7 +881,7 @@ index 16f1cb43..42469010 100644
      /// FlexRadios found by the last SmartSDR "Discover" listen.
      smartsdr_devices: Vec<sdroxide_types::SmartSdrDevice>,
      /// Result of the last SmartSDR "Test connection".
-@@ -1270,9 +1266,15 @@ pub(crate) enum RadioTabRequest {
+@@ -1308,9 +1304,15 @@ pub(crate) enum RadioTabRequest {
      /// pointed at the receiver that was picked, rather than arriving blank with
      /// its settings page open for an address to be typed into. `None` is the
      /// plain "+" chip, which does exactly that.
@@ -897,7 +897,7 @@ index 16f1cb43..42469010 100644
      },
      /// Open somebody else's station as a tab of its own: dial this WebSocket
      /// URL and, if it answers, show it under `name`. Queued by the **Remote**
-@@ -1496,7 +1498,8 @@ impl SdroxideApp {
+@@ -1541,7 +1543,8 @@ impl SdroxideApp {
              public_sdr_free_only: true,
              public_sdr_in_band: false,
              public_sdr_low_bw: false,
@@ -908,7 +908,7 @@ index 16f1cb43..42469010 100644
              smartsdr_test_result: None,
              pluto_devices: Vec::new(),
 diff --git a/crates/sdroxide-ui/src/app/publicsdr.rs b/crates/sdroxide-ui/src/app/publicsdr.rs
-index b3c8e2f5..d7ae7417 100644
+index 8015d8eb..dc475fcd 100644
 --- a/crates/sdroxide-ui/src/app/publicsdr.rs
 +++ b/crates/sdroxide-ui/src/app/publicsdr.rs
 @@ -1,5 +1,5 @@
@@ -1095,12 +1095,12 @@ index b3c8e2f5..d7ae7417 100644
 +        // after the window has given `self` back.
 +        let mut picked: Option<PublicSdrEntry> = None;
  
-         let resp = egui::Window::new(tr!("publicsdr-public-sdrs"))
-             .id(crate::layout::salted_id(ctx, "PUBLIC SDRS"))
-@@ -377,11 +359,23 @@ impl SdroxideApp {
-             .default_height(crate::layout::window_h(ctx, 520.0))
-             .show(ctx, |ui| {
-                 crate::chrome::window_body_bg(ui);
+         let tool_title = tr!("publicsdr-public-sdrs");
+         let mut tool_st = self.take_tool_state("PUBLIC SDRS");
+@@ -378,11 +360,23 @@ impl SdroxideApp {
+             tool_child,
+             &mut open,
+             |ui| {
 -                if let Some(blurb) = &blurb {
 -                    answer = confirm_panel(ui, blurb);
 -                    ui.add_space(6.0);
@@ -1125,7 +1125,7 @@ index b3c8e2f5..d7ae7417 100644
                      for (i, net) in PublicSdrNetwork::ALL.iter().enumerate() {
                          if crate::chrome::chip(ui, self.public_sdr_nets_shown[i], net.label())
                              .clicked()
-@@ -481,6 +475,12 @@ impl SdroxideApp {
+@@ -482,6 +476,12 @@ impl SdroxideApp {
                  ui.separator();
  
                  let rows = self.public_sdr_rows(&dir.entries, dial_hz);
@@ -1138,7 +1138,7 @@ index b3c8e2f5..d7ae7417 100644
                  if !self.public_sdr_search.trim().is_empty() || rows.len() > MAX_ROWS {
                      let shown = rows.len().min(MAX_ROWS);
                      let (text, colour) = match rows.len() {
-@@ -503,8 +503,8 @@ impl SdroxideApp {
+@@ -504,8 +504,8 @@ impl SdroxideApp {
                              )),
                              _ => None,
                          };
@@ -1149,9 +1149,9 @@ index b3c8e2f5..d7ae7417 100644
                          }
                      }
                      if rows.is_empty() {
-@@ -520,231 +520,303 @@ impl SdroxideApp {
-             crate::chrome::paint_window_border(ctx, &r.response);
-         }
+@@ -520,231 +520,322 @@ impl SdroxideApp {
+         );
+         self.put_tool_state("PUBLIC SDRS", tool_st);
          self.show_public_sdrs = open;
 +        // Closed: the pick goes with the window, so the next opening does not
 +        // show the last session's receivers with their last answers.
@@ -1241,13 +1241,13 @@ index b3c8e2f5..d7ae7417 100644
 +                .clicked()
 +            {
 +                st.names_off = !st.names_off;
-             }
++            }
 +            if crate::chrome::chip(ui, !st.cities_off, tr!("publicsdr-map-cities"))
 +                .on_hover_text(tr!("publicsdr-map-cities-tip"))
 +                .clicked()
 +            {
 +                st.cities_off = !st.cities_off;
-+            }
+             }
 +            ui.label(
 +                RichText::new(tr!(
 +                    "publicsdr-map-status",
@@ -1258,23 +1258,42 @@ index b3c8e2f5..d7ae7417 100644
 +                .color(crate::theme::gray(150)),
 +            );
 +        });
-+        // The map is half as high as it is wide, as the world is, and at most
-+        // half the screen high. Its height is never taken from what is left in
-+        // the window: the rows below then came out a few points taller than
-+        // their share, the window grew by that every frame, and the map refit
-+        // its view at each step until the window filled the screen.
-+        // Why: HDZ 2026-11-05: "die karte rutscht in die breite … es wäre
-+        //      besser wenn die karte höhenbegrenzt bliebe".
-+        // Invariant: `h` depends on the window's width and the screen alone,
-+        //            never on `available_height`, or the loop comes back.
-+        // Its return value (pick changed) is not needed: the rows below are
++        // The rows below the map first, as a bottom panel of the window, and
++        // the map in all the height that leaves: the window's size is the
++        // map's, in both directions, and nothing the map does feeds back into
++        // the window. The panel measures the rows before the map is laid out,
++        // so the map never takes their share and the window never grows.
++        // Why: HDZ 2026-11-07: "die Map-Begrenzung stößt in der Höhe an eine
++        //      Grenze, auch wenn keine Breite da wäre, und fortan kann ich nur
++        //      noch breiter werden, das ist sehr awkward als Fensterverhalten";
++        //      before that 2026-11-05: "die Karte rutscht in die Breite", the
++        //      loop a map sized from `available_height` started without the
++        //      panel.
++        // The map's return value (pick changed) is not needed: the rows are
 +        // drawn from the pick every frame.
-+        let screen_h = ui.ctx().content_rect().height();
-+        let h = (ui.available_width() * 0.5)
-+            .min(screen_h * 0.5)
-+            .max(crate::publicsdr_map::MIN_HEIGHT);
++        let mut take = None;
++        egui::Panel::bottom(ui.id().with("publicsdr_map_rows"))
++            .frame(egui::Frame::NONE)
++            .resizable(false)
++            .show_inside(ui, |ui| {
++                take = self.public_sdr_map_rows(ui, all, &picked, my_pos);
++            });
++        let h = ui.available_height().max(crate::publicsdr_map::MIN_HEIGHT);
 +        show(ui, &mut self.public_sdr_map_state, &visible, my_pos, h);
++        take
++    }
 +
++    /// The rows under the Public SDRs map: how to pick while nothing is, else
++    /// one row per picked receiver with its connection check and ADD AS
++    /// RADIO. Out: the receiver whose ADD was pressed.
++    fn public_sdr_map_rows(
++        &mut self,
++        ui: &mut egui::Ui,
++        all: &[PublicSdrEntry],
++        picked: &[&PublicSdrEntry],
++        my_pos: Option<(f64, f64)>,
++    ) -> Option<PublicSdrEntry> {
++        use crate::publicsdr_map::key;
 +        ui.add_space(4.0);
 +        // Nothing picked: say how to pick, and there is nothing to check.
 +        if picked.is_empty() {
@@ -1331,7 +1350,7 @@ index b3c8e2f5..d7ae7417 100644
 +        // One row per picked receiver: its connection field, then the list's
 +        // own row with ADD AS RADIO. The first ADD pressed is the answer.
 +        let mut take = None;
-+        for e in picked {
++        for e in picked.iter().copied() {
 +            // Distance only where both ends have a position, as in the list.
 +            let km = match (my_pos, e.lat, e.lon) {
 +                (Some(me), Some(lat), Some(lon)) => {
@@ -1651,7 +1670,7 @@ index b3c8e2f5..d7ae7417 100644
  
      /// A receiver with just enough filled in for the search box to chew on.
      fn entry(name: &str, location: &str) -> PublicSdrEntry {
-@@ -821,17 +893,40 @@ mod tests {
+@@ -821,17 +912,40 @@ mod tests {
          assert_eq!(rows[0].0.name, "R7KJG SDR");
      }
  
@@ -1704,10 +1723,10 @@ index b3c8e2f5..d7ae7417 100644
      }
  }
 diff --git a/crates/sdroxide-ui/src/app/settings/mod.rs b/crates/sdroxide-ui/src/app/settings/mod.rs
-index 14c49dc8..99c13b32 100644
+index 04e81fc0..5185d9d2 100644
 --- a/crates/sdroxide-ui/src/app/settings/mod.rs
 +++ b/crates/sdroxide-ui/src/app/settings/mod.rs
-@@ -853,6 +853,11 @@ impl SdroxideApp {
+@@ -860,6 +860,11 @@ impl SdroxideApp {
              // Straight to the clipboard, which is what the button that asked
              // for it promised — from here it goes into a bug report.
              A::Report(_, text) => ctx.copy_text(text),
@@ -1719,7 +1738,7 @@ index 14c49dc8..99c13b32 100644
              // The far end does not answer device questions. Said once, remembered
              // for the session: the controls that ask grey out with a reason
              // instead of each one having to discover it for itself.
-@@ -3828,6 +3833,7 @@ impl SdroxideApp {
+@@ -3855,6 +3860,7 @@ impl SdroxideApp {
                          requests.push(crate::app::RadioTabRequest::Add {
                              station: only.key.clone(),
                              preset: None,
@@ -1727,7 +1746,7 @@ index 14c49dc8..99c13b32 100644
                          });
                      }
                  }
-@@ -3855,6 +3861,7 @@ impl SdroxideApp {
+@@ -3882,6 +3888,7 @@ impl SdroxideApp {
                                  requests.push(crate::app::RadioTabRequest::Add {
                                      station: t.key.clone(),
                                      preset: None,
@@ -1749,10 +1768,10 @@ index 975b4078..28706123 100644
  mod remote;
  /// Pinned certificates for `wss://` stations nothing public vouches for.
 diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
-index 2aeeb3af..2b0abc1f 100644
+index f33338b4..a939e1a3 100644
 --- a/crates/sdroxide-ui/src/multi.rs
 +++ b/crates/sdroxide-ui/src/multi.rs
-@@ -507,7 +507,28 @@ impl MultiApp {
+@@ -519,7 +519,28 @@ impl MultiApp {
                          self.tabs[i].app.open_radio_settings();
                      }
                  }
@@ -1782,7 +1801,7 @@ index 2aeeb3af..2b0abc1f 100644
                  #[cfg(not(target_arch = "wasm32"))]
                  RadioTabRequest::Connect { url, name } => self.connect_tab(&url, name, ctx),
                  RadioTabRequest::Close(id) => {
-@@ -526,37 +547,46 @@ impl MultiApp {
+@@ -538,37 +559,46 @@ impl MultiApp {
                          t.app.reopen_source();
                      }
                  }
@@ -2715,6 +2734,55 @@ index 5ef178bd..10b87890 100644
          draw_cities(p, rect, clat, clon, lon_span, lat_span, dot_r, map);
      }
      dot_r
+diff --git a/docs/USER_MANUAL.md b/docs/USER_MANUAL.md
+index d1974d2e..e13cd062 100644
+--- a/docs/USER_MANUAL.md
++++ b/docs/USER_MANUAL.md
+@@ -16847,24 +16847,26 @@ whether it covers the frequency you are on; the search box matches on the
+ name, the place, the antenna and the band, so `40m denmark` or `7000` both
+ work. Hovering a row shows its address, its hardware and its antenna.
+ 
+-Each row offers two things. **USE** points the radio you are on at that
+-receiver, keeping everything else about it — converter offset, audio devices,
+-the lot. **+ TAB** opens it as another radio in a tab of its own, leaving the
+-one you were on alone.
+-
+-**USE** replaces a radio, so on a tab that already has an interface it asks
+-first, across the top of the list: which radio is about to become which
+-receiver, and **REPLACE** / **+ TAB INSTEAD** / **CANCEL**. Going ahead also
+-**renames the tab** after the receiver — a tab still calling itself "IC-9700"
+-while it is really a dongle in another country, refusing your 2 m calling
+-frequency as out of range, is a puzzle nobody should have to solve.
+-
+-Nothing is lost by taking a receiver in a tab you had set up. Every interface
+-keeps its own settings, and the tuning ranges you stated go with the interface
+-they were stated for ([6.2](#62-radio-choosing-and-configuring-the-rig)),
+-so switching **Radio interface** back in Settings → Radio brings the transceiver
+-back as it was — its address, its sound cards and its ranges. What it does not
+-bring back is the tab's name; type it again in the **Name** box on that page.
++Each row offers **ADD AS RADIO**: the receiver becomes a radio of its own, in a
++tab named after its directory entry (padding trimmed, cut at a word at 32
++characters; a placeholder such as "anonymous" gives way to the place, else to
++the device and host). The radio you are on is left exactly as it was, so
++nothing needs confirming, and the window closes: the new radio is where you
++listen now.
++
++**LIST** and **MAP** at the head of the window are two views of the same
++receivers: every one the buttons and the search let through, as a dot on the
++world map where the directory gives a position (KiwiSDR cyan, SpyServer in the
++map's station colour, sdr-list green, grey where it cannot be taken). The map
++fits itself to what is shown, so typing a country or a callsign flies there;
++drag, wheel and a double-click work as on the other maps, and **NAMES** and
++**CITIES** switch the labels. A click picks every receiver under the pointer
++(up to six: sites with several KiwiSDRs share a coordinate), and each appears
++under the map as the list's own row with **ADD AS RADIO**, headed by a check
++of whether it answers right now: **ONLINE** or **SILENT**, asked half a second
++after the click by the machine the radio is attached to (a KiwiSDR's status
++page, a SpyServer's greeting, a TCP connect; three seconds each, no channel
++taken). The map fills its window; resize the window to make it larger.
+ 
+ The lists are fetched by the machine the radio is attached to, not by the
+ screen you are sitting at — so this works the same in the browser client, and
 diff --git a/src/devices.rs b/src/devices.rs
 index a9590246..2e2a61d2 100644
 --- a/src/devices.rs

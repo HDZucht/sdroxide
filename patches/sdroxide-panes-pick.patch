@@ -1,8 +1,8 @@
 diff --git a/crates/sdroxide-ui/i18n/de/sdroxide.ftl b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-index eefd18c2..c6aa2394 100644
+index dbb74495..62f07a80 100644
 --- a/crates/sdroxide-ui/i18n/de/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/de/sdroxide.ftl
-@@ -4279,14 +4279,15 @@ smeter-ps = PS --
+@@ -4291,14 +4291,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -14,19 +14,19 @@ index eefd18c2..c6aa2394 100644
  multi-show-radio-here = Dieses Funkgerät hier zeigen
  multi-add-radio-computer-settings-radio = Ein Funkgerät auf diesem Computer hinzufügen (zum Hinzufügen an einer Station: Einstellungen → Funkgerät)
  multi-add-radio = Ein Funkgerät hinzufügen
-+multi-take-radio-off-row = Dieses Funkgerät aus dieser Reihe nehmen. Es läuft weiter; abgeschaltet wird es mit den Ringen.
-+multi-open-pane = Eine weitere Spalte mit einem Funkgerät öffnen, das gerade nicht zu sehen ist
++multi-take-radio-off-row = Aus Reihe nehmen; läuft weiter
++multi-open-pane = Neue Spalte mit verdecktem Funkgerät
 +multi-pick-radio = Radio ▼
-+multi-pick-radio-tip = Ein Funkgerät in diese Reihe holen. Die Ringe markieren Funkgeräte mit offener Verbindung.
++multi-pick-radio-tip = Funkgerät in Reihe holen; Ringe = Verbindung offen
 +multi-new-radio = Neues Funkgerät…
  multi-asked-station-another-radio = Die Station nach einem weiteren Funkgerät gefragt…
  multi-client-cannot-open-connection = Dieser Client kann keine Verbindung öffnen.
  
 diff --git a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-index 30436a7e..23fde9f9 100644
+index 7bbe3c3f..06f330d9 100644
 --- a/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/en-US/sdroxide.ftl
-@@ -4291,14 +4291,15 @@ smeter-ps = PS --
+@@ -4303,14 +4303,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -38,19 +38,19 @@ index 30436a7e..23fde9f9 100644
  multi-show-radio-here = Show this radio here
  multi-add-radio-computer-settings-radio = Add a radio on this computer (Settings → Radio to add one at a station)
  multi-add-radio = Add a radio
-+multi-take-radio-off-row = Take this radio off this row. It keeps running; the rings switch it off.
-+multi-open-pane = Open another pane with a radio that is not on screen
++multi-take-radio-off-row = Take off row; keeps running
++multi-open-pane = New pane with hidden radio
 +multi-pick-radio = Radio ▼
-+multi-pick-radio-tip = Put a radio on this row. The rings mark radios whose link is open.
++multi-pick-radio-tip = Add radio to row; rings = link open
 +multi-new-radio = New radio…
  multi-asked-station-another-radio = Asked the station for another radio…
  multi-client-cannot-open-connection = This client cannot open a connection.
  
 diff --git a/crates/sdroxide-ui/i18n/es/sdroxide.ftl b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-index 86e4a0a0..7e41bdc7 100644
+index d482fe37..34432632 100644
 --- a/crates/sdroxide-ui/i18n/es/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/es/sdroxide.ftl
-@@ -4271,14 +4271,15 @@ smeter-ps = PS --
+@@ -4283,14 +4283,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -71,10 +71,10 @@ index 86e4a0a0..7e41bdc7 100644
  multi-client-cannot-open-connection = Este cliente no puede abrir una conexión.
  
 diff --git a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-index 932082b3..3044260e 100644
+index 39374b52..ccbbc655 100644
 --- a/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/fr/sdroxide.ftl
-@@ -4289,14 +4289,15 @@ smeter-ps = PS --
+@@ -4301,14 +4301,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -95,10 +95,10 @@ index 932082b3..3044260e 100644
  multi-client-cannot-open-connection = Ce client ne peut pas ouvrir de connexion.
  
 diff --git a/crates/sdroxide-ui/i18n/it/sdroxide.ftl b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-index 3c5e5ae7..7ed35643 100644
+index c0de8242..565d4164 100644
 --- a/crates/sdroxide-ui/i18n/it/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/it/sdroxide.ftl
-@@ -4292,14 +4292,15 @@ smeter-ps = PS --
+@@ -4304,14 +4304,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -119,10 +119,10 @@ index 3c5e5ae7..7ed35643 100644
  multi-client-cannot-open-connection = Questo client non può aprire una connessione.
  
 diff --git a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-index adb34b29..2a10804b 100644
+index b459efa9..936c3e86 100644
 --- a/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ja/sdroxide.ftl
-@@ -4262,14 +4262,15 @@ smeter-ps = PS --
+@@ -4274,14 +4274,15 @@ smeter-ps = PS --
  ## マルチ（src/multi.rs）
  
  multi-tx = ● TX
@@ -143,10 +143,10 @@ index adb34b29..2a10804b 100644
  multi-client-cannot-open-connection = このクライアントは接続を開けません。
  
 diff --git a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-index 8491e281..9697b1ee 100644
+index 8db7e89e..7e90e2ab 100644
 --- a/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/nl/sdroxide.ftl
-@@ -4282,14 +4282,15 @@ smeter-ps = PS --
+@@ -4294,14 +4294,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -167,10 +167,10 @@ index 8491e281..9697b1ee 100644
  multi-client-cannot-open-connection = Deze client kan geen verbinding openen.
  
 diff --git a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-index ab8c5eb5..499c1781 100644
+index ddf72c96..a638c379 100644
 --- a/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/pt-BR/sdroxide.ftl
-@@ -4289,14 +4289,15 @@ smeter-ps = PS --
+@@ -4301,14 +4301,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -191,10 +191,10 @@ index ab8c5eb5..499c1781 100644
  multi-client-cannot-open-connection = Este cliente não consegue abrir uma conexão.
  
 diff --git a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-index b3e2b794..ae065682 100644
+index fa31f9a0..f535b47d 100644
 --- a/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/ru/sdroxide.ftl
-@@ -4296,14 +4296,15 @@ smeter-ps = PS --
+@@ -4308,14 +4308,15 @@ smeter-ps = PS --
  ## Несколько радио (src/multi.rs)
  
  multi-tx = ● TX
@@ -215,10 +215,10 @@ index b3e2b794..ae065682 100644
  multi-client-cannot-open-connection = Этот клиент не может открыть соединение.
  
 diff --git a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-index 03d6f054..c6836f49 100644
+index e049c83b..2b9c3205 100644
 --- a/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/tr/sdroxide.ftl
-@@ -4287,14 +4287,15 @@ smeter-ps = PS --
+@@ -4299,14 +4299,15 @@ smeter-ps = PS --
  ## multi (src/multi.rs)
  
  multi-tx = ● TX
@@ -239,10 +239,10 @@ index 03d6f054..c6836f49 100644
  multi-client-cannot-open-connection = Bu istemci bir bağlantı açamaz.
  
 diff --git a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-index 9ceb3f38..24b8aad6 100644
+index cdc92986..58201421 100644
 --- a/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
 +++ b/crates/sdroxide-ui/i18n/zh-CN/sdroxide.ftl
-@@ -4259,14 +4259,15 @@ smeter-ps = PS --
+@@ -4271,14 +4271,15 @@ smeter-ps = PS --
  ## 多电台（src/multi.rs）
  
  multi-tx = ● 发射
@@ -263,10 +263,10 @@ index 9ceb3f38..24b8aad6 100644
  multi-client-cannot-open-connection = 此客户端无法打开连接。
  
 diff --git a/crates/sdroxide-ui/src/app/mod.rs b/crates/sdroxide-ui/src/app/mod.rs
-index 16f1cb43..bbd636e0 100644
+index e7e70c25..cb365e68 100644
 --- a/crates/sdroxide-ui/src/app/mod.rs
 +++ b/crates/sdroxide-ui/src/app/mod.rs
-@@ -1958,9 +1958,19 @@ impl SdroxideApp {
+@@ -2022,9 +2022,19 @@ impl SdroxideApp {
      /// Read from the shell's roster either way, so a radio of this machine's
      /// own and one at a station are answered the same: the shell is what knows
      /// which of the two this tab is, and it has already asked the station.
@@ -288,7 +288,7 @@ index 16f1cb43..bbd636e0 100644
  
      /// The other radios of the station this tab is connected to, and the
 diff --git a/crates/sdroxide-ui/src/chrome.rs b/crates/sdroxide-ui/src/chrome.rs
-index 0056766b..2f375909 100644
+index c8136ea4..1d1890df 100644
 --- a/crates/sdroxide-ui/src/chrome.rs
 +++ b/crates/sdroxide-ui/src/chrome.rs
 @@ -1529,6 +1529,34 @@ pub fn chip_link(ui: &mut Ui, selected: bool, size: egui::Vec2) -> Response {
@@ -327,7 +327,7 @@ index 0056766b..2f375909 100644
  /// at an exact size. Painted rather than typed for the reason [`chip_link`]
  /// gives, and inked the same way.
 diff --git a/crates/sdroxide-ui/src/multi.rs b/crates/sdroxide-ui/src/multi.rs
-index 2aeeb3af..6b840fce 100644
+index f33338b4..e7736541 100644
 --- a/crates/sdroxide-ui/src/multi.rs
 +++ b/crates/sdroxide-ui/src/multi.rs
 @@ -119,9 +119,20 @@ enum StripAction {
@@ -472,7 +472,7 @@ index 2aeeb3af..6b840fce 100644
          }
          if !self.panes.contains(&self.tabs[self.focused].id) {
              let first = self.panes[0];
-@@ -465,30 +548,101 @@ impl MultiApp {
+@@ -465,40 +548,99 @@ impl MultiApp {
          let Some(i) = self.tabs.iter().position(|t| t.id == id) else { return };
          if !self.panes.contains(&id) && pane < self.panes.len() {
              self.panes[pane] = id;
@@ -484,8 +484,20 @@ index 2aeeb3af..6b840fce 100644
 -    /// The ⊞ toggle: open a pane for radio `id`, or close the one it has.
 -    fn toggle_split(&mut self, id: u32, ctx: &egui::Context) {
 -        if let Some(k) = self.panes.iter().position(|&p| p == id) {
--            // The last pane is not a split; it stays.
--            if self.panes.len() > 1 {
+-            // The last pane is not a split; it stays. Its ⊞ used to do
+-            // nothing at all, and that is the button an operator reaches for
+-            // first, on the radio already on screen (#763): it opens the split
+-            // with the next radio instead.
+-            if self.panes.len() == 1 {
+-                if let Some(other) = self
+-                    .tabs
+-                    .iter()
+-                    .find(|t| t.id != id && t.attached_to.is_none())
+-                    .map(|t| t.id)
+-                {
+-                    self.panes.push(other);
+-                }
+-            } else {
 -                self.panes.remove(k);
 -                // The keyboard must stay on a visible radio: hand it to the
 -                // pane that slid into the closed one's place.
@@ -546,7 +558,7 @@ index 2aeeb3af..6b840fce 100644
              }
 -        } else if self.tabs.iter().any(|t| t.id == id) {
 -            self.panes.push(id);
-+        }
+         }
 +        self.sanitize_panes(ctx);
 +    }
 +
@@ -560,9 +572,9 @@ index 2aeeb3af..6b840fce 100644
 +        self.put_on_row(self.panes.len() - 1, id);
 +        if let Some(i) = self.tabs.iter().position(|t| t.id == id) {
 +            self.focus_tab(i, ctx);
-         }
-     }
- 
++        }
++    }
++
 +    /// The first radio, in strip order, that is on no row: one the operator
 +    /// took off a row with "−". Never one lent out as a panadapter, which is
 +    /// reached through Settings → Radio.
@@ -584,12 +596,10 @@ index 2aeeb3af..6b840fce 100644
 +            .filter(|t| !self.rows.iter().any(|r| r.contains(&t.id)))
 +            .map(|t| t.id)
 +            .collect()
-+    }
-+
+     }
+ 
      /// Act on the radio-management requests the visible tabs' settings
-     /// dialogs queued this frame.
-     fn handle_requests(&mut self, reqs: Vec<RadioTabRequest>, ctx: &egui::Context) {
-@@ -563,7 +717,9 @@ impl MultiApp {
+@@ -575,7 +717,9 @@ impl MultiApp {
          for act in actions {
              match act {
                  StripAction::Show { pane, id } => self.show_in_pane(pane, id, ctx),
@@ -600,7 +610,7 @@ index 2aeeb3af..6b840fce 100644
                  StripAction::Mute { id, muted } => {
                      // To the engine, not latched here: the chip and the MUTE
                      // button both read the engine's answer back, so they
-@@ -631,49 +787,50 @@ impl MultiApp {
+@@ -643,49 +787,50 @@ impl MultiApp {
          }
      }
  
@@ -671,7 +681,7 @@ index 2aeeb3af..6b840fce 100644
                      // On the air: the one thing worth seeing from any tab.
                      if tab.app.tab_tx_on() {
                          ui.label(
-@@ -682,23 +839,13 @@ impl MultiApp {
+@@ -694,23 +839,13 @@ impl MultiApp {
                      } else if tab.app.tab_error() && tab.enabled {
                          ui.label(RichText::new("⚠").size(11.0).color(crate::theme::ALERT()));
                      }
@@ -701,7 +711,7 @@ index 2aeeb3af..6b840fce 100644
                          let tip = if tab.enabled {
                              crate::chrome::LINK_CLOSE_TIP
                          } else {
-@@ -710,9 +857,7 @@ impl MultiApp {
+@@ -722,9 +857,7 @@ impl MultiApp {
                      }
                      // No mute on a radio that is off: there is nothing coming
                      // out of it to silence. Whether it *was* muted is kept, and
@@ -712,7 +722,7 @@ index 2aeeb3af..6b840fce 100644
                      if tab.enabled {
                          let muted = tab.app.tab_muted();
                          let mute = crate::chrome::chip(
-@@ -724,48 +869,122 @@ impl MultiApp {
+@@ -736,48 +869,122 @@ impl MultiApp {
                              actions.push(StripAction::Mute { id, muted: !muted });
                          }
                      }
@@ -861,7 +871,7 @@ index 2aeeb3af..6b840fce 100644
                  }
              }
          });
-@@ -1077,6 +1296,10 @@ impl MultiApp {
+@@ -1089,6 +1296,10 @@ impl MultiApp {
              attached_to: None,
              enabled: r.enabled,
          });
@@ -872,7 +882,7 @@ index 2aeeb3af..6b840fce 100644
          for tab in &mut self.tabs {
              tab.app.set_shared_log(true);
          }
-@@ -1307,6 +1530,12 @@ impl eframe::App for MultiApp {
+@@ -1319,6 +1530,12 @@ impl eframe::App for MultiApp {
              let n = pane_tabs.len() as f32;
              let gap = 6.0;
              let col_w = ((avail.width() - gap * (n - 1.0)) / n).max(50.0);
@@ -885,7 +895,7 @@ index 2aeeb3af..6b840fce 100644
              for (k, &ti) in pane_tabs.iter().enumerate() {
                  let left = avail.left() + k as f32 * (col_w + gap);
                  let col = egui::Rect::from_min_max(
-@@ -1322,13 +1551,17 @@ impl eframe::App for MultiApp {
+@@ -1334,13 +1551,17 @@ impl eframe::App for MultiApp {
                  );
                  pane_ui.shrink_clip_rect(col);
                  // This pane's strip — switches what the pane shows.
@@ -904,7 +914,7 @@ index 2aeeb3af..6b840fce 100644
                  self.tabs[ti].app.set_radio_roster(roster.clone());
                  eframe::App::ui(&mut self.tabs[ti].app, &mut pane_ui, frame);
                  reqs.append(&mut self.tabs[ti].app.take_radio_tab_requests());
-@@ -1340,6 +1573,11 @@ impl eframe::App for MultiApp {
+@@ -1352,6 +1573,11 @@ impl eframe::App for MultiApp {
                      );
                  }
              }
@@ -917,7 +927,7 @@ index 2aeeb3af..6b840fce 100644
              // A press on a pane's background hands it the keyboard. Floating
              // windows live on layers above the background, so working in a
 diff --git a/docs/USER_MANUAL.md b/docs/USER_MANUAL.md
-index 89da7479..3a45329a 100644
+index 39196b04..d989ef80 100644
 --- a/docs/USER_MANUAL.md
 +++ b/docs/USER_MANUAL.md
 @@ -351,11 +351,13 @@ See the [appendix](#16-appendix) for what each mode is.
@@ -939,7 +949,7 @@ index 89da7479..3a45329a 100644
    room to stack it, it is the first thing in the **VFO** menu instead, labelled
    in words. It is not the radio's power switch: that is **PWR**
    ([§2.7](#27-receiver-controls)).
-@@ -858,7 +860,7 @@ socket, no receive aerial and no remote power never sees it.
+@@ -866,7 +868,7 @@ socket, no receive aerial and no remote power never sees it.
    on the radio's own front panel pressed without changing band — it catches up
    at the next band change.
  - **PWR** — **ON** and **OFF** switch the radio itself, over the control link.
@@ -948,7 +958,7 @@ index 89da7479..3a45329a 100644
    is sdroxide's own end of the connection and leaves the radio running
    ([2.17](#217-running-more-than-one-radio)). Two buttons rather than a switch,
    because a radio that is off answers nothing and there is no position to read
-@@ -2396,9 +2398,9 @@ plugging a dongle in here and plugging one in at the remote site — one radio
+@@ -2404,9 +2406,9 @@ plugging a dongle in here and plugging one in at the remote site — one radio
  appears in this machine's roster, the other in that station's, where its engine
  runs and where its settings are saved. A radio added on a station comes back as
  a tab of its own within a second or so, with the Radio page already open on it,
@@ -961,7 +971,7 @@ index 89da7479..3a45329a 100644
  
  The **+** only acts on the press when the radio is going on the computer you
  are sitting at. Where it would go on a station instead — which is always the
-@@ -2467,16 +2469,26 @@ scanning. Besides its name, each tab carries:
+@@ -2475,16 +2477,26 @@ scanning. Besides its name, each tab carries:
  - **🔊 / 🔇** — mute this radio's speaker audio. Muting is *only* the speaker:
    decoding, skimming, recording and everything else continue, so a muted
    background radio still fills its FT8 list and still spots.
@@ -993,7 +1003,7 @@ index 89da7479..3a45329a 100644
  link to that radio is open, dark when it is not — and pressing it changes that.
  With the link closed, the radio's interface is closed with it: no device
  claimed, no CAT port held, no network rig dialled, and no reconnecting in the
-@@ -2485,7 +2497,7 @@ stays too, with its name greyed, and its whole Settings → Radio page is still
+@@ -2493,7 +2505,7 @@ stays too, with its name greyed, and its whole Settings → Radio page is still
  there to be read and edited. Press the switch again and the radio opens where
  it left off.
  
@@ -1002,7 +1012,7 @@ index 89da7479..3a45329a 100644
  than the radio's, and the difference matters on a station with more than one rig
  on it. On/off in sdroxide means one thing and one control: **PWR**, which throws
  the set's own switch over the control link
-@@ -2503,14 +2515,13 @@ is on top of the station-wide interlock below, which applies to every radio
+@@ -2511,14 +2523,13 @@ is on top of the station-wide interlock below, which applies to every radio
  that *is* switched on.
  
  The same switch is in the roster at the top of **Settings → Radio**, which is
@@ -1024,13 +1034,15 @@ index 89da7479..3a45329a 100644
  remembered: a radio switched off is still switched off after a restart, and
  sdroxide never touches its device at start-up. That is what makes it the right
  place to leave the rig that is boxed for the summer, or the dongle somebody has
-@@ -2538,15 +2549,15 @@ no screen of its own, the browser is the only place its switch exists. A station
+@@ -2546,17 +2557,15 @@ no screen of its own, the browser is the only place its switch exists. A station
  running an older sdroxide than this screen offers no switch, and none is drawn
  rather than one that would be quietly ignored.
  
 -**Split view.** The **⊞** toggle gives a radio a pane of its own: toggle it
 -on a second radio and the main area splits into two equal columns, side by
--side; a third radio makes three. Every pane carries its own copy of the
+-side; a third radio makes three. ⊞ on the radio already on screen, with no
+-split open yet, splits it with the next radio in the strip. The split is not
+-remembered across a restart. Every pane carries its own copy of the
 -radio strip, so any pane can be switched to any radio that is not already on
 -screen — a radio is never shown twice, and its name is greyed out in the
 -other panes' strips while it is up. Keyboard shortcuts and MIDI go to one
@@ -1049,7 +1061,7 @@ index 89da7479..3a45329a 100644
  
  **Naming.** A tab names itself after its radio's interface — *PlutoSDR*,
  *TCI*, *HPSDR* — so a strip full of different hardware needs no housekeeping
-@@ -14330,7 +14341,7 @@ Remote**, enter the server's **Address** and **Port**, and press **CONNECT**.
+@@ -14454,7 +14463,7 @@ Remote**, enter the server's **Address** and **Port**, and press **CONNECT**.
  
  The station comes up as a radio tab of its own, beside whatever radios that
  sdroxide already has open — the tab strip at the top of the window switches
@@ -1058,7 +1070,7 @@ index 89da7479..3a45329a 100644
  Your own radio keeps running while you work the remote one. To hang up, close
  the tab from the roster at the top of **Settings → Radio**; nothing on the
  server is changed by that. Adding a radio *on the server*, and closing one
-@@ -14360,7 +14371,7 @@ Remote** to connect to a second station.
+@@ -14484,7 +14493,7 @@ Remote** to connect to a second station.
  make is to one radio — the first, unless you named another — and the station
  says what else it has; the client opens the rest beside it, one tab each. So
  dialling a server that has an RTL-SDR and a Pluto gives you the same two tabs
